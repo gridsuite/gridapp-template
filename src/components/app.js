@@ -13,10 +13,10 @@ import {Redirect, Route, Switch, useHistory, useLocation} from 'react-router-dom
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import {TopBar} from '@gridsuite/commons-ui';
 import {LIGHT_THEME} from '../redux/actions'
 
 import {
+    TopBar,
     AuthenticationRouter,
     logout,
     getPreLoginPath,
