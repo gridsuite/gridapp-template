@@ -20,7 +20,8 @@ import {
     AuthenticationRouter,
     logout,
     getPreLoginPath,
-    initializeAuthentication
+    initializeAuthentication,
+    setLoggedUser
 } from '@gridsuite/commons-ui';
 
 import {useRouteMatch} from "react-router";
@@ -59,6 +60,8 @@ const App = () => {
 
     const [userManager, setUserManager] = useState(noUserManager);
 
+    const [alreadyConnected, setAlreadyConnected] = useState(true);
+
     const history = useHistory();
 
     const dispatch = useDispatch();
@@ -74,13 +77,25 @@ const App = () => {
         initializeAuthentication(dispatch, matchSilentRenewCallbackUrl != null, fetch('idpSettings.json'), process.env.REACT_APP_USE_AUTHENTICATION)
             .then(userManager => {
                 setUserManager({instance: userManager, error: null});
-                userManager.signinSilent().then(() => console.log("signIn silent called ")).catch(e => console.log('signIn silent:  ' + e));
+                userManager.signinSilent().then((rep) =>  {
+                    setAlreadyConnected(true);
+                    console.log(JSON.stringify(rep))
+                }).catch((e) => {
+                    setAlreadyConnected(false);
+                    console.log(e)
+                });
             })
             .catch(function (error) {
                 setUserManager({instance: null, error: error.message});
                 console.debug("error when importing the idp settings")
             });
     }, []);
+
+    useEffect(() => {
+        if(!alreadyConnected) {
+            dispatch(setLoggedUser(null));
+        }
+    }, [alreadyConnected]);
 
     function onLogoClicked() {
         history.replace("/");
@@ -90,7 +105,7 @@ const App = () => {
         <ThemeProvider theme={getMuiTheme(theme)}>
             <React.Fragment>
                 <CssBaseline />
-                <TopBar appName="GridApp" onParametersClick={() => console.log("")} onLogoutClick={() => logout(dispatch, userManager.instance)} onLogoClick={onLogoClicked} user={user}/>
+                <TopBar appName="GridApp" onParametersClick={() => console.log("onParametersClick")} onLogoutClick={() => logout(dispatch, userManager.instance)} onLogoClick={() => onLogoClicked()} user={user}/>
                 { user !== null ? (
                         <Switch>
                             <Route exact path="/">
