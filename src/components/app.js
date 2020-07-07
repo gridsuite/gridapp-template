@@ -79,10 +79,10 @@ const App = () => {
                 setUserManager({instance: userManager, error: null});
                 userManager.signinSilent().then((rep) =>  {
                     setAlreadyConnected(true);
-                    console.log(JSON.stringify(rep))
+                    console.log("Already connected :)")
                 }).catch((e) => {
                     setAlreadyConnected(false);
-                    console.log(e)
+                    console.log(e);
                 });
             })
             .catch(function (error) {
@@ -92,10 +92,11 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        if(!alreadyConnected) {
-            dispatch(setLoggedUser(null));
+        if(user != null && !alreadyConnected) {
+            logout(dispatch, userManager.instance);
+            console.log("Disconnected from outside but still connected in this running app");
         }
-    }, [alreadyConnected]);
+    }, [user, alreadyConnected]);
 
     function onLogoClicked() {
         history.replace("/");
