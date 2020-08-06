@@ -5,40 +5,48 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
-import {useDispatch, useSelector} from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 
-import {Redirect, Route, Switch, useHistory, useLocation} from 'react-router-dom';
+import {
+    Redirect,
+    Route,
+    Switch,
+    useHistory,
+    useLocation,
+} from 'react-router-dom';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import {LIGHT_THEME} from '../redux/actions'
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { LIGHT_THEME } from '../redux/actions';
 
 import {
     TopBar,
     AuthenticationRouter,
     logout,
     getPreLoginPath,
-    initializeAuthentication,
-    setLoggedUser
+    initializeAuthenticationProd,
+    initializeAuthenticationDev,
 } from '@gridsuite/commons-ui';
 
-import {useRouteMatch} from "react-router";
-import {FormattedMessage} from "react-intl";
+import { useRouteMatch } from 'react-router';
+import { FormattedMessage } from 'react-intl';
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
 const lightTheme = createMuiTheme({
     palette: {
         type: 'light',
     },
-    mapboxStyle: 'mapbox://styles/mapbox/light-v9'
+    mapboxStyle: 'mapbox://styles/mapbox/light-v9',
 });
 
 const darkTheme = createMuiTheme({
     palette: {
         type: 'dark',
     },
-    mapboxStyle: 'mapbox://styles/mapbox/dark-v9'
+    mapboxStyle: 'mapbox://styles/mapbox/dark-v9',
 });
 
 const getMuiTheme = (theme) => {
@@ -49,7 +57,7 @@ const getMuiTheme = (theme) => {
     }
 };
 
-const noUserManager = {instance: null, error: null};
+const noUserManager = { instance: null, error: null };
 
 const App = () => {
     const theme = useSelector(state => state.theme);
@@ -73,30 +81,32 @@ const App = () => {
         exact: true,
     });
 
-    useEffect(() => {
-        initializeAuthentication(dispatch, matchSilentRenewCallbackUrl != null, fetch('idpSettings.json'), process.env.REACT_APP_USE_AUTHENTICATION)
-            .then(userManager => {
-                setUserManager({instance: userManager, error: null});
-                userManager.signinSilent().then((rep) =>  {
-                    setAlreadyConnected(true);
-                    console.log("Already connected :)")
-                }).catch((e) => {
-                    setAlreadyConnected(false);
-                    console.log(e);
-                });
-            })
-            .catch(function (error) {
-                setUserManager({instance: null, error: error.message});
-                console.debug("error when importing the idp settings")
-            });
-    }, []);
+    function initialize() {
+        if (process.env.REACT_APP_USE_AUTHENTICATION === true) {
+            return initializeAuthenticationProd(
+                dispatch,
+                matchSilentRenewCallbackUrl != null,
+                fetch('idpSettings.json')
+            );
+        } else {
+            return initializeAuthenticationDev(
+                dispatch,
+                matchSilentRenewCallbackUrl != null
+            );
+        }
+    }
 
     useEffect(() => {
-        if(user != null && !alreadyConnected) {
-            logout(dispatch, userManager.instance);
-            console.log("Disconnected from outside but still connected in this running app");
-        }
-    }, [user, alreadyConnected]);
+        initialize()
+            .then((userManager) => {
+                setUserManager({ instance: userManager, error: null });
+                userManager.signinSilent();
+            })
+            .catch(function (error) {
+                setUserManager({ instance: null, error: error.message });
+                console.debug('error when importing the idp settings');
+            });
+    }, []);
 
     function onLogoClicked() {
         history.replace("/");
@@ -110,8 +120,9 @@ const App = () => {
                 { user !== null ? (
                         <Switch>
                             <Route exact path="/">
-                                <h1>My private resource</h1>
-                            </Route>
+                                <Box mt={20}>
+                                    <Typography variant="h3"  color="textPrimary" align="center">Connected</Typography>
+                                </Box>                            </Route>
                             <Route exact path="/sign-in-callback">
                                 <Redirect to={getPreLoginPath() || "/"} />
                             </Route>
