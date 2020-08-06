@@ -30,7 +30,7 @@ import {
     initializeAuthenticationDev,
 } from '@gridsuite/commons-ui';
 
-import { useRouteMatch } from 'react-router';
+import { useRouteMatch } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -67,8 +67,6 @@ const App = () => {
     const signInCallbackError = useSelector(state => state.signInCallbackError);
 
     const [userManager, setUserManager] = useState(noUserManager);
-
-    const [alreadyConnected, setAlreadyConnected] = useState(true);
 
     const history = useHistory();
 
