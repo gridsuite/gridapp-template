@@ -120,7 +120,8 @@ const App = () => {
                             <Route exact path="/">
                                 <Box mt={20}>
                                     <Typography variant="h3"  color="textPrimary" align="center">Connected</Typography>
-                                </Box>                            </Route>
+                                </Box>
+                            </Route>
                             <Route exact path="/sign-in-callback">
                                 <Redirect to={getPreLoginPath() || "/"} />
                             </Route>
