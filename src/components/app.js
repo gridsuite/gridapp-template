@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -76,25 +76,33 @@ const App = () => {
 
     const location = useLocation();
 
-    let matchSilentRenewCallbackUrl = useRouteMatch({
+    const matchSilentRenewCallbackUrl = useRouteMatch({
         path: '/silent-renew-callback',
         exact: true,
     });
 
-    function initialize() {
+    // Get the routeMatch at page load, so we ignore the exhaustive deps check
+    const initialMatchSilentRenewCallbackUrl = useCallback(
+        () => matchSilentRenewCallbackUrl,
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
+    )();
+
+    const initialize = useCallback(() => {
         if (process.env.REACT_APP_USE_AUTHENTICATION === true) {
             return initializeAuthenticationProd(
                 dispatch,
-                matchSilentRenewCallbackUrl != null,
+                initialMatchSilentRenewCallbackUrl != null,
                 fetch('idpSettings.json')
             );
         } else {
             return initializeAuthenticationDev(
                 dispatch,
-                matchSilentRenewCallbackUrl != null
+                initialMatchSilentRenewCallbackUrl != null
             );
         }
-    }
+        // Note: initialMatchSilentRenewCallbackUrl and dispatch don't change
+    }, [initialMatchSilentRenewCallbackUrl, dispatch]);
 
     useEffect(() => {
         initialize()
@@ -106,7 +114,8 @@ const App = () => {
                 setUserManager({ instance: null, error: error.message });
                 console.debug('error when importing the idp settings');
             });
-    }, []);
+        // Note: initialize won't change
+    }, [initialize]);
 
     function onLogoClicked() {
         history.replace('/');
