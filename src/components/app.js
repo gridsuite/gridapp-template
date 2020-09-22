@@ -134,7 +134,7 @@ const App = () => {
                                 >
                                     Connected
                                 </Typography>
-                            </Box>{' '}
+                            </Box>
                         </Route>
                         <Route exact path="/sign-in-callback">
                             <Redirect to={getPreLoginPath() || '/'} />
@@ -146,7 +146,7 @@ const App = () => {
                         </Route>
                         <Route>
                             <h1>
-                                <FormattedMessage id="PageNotFound" />{' '}
+                                <FormattedMessage id="PageNotFound" />
                             </h1>
                         </Route>
                     </Switch>
