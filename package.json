@@ -28,7 +28,13 @@
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
-        "extends": "react-app"
+        "extends": [
+            "react-app",
+            "plugin:prettier/recommended"
+        ],
+        "rules": {
+            "prettier/prettier": "warn"
+        }
     },
     "browserslist": {
         "production": [
@@ -41,5 +47,10 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "devDependencies": {
+        "prettier": "2.0.5",
+        "eslint-config-prettier": "^2.9.0",
+        "eslint-plugin-prettier": "^2.6.0"
     }
 }
