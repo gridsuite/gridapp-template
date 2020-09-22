@@ -32,8 +32,8 @@ import {
 
 import { useRouteMatch } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
 const lightTheme = createMuiTheme({
     palette: {
@@ -60,11 +60,13 @@ const getMuiTheme = (theme) => {
 const noUserManager = { instance: null, error: null };
 
 const App = () => {
-    const theme = useSelector(state => state.theme);
+    const theme = useSelector((state) => state.theme);
 
-    const user = useSelector(state => state.user);
+    const user = useSelector((state) => state.user);
 
-    const signInCallbackError = useSelector(state => state.signInCallbackError);
+    const signInCallbackError = useSelector(
+        (state) => state.signInCallbackError
+    );
 
     const [userManager, setUserManager] = useState(noUserManager);
 
@@ -74,7 +76,7 @@ const App = () => {
 
     const location = useLocation();
 
-    let matchSilentRenewCallbackUrl= useRouteMatch({
+    let matchSilentRenewCallbackUrl = useRouteMatch({
         path: '/silent-renew-callback',
         exact: true,
     });
@@ -107,36 +109,59 @@ const App = () => {
     }, []);
 
     function onLogoClicked() {
-        history.replace("/");
+        history.replace('/');
     }
 
     return (
         <ThemeProvider theme={getMuiTheme(theme)}>
             <React.Fragment>
                 <CssBaseline />
-                <TopBar appName="GridXXXApp" onParametersClick={() => console.log("onParametersClick")} onLogoutClick={() => logout(dispatch, userManager.instance)} onLogoClick={() => onLogoClicked()} user={user}/>
-                { user !== null ? (
-                        <Switch>
-                            <Route exact path="/">
-                                <Box mt={20}>
-                                    <Typography variant="h3"  color="textPrimary" align="center">Connected</Typography>
-                                </Box>                            </Route>
-                            <Route exact path="/sign-in-callback">
-                                <Redirect to={getPreLoginPath() || "/"} />
-                            </Route>
-                            <Route exact path="/logout-callback">
-                                <h1>Error: logout failed; you are still logged in.</h1>
-                            </Route>
-                            <Route>
-                                <h1><FormattedMessage id="PageNotFound"/> </h1>
-                            </Route>
-                        </Switch>)
-                    : (
-                        <AuthenticationRouter userManager={userManager} signInCallbackError={signInCallbackError} dispatch={dispatch} history={history} location={location}/>
-                    )}
+                <TopBar
+                    appName="GridXXXApp"
+                    onParametersClick={() => console.log('onParametersClick')}
+                    onLogoutClick={() => logout(dispatch, userManager.instance)}
+                    onLogoClick={() => onLogoClicked()}
+                    user={user}
+                />
+                {user !== null ? (
+                    <Switch>
+                        <Route exact path="/">
+                            <Box mt={20}>
+                                <Typography
+                                    variant="h3"
+                                    color="textPrimary"
+                                    align="center"
+                                >
+                                    Connected
+                                </Typography>
+                            </Box>{' '}
+                        </Route>
+                        <Route exact path="/sign-in-callback">
+                            <Redirect to={getPreLoginPath() || '/'} />
+                        </Route>
+                        <Route exact path="/logout-callback">
+                            <h1>
+                                Error: logout failed; you are still logged in.
+                            </h1>
+                        </Route>
+                        <Route>
+                            <h1>
+                                <FormattedMessage id="PageNotFound" />{' '}
+                            </h1>
+                        </Route>
+                    </Switch>
+                ) : (
+                    <AuthenticationRouter
+                        userManager={userManager}
+                        signInCallbackError={signInCallbackError}
+                        dispatch={dispatch}
+                        history={history}
+                        location={location}
+                    />
+                )}
             </React.Fragment>
         </ThemeProvider>
-    )
+    );
 };
 
 export default App;

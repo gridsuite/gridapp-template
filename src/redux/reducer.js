@@ -5,26 +5,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {createReducer} from "@reduxjs/toolkit";
+import { createReducer } from '@reduxjs/toolkit';
 
-import {
-    getLocalStorageTheme,
-    saveLocalStorageTheme,
-} from "./local-storage";
+import { getLocalStorageTheme, saveLocalStorageTheme } from './local-storage';
 
-import {
-    SELECT_THEME,
-} from "./actions";
+import { SELECT_THEME } from './actions';
 
-import {
-    USER,
-    SIGNIN_CALLBACK_ERROR,
-} from "@gridsuite/commons-ui";
+import { USER, SIGNIN_CALLBACK_ERROR } from '@gridsuite/commons-ui';
 
 const initialState = {
     theme: getLocalStorageTheme(),
-    user : null,
-    signInCallbackError : null,
+    user: null,
+    signInCallbackError: null,
 };
 
 export const reducer = createReducer(initialState, {
