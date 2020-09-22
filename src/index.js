@@ -5,20 +5,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import "typeface-roboto";
+import 'typeface-roboto';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Provider} from 'react-redux'
-import {BrowserRouter} from 'react-router-dom';
-import {IntlProvider} from 'react-intl';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import { IntlProvider } from 'react-intl';
 
 import './index.css';
 import App from './components/app';
-import {store} from './redux/store';
+import { store } from './redux/store';
 
-import messages_en from "./translations/en.json";
-import messages_fr from "./translations/fr.json";
+import messages_en from './translations/en.json';
+import messages_fr from './translations/fr.json';
 
 import {
     top_bar_en,
@@ -32,7 +32,7 @@ const messages = {
     fr: { ...messages_fr, ...login_fr, ...top_bar_fr },
 };
 
-const language = navigator.language.split(/[-_]/)[0];  // language without region code
+const language = navigator.language.split(/[-_]/)[0]; // language without region code
 
 const basename = new URL(document.querySelector('base').href).pathname;
 
@@ -46,4 +46,3 @@ ReactDOM.render(
     </IntlProvider>,
     document.getElementById('root')
 );
-
