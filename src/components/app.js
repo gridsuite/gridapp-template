@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -27,7 +27,6 @@ import {
     logout,
     getPreLoginPath,
     initializeAuthenticationProd,
-    initializeAuthenticationDev,
 } from '@gridsuite/commons-ui';
 
 import { useRouteMatch } from 'react-router-dom';
@@ -81,41 +80,38 @@ const App = () => {
         exact: true,
     });
 
-    // Get the routeMatch at page load, so we ignore the exhaustive deps check
-    const initialMatchSilentRenewCallbackUrl = useCallback(
-        () => matchSilentRenewCallbackUrl,
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
-    )();
-
-    const initialize = useCallback(() => {
-        if (process.env.REACT_APP_USE_AUTHENTICATION === true) {
-            return initializeAuthenticationProd(
-                dispatch,
-                initialMatchSilentRenewCallbackUrl != null,
-                fetch('idpSettings.json')
-            );
-        } else {
-            return initializeAuthenticationDev(
-                dispatch,
-                initialMatchSilentRenewCallbackUrl != null
-            );
-        }
-        // Note: initialMatchSilentRenewCallbackUrl and dispatch don't change
-    }, [initialMatchSilentRenewCallbackUrl, dispatch]);
-
     useEffect(() => {
-        initialize()
+        initializeAuthenticationProd(
+            dispatch,
+            matchSilentRenewCallbackUrl != null,
+            // Do not forget to configure the idpSettings.json file in the public folder so that the authentication works correctly
+            fetch('idpSettings.json')
+        )
             .then((userManager) => {
                 setUserManager({ instance: userManager, error: null });
-                userManager.signinSilent();
+                userManager.getUser().then((user) => {
+                    if (user == null) {
+                        userManager.signinSilent().catch((error) => {
+                            const oidcHackReloaded =
+                                'gridsuite-oidc-hack-reloaded';
+                            if (
+                                !sessionStorage.getItem(oidcHackReloaded) &&
+                                error.message ===
+                                'authority mismatch on settings vs. signin state'
+                            ) {
+                                sessionStorage.setItem(oidcHackReloaded, true);
+                                window.location.reload();
+                            }
+                        });
+                    }
+                });
             })
             .catch(function (error) {
                 setUserManager({ instance: null, error: error.message });
                 console.debug('error when importing the idp settings');
             });
-        // Note: initialize won't change
-    }, [initialize]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     function onLogoClicked() {
         history.replace('/');
