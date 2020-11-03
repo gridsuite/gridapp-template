@@ -76,17 +76,13 @@ const App = () => {
 
     const location = useLocation();
 
-    const matchSilentRenewCallbackUrl = useRouteMatch({
-        path: '/silent-renew-callback',
-        exact: true,
-    });
-
     // Get the routeMatch at page load, so we ignore the exhaustive deps check
-    const initialMatchSilentRenewCallbackUrl = useCallback(
-        () => matchSilentRenewCallbackUrl,
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
-    )();
+    const initialMatchSilentRenewCallbackUrl = useState(
+        useRouteMatch({
+            path: '/silent-renew-callback',
+            exact: true,
+        })
+    );
 
     const initialize = useCallback(() => {
         if (process.env.REACT_APP_USE_AUTHENTICATION === true) {
