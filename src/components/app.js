@@ -117,6 +117,11 @@ const App = () => {
         history.replace('/');
     }
 
+    const apps = [
+        { name: 'App1', url: '/app1', appColor: 'red' },
+        { name: 'App2', url: '/app2' },
+    ];
+
     return (
         <ThemeProvider theme={getMuiTheme(theme)}>
             <React.Fragment>
@@ -127,6 +132,7 @@ const App = () => {
                     onLogoutClick={() => logout(dispatch, userManager.instance)}
                     onLogoClick={() => onLogoClicked()}
                     user={user}
+                    appsAndUrls={apps}
                 />
                 {user !== null ? (
                     <Switch>
