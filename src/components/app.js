@@ -35,6 +35,8 @@ import { FormattedMessage } from 'react-intl';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
+import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
+
 const lightTheme = createMuiTheme({
     palette: {
         type: 'light',
@@ -127,10 +129,12 @@ const App = () => {
             <React.Fragment>
                 <CssBaseline />
                 <TopBar
-                    appName="GridXXXApp"
+                    appName="Template"
+                    appColor="grey"
                     onParametersClick={() => console.log('onParametersClick')}
                     onLogoutClick={() => logout(dispatch, userManager.instance)}
                     onLogoClick={() => onLogoClicked()}
+                    appLogo={<PowsyblLogo/>}
                     user={user}
                     appsAndUrls={apps}
                 />
