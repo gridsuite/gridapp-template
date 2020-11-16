@@ -104,14 +104,35 @@ const App = () => {
         initialize()
             .then((userManager) => {
                 setUserManager({ instance: userManager, error: null });
-                userManager.signinSilent();
+                userManager.getUser().then((user) => {
+                    if (
+                        user == null &&
+                        initialMatchSilentRenewCallbackUrl == null
+                    ) {
+                        userManager.signinSilent().catch((error) => {
+                            const oidcHackReloaded =
+                                'gridsuite-oidc-hack-reloaded';
+                            if (
+                                !sessionStorage.getItem(oidcHackReloaded) &&
+                                error.message ===
+                                    'authority mismatch on settings vs. signin state'
+                            ) {
+                                sessionStorage.setItem(oidcHackReloaded, true);
+                                console.log(
+                                    'Hack oidc, reload page to make login work'
+                                );
+                                window.location.reload();
+                            }
+                        });
+                    }
+                });
             })
             .catch(function (error) {
                 setUserManager({ instance: null, error: error.message });
                 console.debug('error when importing the idp settings');
             });
-        // Note: initialize won't change
-    }, [initialize]);
+        // Note: initialize and initialMatchSilentRenewCallbackUrl won't change
+    }, [initialize, initialMatchSilentRenewCallbackUrl]);
 
     function onLogoClicked() {
         history.replace('/');
