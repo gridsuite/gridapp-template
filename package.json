@@ -24,8 +24,13 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test --watchAll=false --passWithNoTests",
+        "test": "react-scripts test --watchAll=false",
         "eject": "react-scripts eject"
+    },
+    "jest": {
+        "moduleNameMapper": {
+            "\\.svg": "<rootDir>/src/__mocks__/svgrMock.js"
+        }
     },
     "eslintConfig": {
         "extends": [
