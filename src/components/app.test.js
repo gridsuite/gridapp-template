@@ -38,5 +38,5 @@ it('renders', async () => {
         )
     );
 
-    expect(container.textContent).toBe('GridXXXAppJohn DoeConnected');
+    expect(container.textContent).toContain('GridXXXApp');
 });
