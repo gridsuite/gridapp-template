@@ -134,7 +134,7 @@ const App = () => {
                     onParametersClick={() => console.log('onParametersClick')}
                     onLogoutClick={() => logout(dispatch, userManager.instance)}
                     onLogoClick={() => onLogoClicked()}
-                    appLogo={<PowsyblLogo/>}
+                    appLogo={<PowsyblLogo />}
                     user={user}
                     appsAndUrls={apps}
                 />
