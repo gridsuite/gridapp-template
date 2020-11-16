@@ -17,6 +17,7 @@ jobs:
                   npm install
                   npm run-script build
                   npm run-script test
+
             - name: Build and publish Docker image
               if: github.ref == 'refs/heads/master'
               uses: elgohr/Publish-Docker-Github-Action@master
