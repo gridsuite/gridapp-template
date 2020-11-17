@@ -36,7 +36,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
-import {fetchAppsAndUrls} from "../utils/rest-api";
+import { fetchAppsAndUrls } from '../utils/rest-api';
 
 const lightTheme = createMuiTheme({
     palette: {
