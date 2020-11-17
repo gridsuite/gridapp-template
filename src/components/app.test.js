@@ -38,5 +38,5 @@ it('renders', async () => {
         )
     );
 
-    expect(container.textContent).toContain('GridTemplate');
+    expect(container.textContent).toContain('GridXXX');
 });
