@@ -36,6 +36,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
+import {fetchAppsAndUrls} from "../utils/rest-api";
 
 const lightTheme = createMuiTheme({
     palette: {
@@ -71,6 +72,8 @@ const App = () => {
     );
 
     const [userManager, setUserManager] = useState(noUserManager);
+
+    const [appsAndUrls, setAppsAndUrls] = React.useState([]);
 
     const history = useHistory();
 
@@ -140,10 +143,13 @@ const App = () => {
         history.replace('/');
     }
 
-    const apps = [
-        { name: 'App1', url: '/app1', appColor: 'red' },
-        { name: 'App2', url: '/app2' },
-    ];
+    useEffect(() => {
+        if (user !== null) {
+            fetchAppsAndUrls().then((res) => {
+                setAppsAndUrls(res);
+            });
+        }
+    }, [user]);
 
     return (
         <ThemeProvider theme={getMuiTheme(theme)}>
@@ -157,7 +163,7 @@ const App = () => {
                     onLogoClick={() => onLogoClicked()}
                     appLogo={<PowsyblLogo />}
                     user={user}
-                    appsAndUrls={apps}
+                    appsAndUrls={appsAndUrls}
                 />
                 {user !== null ? (
                     <Switch>
