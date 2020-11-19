@@ -35,6 +35,9 @@ import { FormattedMessage } from 'react-intl';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
+import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
+import { fetchAppsAndUrls } from '../utils/rest-api';
+
 const lightTheme = createMuiTheme({
     palette: {
         type: 'light',
@@ -69,6 +72,8 @@ const App = () => {
     );
 
     const [userManager, setUserManager] = useState(noUserManager);
+
+    const [appsAndUrls, setAppsAndUrls] = React.useState([]);
 
     const history = useHistory();
 
@@ -138,16 +143,27 @@ const App = () => {
         history.replace('/');
     }
 
+    useEffect(() => {
+        if (user !== null) {
+            fetchAppsAndUrls().then((res) => {
+                setAppsAndUrls(res);
+            });
+        }
+    }, [user]);
+
     return (
         <ThemeProvider theme={getMuiTheme(theme)}>
             <React.Fragment>
                 <CssBaseline />
                 <TopBar
-                    appName="GridXXXApp"
+                    appName="XXX"
+                    appColor="grey"
                     onParametersClick={() => console.log('onParametersClick')}
                     onLogoutClick={() => logout(dispatch, userManager.instance)}
                     onLogoClick={() => onLogoClicked()}
+                    appLogo={<PowsyblLogo />}
                     user={user}
+                    appsAndUrls={appsAndUrls}
                 />
                 {user !== null ? (
                     <Switch>
