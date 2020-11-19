@@ -90,7 +90,7 @@ const App = () => {
     );
 
     const initialize = useCallback(() => {
-        if (process.env.REACT_APP_USE_AUTHENTICATION === true) {
+        if (process.env.REACT_APP_USE_AUTHENTICATION === 'true') {
             return initializeAuthenticationProd(
                 dispatch,
                 initialMatchSilentRenewCallbackUrl != null,
