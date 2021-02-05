@@ -5,15 +5,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-const APPS_METADATA_SERVER_URL = fetch('env.json');
-
 export function fetchAppsAndUrls() {
     console.info(`Fetching apps and urls...`);
-    return APPS_METADATA_SERVER_URL.then((res) => res.json()).then((res) => {
-        return fetch(res.appsMetadataServerUrl + '/apps-metadata.json').then(
-            (response) => {
+    return fetch('env.json')
+        .then((res) => res.json())
+        .then((res) => {
+            return fetch(
+                res.appsMetadataServerUrl + '/apps-metadata.json'
+            ).then((response) => {
                 return response.json();
-            }
-        );
-    });
+            });
+        });
 }
