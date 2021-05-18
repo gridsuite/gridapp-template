@@ -17,14 +17,14 @@ import {
     useLocation,
 } from 'react-router-dom';
 
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import { LIGHT_THEME } from '../redux/actions';
+import {
+    selectComputedLanguage,
+    selectLanguage,
+    selectTheme,
+} from '../redux/actions';
 
 import {
-    TopBar,
     AuthenticationRouter,
-    logout,
     getPreLoginPath,
     initializeAuthenticationProd,
     initializeAuthenticationDev,
@@ -35,35 +35,28 @@ import { FormattedMessage } from 'react-intl';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
-import { fetchAppsAndUrls } from '../utils/rest-api';
-
-const lightTheme = createMuiTheme({
-    palette: {
-        type: 'light',
-    },
-    mapboxStyle: 'mapbox://styles/mapbox/light-v9',
-});
-
-const darkTheme = createMuiTheme({
-    palette: {
-        type: 'dark',
-    },
-    mapboxStyle: 'mapbox://styles/mapbox/dark-v9',
-});
-
-const getMuiTheme = (theme) => {
-    if (theme === LIGHT_THEME) {
-        return lightTheme;
-    } else {
-        return darkTheme;
-    }
-};
+import {
+    connectNotificationsWsUpdateConfig,
+    fetchConfigParameter,
+    fetchConfigParameters,
+} from '../utils/rest-api';
+import {
+    APP_NAME,
+    COMMON_APP_NAME,
+    PARAM_LANGUAGE,
+    PARAM_THEME,
+} from '../utils/config-params';
+import { getComputedLanguage } from '../utils/language';
+import { displayErrorMessageWithSnackbar, useIntlRef } from '../utils/messages';
+import { useSnackbar } from 'notistack';
+import AppTopBar from './app-top-bar';
 
 const noUserManager = { instance: null, error: null };
 
 const App = () => {
-    const theme = useSelector((state) => state.theme);
+    const intlRef = useIntlRef();
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const user = useSelector((state) => state.user);
 
@@ -73,13 +66,60 @@ const App = () => {
 
     const [userManager, setUserManager] = useState(noUserManager);
 
-    const [appsAndUrls, setAppsAndUrls] = React.useState([]);
-
     const history = useHistory();
 
     const dispatch = useDispatch();
 
     const location = useLocation();
+
+    const updateParams = useCallback(
+        (params) => {
+            console.debug('received UI parameters : ', params);
+            params.forEach((param) => {
+                switch (param.name) {
+                    case PARAM_THEME:
+                        dispatch(selectTheme(param.value));
+                        break;
+                    case PARAM_LANGUAGE:
+                        dispatch(selectLanguage(param.value));
+                        dispatch(
+                            selectComputedLanguage(
+                                getComputedLanguage(param.value)
+                            )
+                        );
+                        break;
+                    default:
+                }
+            });
+        },
+        [dispatch]
+    );
+
+    const connectNotificationsUpdateConfig = useCallback(() => {
+        const ws = connectNotificationsWsUpdateConfig();
+
+        ws.onmessage = function (event) {
+            let eventData = JSON.parse(event.data);
+            if (eventData.headers && eventData.headers['parameterName']) {
+                fetchConfigParameter(eventData.headers['parameterName'])
+                    .then((param) => updateParams([param]))
+                    .catch((errorMessage) =>
+                        displayErrorMessageWithSnackbar({
+                            errorMessage: errorMessage,
+                            enqueueSnackbar: enqueueSnackbar,
+                            headerMessage: {
+                                headerMessageId: 'paramsRetrievingError',
+                                intlRef: intlRef,
+                            },
+                        })
+                    );
+            }
+        };
+        ws.onerror = function (event) {
+            console.error('Unexpected Notification WebSocket error', event);
+        };
+        return ws;
+    }, [updateParams, enqueueSnackbar, intlRef]);
 
     // Can't use lazy initializer because useRouteMatch is a hook
     const [initialMatchSilentRenewCallbackUrl] = useState(
@@ -139,70 +179,86 @@ const App = () => {
         // Note: initialize and initialMatchSilentRenewCallbackUrl won't change
     }, [initialize, initialMatchSilentRenewCallbackUrl]);
 
-    function onLogoClicked() {
-        history.replace('/');
-    }
-
     useEffect(() => {
         if (user !== null) {
-            fetchAppsAndUrls().then((res) => {
-                setAppsAndUrls(res);
-            });
+            fetchConfigParameters(COMMON_APP_NAME)
+                .then((params) => updateParams(params))
+                .catch((errorMessage) =>
+                    displayErrorMessageWithSnackbar({
+                        errorMessage: errorMessage,
+                        enqueueSnackbar: enqueueSnackbar,
+                        headerMessage: {
+                            headerMessageId: 'paramsRetrievingError',
+                            intlRef: intlRef,
+                        },
+                    })
+                );
+
+            fetchConfigParameters(APP_NAME)
+                .then((params) => updateParams(params))
+                .catch((errorMessage) =>
+                    displayErrorMessageWithSnackbar({
+                        errorMessage: errorMessage,
+                        enqueueSnackbar: enqueueSnackbar,
+                        headerMessage: {
+                            headerMessageId: 'paramsRetrievingError',
+                            intlRef: intlRef,
+                        },
+                    })
+                );
+
+            const ws = connectNotificationsUpdateConfig();
+            return function () {
+                ws.close();
+            };
         }
-    }, [user]);
+    }, [
+        user,
+        dispatch,
+        updateParams,
+        enqueueSnackbar,
+        intlRef,
+        connectNotificationsUpdateConfig,
+    ]);
 
     return (
-        <ThemeProvider theme={getMuiTheme(theme)}>
-            <React.Fragment>
-                <CssBaseline />
-                <TopBar
-                    appName="XXX"
-                    appColor="grey"
-                    onParametersClick={() => console.log('onParametersClick')}
-                    onLogoutClick={() => logout(dispatch, userManager.instance)}
-                    onLogoClick={() => onLogoClicked()}
-                    appLogo={<PowsyblLogo />}
-                    user={user}
-                    appsAndUrls={appsAndUrls}
+        <>
+            <AppTopBar user={user} userManager={userManager} />
+            {user !== null ? (
+                <Switch>
+                    <Route exact path="/">
+                        <Box mt={20}>
+                            <Typography
+                                variant="h3"
+                                color="textPrimary"
+                                align="center"
+                            >
+                                Connected
+                            </Typography>
+                        </Box>
+                    </Route>
+                    <Route exact path="/sign-in-callback">
+                        <Redirect to={getPreLoginPath() || '/'} />
+                    </Route>
+                    <Route exact path="/logout-callback">
+                        <h1>Error: logout failed; you are still logged in.</h1>
+                    </Route>
+                    <Route>
+                        <h1>
+                            <FormattedMessage id="PageNotFound" />
+                        </h1>
+                    </Route>
+                </Switch>
+            ) : (
+                <AuthenticationRouter
+                    userManager={userManager}
+                    signInCallbackError={signInCallbackError}
+                    dispatch={dispatch}
+                    history={history}
+                    location={location}
                 />
-                {user !== null ? (
-                    <Switch>
-                        <Route exact path="/">
-                            <Box mt={20}>
-                                <Typography
-                                    variant="h3"
-                                    color="textPrimary"
-                                    align="center"
-                                >
-                                    Connected
-                                </Typography>
-                            </Box>
-                        </Route>
-                        <Route exact path="/sign-in-callback">
-                            <Redirect to={getPreLoginPath() || '/'} />
-                        </Route>
-                        <Route exact path="/logout-callback">
-                            <h1>
-                                Error: logout failed; you are still logged in.
-                            </h1>
-                        </Route>
-                        <Route>
-                            <h1>
-                                <FormattedMessage id="PageNotFound" />
-                            </h1>
-                        </Route>
-                    </Switch>
-                ) : (
-                    <AuthenticationRouter
-                        userManager={userManager}
-                        signInCallbackError={signInCallbackError}
-                        dispatch={dispatch}
-                        history={history}
-                        location={location}
-                    />
-                )}
-            </React.Fragment>
-        </ThemeProvider>
+            )}
+        </>
     );
 };
 

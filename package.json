@@ -4,12 +4,14 @@
     "homepage": ".",
     "private": true,
     "dependencies": {
-        "@gridsuite/commons-ui": "0.5.2",
+        "@gridsuite/commons-ui": "^0.8.0",
         "@material-ui/core": "^4.9.5",
         "@material-ui/icons": "^4.5.1",
         "@material-ui/lab": "^4.0.0-alpha.42",
         "@reduxjs/toolkit": "^1.2.3",
+        "core-js": "^3.6.4",
         "http-proxy-middleware": "^1.0.3",
+        "notistack": "^1.0.1",
         "prop-types": "15.7.2",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
@@ -18,6 +20,7 @@
         "react-router-dom": "^5.1.2",
         "react-scripts": "3.4.1",
         "react-window": "^1.8.5",
+        "reconnecting-websocket": "^4.4.0",
         "redux": "^4.0.5",
         "typeface-roboto": "0.0.75"
     },

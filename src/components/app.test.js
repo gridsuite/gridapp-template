@@ -9,6 +9,9 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
 import { store } from '../redux/store';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { SnackbarProvider } from '@gridsuite/commons-ui';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 let container = null;
 beforeEach(() => {
@@ -28,11 +31,16 @@ it('renders', async () => {
     await act(async () =>
         render(
             <IntlProvider locale="en">
-                <Provider store={store}>
-                    <BrowserRouter>
-                        <App />
-                    </BrowserRouter>
-                </Provider>
+                <BrowserRouter>
+                    <Provider store={store}>
+                        <ThemeProvider theme={createMuiTheme({})}>
+                            <SnackbarProvider hideIconVariant={false}>
+                                <CssBaseline />
+                                <App />
+                            </SnackbarProvider>
+                        </ThemeProvider>
+                    </Provider>
+                </BrowserRouter>
             </IntlProvider>,
             container
         )
