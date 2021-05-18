@@ -27,7 +27,6 @@ import {
     AuthenticationRouter,
     getPreLoginPath,
     initializeAuthenticationProd,
-    initializeAuthenticationDev,
 } from '@gridsuite/commons-ui';
 
 import { useRouteMatch } from 'react-router-dom';
@@ -129,24 +128,12 @@ const App = () => {
         })
     );
 
-    const initialize = useCallback(() => {
-        if (process.env.REACT_APP_USE_AUTHENTICATION === 'true') {
-            return initializeAuthenticationProd(
-                dispatch,
-                initialMatchSilentRenewCallbackUrl != null,
-                fetch('idpSettings.json')
-            );
-        } else {
-            return initializeAuthenticationDev(
-                dispatch,
-                initialMatchSilentRenewCallbackUrl != null
-            );
-        }
-        // Note: initialMatchSilentRenewCallbackUrl and dispatch don't change
-    }, [initialMatchSilentRenewCallbackUrl, dispatch]);
-
     useEffect(() => {
-        initialize()
+        initializeAuthenticationProd(
+            dispatch,
+            initialMatchSilentRenewCallbackUrl != null,
+            fetch('idpSettings.json')
+        )
             .then((userManager) => {
                 setUserManager({ instance: userManager, error: null });
                 userManager.getUser().then((user) => {
@@ -163,9 +150,6 @@ const App = () => {
                                     'authority mismatch on settings vs. signin state'
                             ) {
                                 sessionStorage.setItem(oidcHackReloaded, true);
-                                console.log(
-                                    'Hack oidc, reload page to make login work'
-                                );
                                 window.location.reload();
                             }
                         });
@@ -176,8 +160,8 @@ const App = () => {
                 setUserManager({ instance: null, error: error.message });
                 console.debug('error when importing the idp settings');
             });
-        // Note: initialize and initialMatchSilentRenewCallbackUrl won't change
-    }, [initialize, initialMatchSilentRenewCallbackUrl]);
+        // Note: initialMatchSilentRenewCallbackUrl and dispatch don't change
+    }, [initialMatchSilentRenewCallbackUrl, dispatch]);
 
     useEffect(() => {
         if (user !== null) {
