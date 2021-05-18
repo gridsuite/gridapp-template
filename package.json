@@ -10,6 +10,7 @@
         "@material-ui/icons": "^4.5.1",
         "@material-ui/lab": "^4.0.0-alpha.42",
         "@reduxjs/toolkit": "^1.2.3",
+        "core-js": "^3.6.4",
         "http-proxy-middleware": "^1.0.3",
         "prop-types": "15.7.2",
         "reconnecting-websocket": "^4.4.0",
