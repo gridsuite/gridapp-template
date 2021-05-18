@@ -131,7 +131,7 @@ const App = () => {
                             if (
                                 !sessionStorage.getItem(oidcHackReloaded) &&
                                 error.message ===
-                                'authority mismatch on settings vs. signin state'
+                                    'authority mismatch on settings vs. signin state'
                             ) {
                                 sessionStorage.setItem(oidcHackReloaded, true);
                                 window.location.reload();
