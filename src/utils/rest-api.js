@@ -4,6 +4,31 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+import { store } from '../redux/store';
+import ReconnectingWebSocket from 'reconnecting-websocket';
+import { APP_NAME, getAppName } from './config-params';
+
+const PREFIX_CONFIG_NOTIFICATION_WS =
+    process.env.REACT_APP_WS_GATEWAY + '/config-notification';
+const PREFIX_CONFIG_QUERIES = process.env.REACT_APP_API_GATEWAY + '/config';
+
+function getToken() {
+    const state = store.getState();
+    return state.user.id_token;
+}
+
+function backendFetch(url, init) {
+    if (!(typeof init == 'undefined' || typeof init == 'object')) {
+        throw new TypeError(
+            'Argument 2 of backendFetch is not an object' + typeof init
+        );
+    }
+    const initCopy = Object.assign({}, init);
+    initCopy.headers = new Headers(initCopy.headers || {});
+    initCopy.headers.append('Authorization', 'Bearer ' + getToken());
+
+    return fetch(url, initCopy);
+}
 
 export function fetchAppsAndUrls() {
     console.info(`Fetching apps and urls...`);
@@ -16,4 +41,67 @@ export function fetchAppsAndUrls() {
                 return response.json();
             });
         });
+}
+
+export function connectNotificationsWsUpdateConfig() {
+    const webSocketBaseUrl = document.baseURI
+        .replace(/^http:\/\//, 'ws://')
+        .replace(/^https:\/\//, 'wss://');
+    const webSocketUrl =
+        webSocketBaseUrl +
+        PREFIX_CONFIG_NOTIFICATION_WS +
+        '/notify?appName=' +
+        APP_NAME;
+
+    let webSocketUrlWithToken;
+    webSocketUrlWithToken = webSocketUrl + '&access_token=' + getToken();
+
+    const reconnectingWebSocket = new ReconnectingWebSocket(
+        webSocketUrlWithToken
+    );
+    reconnectingWebSocket.onopen = function (event) {
+        console.info(
+            'Connected Websocket update config ' + webSocketUrl + ' ...'
+        );
+    };
+    return reconnectingWebSocket;
+}
+
+export function fetchConfigParameters(appName) {
+    console.info('Fetching UI configuration params for app : ' + appName);
+    const fetchParams =
+        PREFIX_CONFIG_QUERIES + `/v1/applications/${appName}/parameters`;
+    return backendFetch(fetchParams).then((res) => {
+        return res.json();
+    });
+}
+
+export function fetchConfigParameter(name) {
+    const appName = getAppName(name);
+    console.info(
+        "Fetching UI config parameter '%s' for app '%s' ",
+        name,
+        appName
+    );
+    const fetchParams =
+        PREFIX_CONFIG_QUERIES +
+        `/v1/applications/${appName}/parameters/${name}`;
+    return backendFetch(fetchParams).then((res) => {
+        return res.json();
+    });
+}
+
+export function updateConfigParameter(name, value) {
+    const appName = getAppName(name);
+    console.info(
+        "Updating config parameter '%s=%s' for app '%s' ",
+        name,
+        value,
+        appName
+    );
+    const updateParams =
+        PREFIX_CONFIG_QUERIES +
+        `/v1/applications/${appName}/parameters/${name}?value=` +
+        encodeURIComponent(value);
+    backendFetch(updateParams, { method: 'put' }).then();
 }
