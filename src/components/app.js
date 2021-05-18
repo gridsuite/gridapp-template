@@ -17,13 +17,10 @@ import {
     useLocation,
 } from 'react-router-dom';
 
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import {
-    LIGHT_THEME,
-    selectTheme,
-    selectLanguage,
     selectComputedLanguage,
+    selectLanguage,
+    selectTheme,
 } from '../redux/actions';
 
 import {
@@ -33,15 +30,14 @@ import {
     getPreLoginPath,
     initializeAuthenticationProd,
     SnackbarProvider,
+    LIGHT_THEME,
 } from '@gridsuite/commons-ui';
 
 import { useRouteMatch } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
-import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
 import {
     connectNotificationsWsUpdateConfig,
     fetchAppsAndUrls,
@@ -49,13 +45,17 @@ import {
     fetchConfigParameters,
     updateConfigParameter,
 } from '../utils/rest-api';
-
 import {
     APP_NAME,
     COMMON_APP_NAME,
-    PARAMS_THEME_KEY,
-    PARAMS_LANGUAGE_KEY,
+    PARAM_THEME,
+    PARAM_LANGUAGE,
 } from '../utils/config-params';
+
+import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
+
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import { getComputedLanguage } from '../utils/language';
 
@@ -160,10 +160,10 @@ const App = () => {
             console.debug('received UI parameters : ', params);
             params.forEach((param) => {
                 switch (param.name) {
-                    case PARAMS_THEME_KEY:
+                    case PARAM_THEME:
                         dispatch(selectTheme(param.value));
                         break;
-                    case PARAMS_LANGUAGE_KEY:
+                    case PARAM_LANGUAGE:
                         dispatch(selectLanguage(param.value));
                         dispatch(
                             selectComputedLanguage(
@@ -217,11 +217,11 @@ const App = () => {
     }
 
     const handleThemeClick = (theme) => {
-        updateConfigParameter(PARAMS_THEME_KEY, theme);
+        updateConfigParameter(PARAM_THEME, theme);
     };
 
     const handleLanguageClick = (language) => {
-        updateConfigParameter(PARAMS_LANGUAGE_KEY, language);
+        updateConfigParameter(PARAM_LANGUAGE, language);
     };
 
     return (
