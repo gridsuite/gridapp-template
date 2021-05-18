@@ -8,26 +8,32 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import {
-    SELECT_THEME,
-    SELECT_LANGUAGE,
-    SELECT_COMPUTED_LANGUAGE,
-} from './actions';
-
-import {
+    getLocalStorageComputedLanguage,
+    getLocalStorageLanguage,
     getLocalStorageTheme,
     saveLocalStorageTheme,
-    getLocalStorageLanguage,
     saveLocalStorageLanguage,
-    getLocalStorageComputedLanguage,
 } from './local-storage';
+
+import {
+    SELECT_COMPUTED_LANGUAGE,
+    SELECT_THEME,
+    SELECT_LANGUAGE,
+} from './actions';
+
 import { USER, SIGNIN_CALLBACK_ERROR } from '@gridsuite/commons-ui';
+import { PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
+
+const paramsInitialState = {
+    [PARAM_THEME]: getLocalStorageTheme(),
+    [PARAM_LANGUAGE]: getLocalStorageLanguage(),
+};
 
 const initialState = {
-    theme: getLocalStorageTheme(),
-    language: getLocalStorageLanguage(),
     computedLanguage: getLocalStorageComputedLanguage(),
     user: null,
     signInCallbackError: null,
+    ...paramsInitialState,
 };
 
 export const reducer = createReducer(initialState, {
@@ -41,15 +47,15 @@ export const reducer = createReducer(initialState, {
         saveLocalStorageLanguage(state.language);
     },
 
-    [SELECT_COMPUTED_LANGUAGE]: (state, action) => {
-        state.computedLanguage = action.computedLanguage;
-    },
-
     [USER]: (state, action) => {
         state.user = action.user;
     },
 
     [SIGNIN_CALLBACK_ERROR]: (state, action) => {
         state.signInCallbackError = action.signInCallbackError;
+    },
+
+    [SELECT_COMPUTED_LANGUAGE]: (state, action) => {
+        state.computedLanguage = action.computedLanguage;
     },
 });
