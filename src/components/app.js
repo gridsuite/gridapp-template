@@ -160,7 +160,7 @@ const App = () => {
                 setUserManager({ instance: null, error: error.message });
                 console.debug('error when importing the idp settings');
             });
-        // Note: initialMatchSilentRenewCallbackUrl and dispatch don't change
+        // Note: initialMatchSilentRenewCallbackUrl and dispatch won't change
     }, [initialMatchSilentRenewCallbackUrl, dispatch]);
 
     useEffect(() => {
