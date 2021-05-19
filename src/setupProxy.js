@@ -17,8 +17,7 @@ module.exports = function (app) {
         })
     );
     app.use(
-
-        ('http://localhost:9000/ws/gateway', {
+        createProxyMiddleware('http://localhost:9000/ws/gateway', {
             pathRewrite: { '^/ws/gateway/': '/' },
             ws: true,
         })
