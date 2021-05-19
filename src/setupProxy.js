@@ -17,8 +17,22 @@ module.exports = function (app) {
         })
     );
     app.use(
-        createProxyMiddleware('http://localhost:9000/ws/gateway', {
+
+        ('http://localhost:9000/ws/gateway', {
             pathRewrite: { '^/ws/gateway/': '/' },
+            ws: true,
+        })
+    );
+    app.use(
+        createProxyMiddleware('http://localhost:5025/api/config', {
+            pathRewrite: { '^/api/config/': '/' },
+            headers: { userId: 'John' },
+        })
+    );
+    app.use(
+        createProxyMiddleware('http://localhost:5024/ws/config-notification', {
+            pathRewrite: { '^/ws/config-notification/': '/' },
+            headers: { userId: 'John' },
             ws: true,
         })
     );

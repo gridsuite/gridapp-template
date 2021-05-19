@@ -9,9 +9,21 @@ import { APP_NAME, getAppName } from './config-params';
 import { store } from '../redux/store';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-const PREFIX_CONFIG_QUERIES = process.env.REACT_APP_API_GATEWAY + '/config';
-const PREFIX_CONFIG_NOTIFICATION_WS =
-    process.env.REACT_APP_WS_GATEWAY + '/config-notification';
+let PREFIX_CONFIG_QUERIES;
+
+let PREFIX_CONFIG_NOTIFICATION_WS;
+
+if (process.env.REACT_APP_USE_AUTHENTICATION === 'true') {
+    PREFIX_CONFIG_NOTIFICATION_WS =
+        process.env.REACT_APP_WS_GATEWAY + '/config-notification';
+    PREFIX_CONFIG_QUERIES = process.env.REACT_APP_API_GATEWAY + '/config';
+} else {
+    console.log('dev');
+    PREFIX_CONFIG_NOTIFICATION_WS =
+        process.env.REACT_APP_WS_NOTIFICATION_SERVER;
+    console.log(PREFIX_CONFIG_NOTIFICATION_WS);
+    PREFIX_CONFIG_QUERIES = process.env.REACT_APP_NOTIFICATION_SERVER;
+}
 
 function getToken() {
     const state = store.getState();
