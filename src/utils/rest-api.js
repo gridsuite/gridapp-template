@@ -18,10 +18,8 @@ if (process.env.REACT_APP_USE_AUTHENTICATION === 'true') {
         process.env.REACT_APP_WS_GATEWAY + '/config-notification';
     PREFIX_CONFIG_QUERIES = process.env.REACT_APP_API_GATEWAY + '/config';
 } else {
-    console.log('dev');
     PREFIX_CONFIG_NOTIFICATION_WS =
         process.env.REACT_APP_WS_NOTIFICATION_SERVER;
-    console.log(PREFIX_CONFIG_NOTIFICATION_WS);
     PREFIX_CONFIG_QUERIES = process.env.REACT_APP_NOTIFICATION_SERVER;
 }
 
