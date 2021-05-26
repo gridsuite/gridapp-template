@@ -12,9 +12,14 @@ import {
     getLocalStorageLanguage,
     getLocalStorageTheme,
     saveLocalStorageTheme,
+    saveLocalStorageLanguage,
 } from './local-storage';
 
-import { SELECT_COMPUTED_LANGUAGE, SELECT_THEME } from './actions';
+import {
+    SELECT_COMPUTED_LANGUAGE,
+    SELECT_THEME,
+    SELECT_LANGUAGE,
+} from './actions';
 
 import { USER, SIGNIN_CALLBACK_ERROR } from '@gridsuite/commons-ui';
 import { PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
@@ -35,6 +40,11 @@ export const reducer = createReducer(initialState, {
     [SELECT_THEME]: (state, action) => {
         state.theme = action.theme;
         saveLocalStorageTheme(state.theme);
+    },
+
+    [SELECT_LANGUAGE]: (state, action) => {
+        state.language = action.language;
+        saveLocalStorageLanguage(state.language);
     },
 
     [USER]: (state, action) => {

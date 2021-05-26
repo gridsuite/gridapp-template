@@ -22,4 +22,17 @@ module.exports = function (app) {
             ws: true,
         })
     );
+    app.use(
+        createProxyMiddleware('http://localhost:5025/api/config', {
+            pathRewrite: { '^/api/config/': '/' },
+            headers: { userId: 'John' },
+        })
+    );
+    app.use(
+        createProxyMiddleware('http://localhost:5024/ws/config-notification', {
+            pathRewrite: { '^/ws/config-notification/': '/' },
+            headers: { userId: 'John' },
+            ws: true,
+        })
+    );
 };
