@@ -25,6 +25,7 @@ import {
 
 import {
     AuthenticationRouter,
+    CardErrorBoundary,
     getPreLoginPath,
     initializeAuthenticationProd,
     initializeAuthenticationDev,
@@ -222,6 +223,7 @@ const App = () => {
     return (
         <>
             <AppTopBar user={user} userManager={userManager} />
+            <CardErrorBoundary>
             {user !== null ? (
                 <Routes>
                     <Route
@@ -270,6 +272,7 @@ const App = () => {
                     location={location}
                 />
             )}
+            </CardErrorBoundary>
         </>
     );
 };
