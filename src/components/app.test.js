@@ -1,7 +1,7 @@
-e/ app.test.js
+// app.test.js
 
 import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
 
 import { IntlProvider } from 'react-intl';
@@ -26,14 +26,14 @@ beforeEach(() => {
 
 afterEach(() => {
     // cleanup on exiting
-    unmountComponentAtNode(container);
     container.remove();
     container = null;
 });
 
 it('renders', async () => {
+    const root = createRoot(container);
     await act(async () =>
-        render(
+        root.render(
             <IntlProvider locale="en">
                 <BrowserRouter>
                     <Provider store={store}>
@@ -47,10 +47,12 @@ it('renders', async () => {
                         </StyledEngineProvider>
                     </Provider>
                 </BrowserRouter>
-            </IntlProvider>,
-            container
+            </IntlProvider>
         )
     );
 
     expect(container.textContent).toContain('GridXXX');
+    act(() => {
+        root.unmount();
+    });
 });
