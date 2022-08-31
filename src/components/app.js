@@ -10,10 +10,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    Redirect,
+    Navigate,
     Route,
-    Switch,
-    useHistory,
+    Routes,
+    useNavigate,
     useLocation,
 } from 'react-router-dom';
 
@@ -30,10 +30,9 @@ import {
     initializeAuthenticationDev,
 } from '@gridsuite/commons-ui';
 
-import { useRouteMatch } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import { Box, Typography } from '@mui/material';
 
 import {
     connectNotificationsWsUpdateConfig,
@@ -66,7 +65,7 @@ const App = () => {
 
     const [userManager, setUserManager] = useState(noUserManager);
 
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
 
@@ -121,11 +120,10 @@ const App = () => {
         return ws;
     }, [updateParams, enqueueSnackbar, intlRef]);
 
-    // Can't use lazy initializer because useRouteMatch is a hook
+    // Can't use lazy initializer because useMatch is a hook
     const [initialMatchSilentRenewCallbackUrl] = useState(
-        useRouteMatch({
+        useMatch({
             path: '/silent-renew-callback',
-            exact: true,
         })
     );
 
@@ -225,36 +223,50 @@ const App = () => {
         <>
             <AppTopBar user={user} userManager={userManager} />
             {user !== null ? (
-                <Switch>
-                    <Route exact path="/">
-                        <Box mt={20}>
-                            <Typography
-                                variant="h3"
-                                color="textPrimary"
-                                align="center"
-                            >
-                                Connected
-                            </Typography>
-                        </Box>
-                    </Route>
-                    <Route exact path="/sign-in-callback">
-                        <Redirect to={getPreLoginPath() || '/'} />
-                    </Route>
-                    <Route exact path="/logout-callback">
-                        <h1>Error: logout failed; you are still logged in.</h1>
-                    </Route>
-                    <Route>
-                        <h1>
-                            <FormattedMessage id="PageNotFound" />
-                        </h1>
-                    </Route>
-                </Switch>
+                <Routes>
+                    <Route
+                        path="/"
+                        element={
+                            <Box mt={20}>
+                                <Typography
+                                    variant="h3"
+                                    color="textPrimary"
+                                    align="center"
+                                >
+                                    Connected
+                                </Typography>
+                            </Box>
+                        }
+                    />
+                    <Route
+                        path="/sign-in-callback"
+                        element={
+                            <Navigate replace to={getPreLoginPath() || '/'} />
+                        }
+                    />
+                    <Route
+                        path="/logout-callback"
+                        element={
+                            <h1>
+                                Error: logout failed; you are still logged in.
+                            </h1>
+                        }
+                    />
+                    <Route
+                        path="*"
+                        element={
+                            <h1>
+                                <FormattedMessage id="PageNotFound" />
+                            </h1>
+                        }
+                    />
+                </Routes>
             ) : (
                 <AuthenticationRouter
                     userManager={userManager}
                     signInCallbackError={signInCallbackError}
                     dispatch={dispatch}
-                    history={history}
+                    navigate={navigate}
                     location={location}
                 />
             )}
