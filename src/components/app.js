@@ -148,7 +148,10 @@ const App = () => {
             return initializeAuthenticationDev(
                 dispatch,
                 initialMatchSilentRenewCallbackUrl != null,
-                fetchValidateUser
+                () =>
+                    new Promise((resolve) =>
+                        window.setTimeout(() => resolve(true), 500)
+                    )
             );
         }
         // Note: initialMatchSilentRenewCallbackUrl and dispatch don't change

@@ -11,6 +11,15 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 
 const PREFIX_USER_ADMIN_SERVER_QUERIES =
     process.env.REACT_APP_API_GATEWAY + '/user-admin';
+
+// If you want to use user-admin-server in dev mode you must avoid passing through gateway
+// and use the user-admin-server directly. SetupProxy should allow this.
+// const PREFIX_USER_ADMIN_SERVER_QUERIES =
+//     process.env.REACT_APP_API_PREFIX +
+//     (process.env.REACT_APP_USE_AUTHENTICATION === 'true'
+//         ? process.env.REACT_APP_API_GATEWAY + '/user-admin'
+//         : process.env.REACT_APP_USER_ADMIN_URI);
+
 const PREFIX_CONFIG_QUERIES = process.env.REACT_APP_API_GATEWAY + '/config';
 const PREFIX_CONFIG_NOTIFICATION_WS =
     process.env.REACT_APP_WS_GATEWAY + '/config-notification';
@@ -72,11 +81,7 @@ export function fetchValidateUser(user) {
         },
     }).then((response) => {
         if (response.status === 200) return true;
-        else if (
-            response.status === 204 ||
-            response.status === 403 ||
-            response.status === 401
-        )
+        else if (response.status === 204 || response.status === 403)
             return false;
         else throw new Error(response.status + ' ' + response.statusText);
     });
