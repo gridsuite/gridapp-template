@@ -29,6 +29,7 @@ import {
     getPreLoginPath,
     initializeAuthenticationProd,
     initializeAuthenticationDev,
+    setShowAuthenticationRouterLogin,
 } from '@gridsuite/commons-ui';
 
 import { useMatch } from 'react-router-dom';
@@ -39,6 +40,7 @@ import {
     connectNotificationsWsUpdateConfig,
     fetchConfigParameter,
     fetchConfigParameters,
+    fetchValidateUser,
 } from '../utils/rest-api';
 import {
     APP_NAME,
@@ -62,6 +64,12 @@ const App = () => {
 
     const signInCallbackError = useSelector(
         (state) => state.signInCallbackError
+    );
+    const unauthorizedUserInfo = useSelector(
+        (state) => state.unauthorizedUserInfo
+    );
+    const showAuthenticationRouterLogin = useSelector(
+        (state) => state.showAuthenticationRouterLogin
     );
 
     const [userManager, setUserManager] = useState(noUserManager);
@@ -133,12 +141,17 @@ const App = () => {
             return initializeAuthenticationProd(
                 dispatch,
                 initialMatchSilentRenewCallbackUrl != null,
-                fetch('idpSettings.json')
+                fetch('idpSettings.json'),
+                fetchValidateUser
             );
         } else {
             return initializeAuthenticationDev(
                 dispatch,
-                initialMatchSilentRenewCallbackUrl != null
+                initialMatchSilentRenewCallbackUrl != null,
+                () =>
+                    new Promise((resolve) =>
+                        window.setTimeout(() => resolve(true), 500)
+                    )
             );
         }
         // Note: initialMatchSilentRenewCallbackUrl and dispatch don't change
@@ -148,12 +161,13 @@ const App = () => {
         initialize()
             .then((userManager) => {
                 setUserManager({ instance: userManager, error: null });
-                userManager.getUser().then((user) => {
+                return userManager.getUser().then((user) => {
                     if (
                         user == null &&
                         initialMatchSilentRenewCallbackUrl == null
                     ) {
-                        userManager.signinSilent().catch((error) => {
+                        return userManager.signinSilent().catch((error) => {
+                            dispatch(setShowAuthenticationRouterLogin(true));
                             const oidcHackReloaded =
                                 'gridsuite-oidc-hack-reloaded';
                             if (
@@ -174,9 +188,10 @@ const App = () => {
             .catch(function (error) {
                 setUserManager({ instance: null, error: error.message });
                 console.debug('error when importing the idp settings');
+                dispatch(setShowAuthenticationRouterLogin(true));
             });
         // Note: initialize and initialMatchSilentRenewCallbackUrl won't change
-    }, [initialize, initialMatchSilentRenewCallbackUrl]);
+    }, [initialize, initialMatchSilentRenewCallbackUrl, dispatch]);
 
     useEffect(() => {
         if (user !== null) {
@@ -271,6 +286,10 @@ const App = () => {
                     <AuthenticationRouter
                         userManager={userManager}
                         signInCallbackError={signInCallbackError}
+                        unauthorizedUserInfo={unauthorizedUserInfo}
+                        showAuthenticationRouterLogin={
+                            showAuthenticationRouterLogin
+                        }
                         dispatch={dispatch}
                         navigate={navigate}
                         location={location}
