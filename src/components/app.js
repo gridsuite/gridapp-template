@@ -188,7 +188,7 @@ const App = () => {
                 dispatch(setShowAuthenticationRouterLogin(true));
             });
         // Note: initialize and initialMatchSilentRenewCallbackUrl won't change
-    }, [initialize, initialMatchSilentRenewCallbackUrl]);
+    }, [initialize, initialMatchSilentRenewCallbackUrl, dispatch]);
 
     useEffect(() => {
         if (user !== null) {
