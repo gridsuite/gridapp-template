@@ -50,9 +50,9 @@ export function connectNotificationsWsUpdateConfig() {
     return reconnectingWebSocket;
 }
 
-function handleResponse(response, isJson) {
+function handleResponse(response, expectsJson) {
     if (response.ok) {
-        return isJson ? response.json() : response;
+        return expectsJson ? response.json() : response;
     } else {
         return response.text().then((text) => {
             return Promise.reject({
@@ -64,7 +64,7 @@ function handleResponse(response, isJson) {
     }
 }
 
-function backendFetch(url, init, isJson, withAuth = true) {
+function backendFetch(url, expectsJson, init, withAuth = true) {
     if (!(typeof init == 'undefined' || typeof init == 'object')) {
         throw new TypeError(
             'Argument 2 of backendFetch is not an object' + typeof init
@@ -77,7 +77,7 @@ function backendFetch(url, init, isJson, withAuth = true) {
     }
 
     return fetch(url, initCopy).then((response) =>
-        handleResponse(response, isJson)
+        handleResponse(response, expectsJson)
     );
 }
 
@@ -97,16 +97,17 @@ export function fetchValidateUser(user) {
 
     return backendFetch(
         CheckAccessUrl,
+        false,
         {
             method: 'head',
             headers: {
                 Authorization: 'Bearer ' + user?.id_token,
             },
         },
-        false,
         false
     )
         .then((response) => {
+            //if the response is ok, the responseCode will be either 200 or 204 otherwise it's an error and it will be caught
             if (response.status === 200) return true;
             else if (response.status === 204) return false;
         })
@@ -118,11 +119,11 @@ export function fetchValidateUser(user) {
 
 export function fetchAppsAndUrls() {
     console.info(`Fetching apps and urls...`);
-    return backendFetch('env.json', undefined, true).then((res) => {
+    return backendFetch('env.json', true).then((res) => {
         return backendFetch(
             res.appsMetadataServerUrl + '/apps-metadata.json',
-            undefined,
             true,
+            undefined,
             false
         );
     });
@@ -132,7 +133,7 @@ export function fetchConfigParameters(appName) {
     console.info('Fetching UI configuration params for app : ' + appName);
     const fetchParams =
         PREFIX_CONFIG_QUERIES + `/v1/applications/${appName}/parameters`;
-    return backendFetch(fetchParams, undefined, true);
+    return backendFetch(fetchParams, true);
 }
 
 export function fetchConfigParameter(name) {
@@ -145,7 +146,7 @@ export function fetchConfigParameter(name) {
     const fetchParams =
         PREFIX_CONFIG_QUERIES +
         `/v1/applications/${appName}/parameters/${name}`;
-    return backendFetch(fetchParams, undefined, true);
+    return backendFetch(fetchParams, true);
 }
 
 export function updateConfigParameter(name, value) {
@@ -160,5 +161,5 @@ export function updateConfigParameter(name, value) {
         PREFIX_CONFIG_QUERIES +
         `/v1/applications/${appName}/parameters/${name}?value=` +
         encodeURIComponent(value);
-    return backendFetch(updateParams, { method: 'put' }, false);
+    return backendFetch(updateParams, false, { method: 'put' });
 }
