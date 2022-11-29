@@ -50,7 +50,21 @@ export function connectNotificationsWsUpdateConfig() {
     return reconnectingWebSocket;
 }
 
-function backendFetch(url, init) {
+function handleResponse(response, isJson) {
+    if (response.ok) {
+        return isJson ? response.json() : response;
+    } else {
+        return response.text().then((text) => {
+            return Promise.reject({
+                message: text ? text : response.statusText,
+                status: response.status,
+                statusText: response.statusText,
+            });
+        });
+    }
+}
+
+function backendFetch(url, init, isJson, withAuth = true) {
     if (!(typeof init == 'undefined' || typeof init == 'object')) {
         throw new TypeError(
             'Argument 2 of backendFetch is not an object' + typeof init
@@ -58,9 +72,13 @@ function backendFetch(url, init) {
     }
     const initCopy = Object.assign({}, init);
     initCopy.headers = new Headers(initCopy.headers || {});
-    initCopy.headers.append('Authorization', 'Bearer ' + getToken());
+    if (withAuth) {
+        initCopy.headers.append('Authorization', 'Bearer ' + getToken());
+    }
 
-    return fetch(url, initCopy);
+    return fetch(url, initCopy).then((response) =>
+        handleResponse(response, isJson)
+    );
 }
 
 export function fetchValidateUser(user) {
@@ -77,41 +95,44 @@ export function fetchValidateUser(user) {
         PREFIX_USER_ADMIN_SERVER_QUERIES + `/v1/users/${sub}`;
     console.debug(CheckAccessUrl);
 
-    return fetch(CheckAccessUrl, {
-        method: 'head',
-        headers: {
-            Authorization: 'Bearer ' + user?.id_token,
+    return backendFetch(
+        CheckAccessUrl,
+        {
+            method: 'head',
+            headers: {
+                Authorization: 'Bearer ' + user?.id_token,
+            },
         },
-    }).then((response) => {
-        if (response.status === 200) return true;
-        else if (response.status === 204 || response.status === 403)
-            return false;
-        else throw new Error(response.status + ' ' + response.statusText);
-    });
+        false,
+        false
+    )
+        .then((response) => {
+            if (response.status === 200) return true;
+            else if (response.status === 204) return false;
+        })
+        .catch((error) => {
+            if (error.status === 403) return false;
+            else throw new Error(error.status + ' ' + error.statusText);
+        });
 }
 
 export function fetchAppsAndUrls() {
     console.info(`Fetching apps and urls...`);
-    return fetch('env.json')
-        .then((res) => res.json())
-        .then((res) => {
-            return fetch(
-                res.appsMetadataServerUrl + '/apps-metadata.json'
-            ).then((response) => {
-                return response.json();
-            });
-        });
+    return backendFetch('env.json', undefined, true).then((res) => {
+        return backendFetch(
+            res.appsMetadataServerUrl + '/apps-metadata.json',
+            undefined,
+            true,
+            false
+        );
+    });
 }
 
 export function fetchConfigParameters(appName) {
     console.info('Fetching UI configuration params for app : ' + appName);
     const fetchParams =
         PREFIX_CONFIG_QUERIES + `/v1/applications/${appName}/parameters`;
-    return backendFetch(fetchParams).then((response) =>
-        response.ok
-            ? response.json()
-            : response.text().then((text) => Promise.reject(text))
-    );
+    return backendFetch(fetchParams, undefined, true);
 }
 
 export function fetchConfigParameter(name) {
@@ -124,11 +145,7 @@ export function fetchConfigParameter(name) {
     const fetchParams =
         PREFIX_CONFIG_QUERIES +
         `/v1/applications/${appName}/parameters/${name}`;
-    return backendFetch(fetchParams).then((response) =>
-        response.ok
-            ? response.json()
-            : response.text().then((text) => Promise.reject(text))
-    );
+    return backendFetch(fetchParams, undefined, true);
 }
 
 export function updateConfigParameter(name, value) {
@@ -143,9 +160,5 @@ export function updateConfigParameter(name, value) {
         PREFIX_CONFIG_QUERIES +
         `/v1/applications/${appName}/parameters/${name}?value=` +
         encodeURIComponent(value);
-    return backendFetch(updateParams, { method: 'put' }).then((response) =>
-        response.ok
-            ? response
-            : response.text().then((text) => Promise.reject(text))
-    );
+    return backendFetch(updateParams, { method: 'put' }, false);
 }
