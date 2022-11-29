@@ -43,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function useParameterState(paramName) {
-
     const { snackError } = useSnackMessage();
 
     const paramGlobalState = useSelector((state) => state[paramName]);
@@ -62,15 +61,10 @@ export function useParameterState(paramName) {
                 snackError({
                     messageTxt: errorMessage,
                     headerId: 'paramsChangingError',
-                })
+                });
             });
         },
-        [
-            paramName,
-            snackError,
-            setParamLocalState,
-            paramGlobalState,
-        ]
+        [paramName, snackError, setParamLocalState, paramGlobalState]
     );
 
     return [paramLocalState, handleChangeParamLocalState];

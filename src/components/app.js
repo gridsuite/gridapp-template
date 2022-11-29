@@ -55,7 +55,6 @@ import AppTopBar from './app-top-bar';
 const noUserManager = { instance: null, error: null };
 
 const App = () => {
-
     const { snackError } = useSnackMessage();
 
     const user = useSelector((state) => state.user);
