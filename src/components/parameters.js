@@ -25,8 +25,7 @@ import {
 } from '@mui/material';
 
 import { updateConfigParameter } from '../utils/rest-api';
-import { useSnackbar } from 'notistack';
-import { displayErrorMessageWithSnackbar, useIntlRef } from '../utils/messages';
+import { useSnackMessage } from '@gridsuite/commons-ui';
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -44,9 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function useParameterState(paramName) {
-    const intlRef = useIntlRef();
-
-    const { enqueueSnackbar } = useSnackbar();
+    const { snackError } = useSnackMessage();
 
     const paramGlobalState = useSelector((state) => state[paramName]);
 
@@ -61,23 +58,13 @@ export function useParameterState(paramName) {
             setParamLocalState(value);
             updateConfigParameter(paramName, value).catch((error) => {
                 setParamLocalState(paramGlobalState);
-                displayErrorMessageWithSnackbar({
-                    errorMessage: error.message,
-                    enqueueSnackbar: enqueueSnackbar,
-                    headerMessage: {
-                        headerMessageId: 'paramsChangingError',
-                        intlRef: intlRef,
-                    },
+                snackError({
+                    messageTxt: error.message,
+                    headerId: 'paramsChangingError',
                 });
             });
         },
-        [
-            paramName,
-            enqueueSnackbar,
-            intlRef,
-            setParamLocalState,
-            paramGlobalState,
-        ]
+        [paramName, snackError, setParamLocalState, paramGlobalState]
     );
 
     return [paramLocalState, handleChangeParamLocalState];

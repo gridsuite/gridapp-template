@@ -49,16 +49,13 @@ import {
     PARAM_THEME,
 } from '../utils/config-params';
 import { getComputedLanguage } from '../utils/language';
-import { displayErrorMessageWithSnackbar, useIntlRef } from '../utils/messages';
-import { useSnackbar } from 'notistack';
+import { useSnackMessage } from '@gridsuite/commons-ui';
 import AppTopBar from './app-top-bar';
 
 const noUserManager = { instance: null, error: null };
 
 const App = () => {
-    const intlRef = useIntlRef();
-
-    const { enqueueSnackbar } = useSnackbar();
+    const { snackError } = useSnackMessage();
 
     const user = useSelector((state) => state.user);
 
@@ -112,13 +109,9 @@ const App = () => {
                 fetchConfigParameter(eventData.headers['parameterName'])
                     .then((param) => updateParams([param]))
                     .catch((error) =>
-                        displayErrorMessageWithSnackbar({
-                            errorMessage: error.message,
-                            enqueueSnackbar: enqueueSnackbar,
-                            headerMessage: {
-                                headerMessageId: 'paramsRetrievingError',
-                                intlRef: intlRef,
-                            },
+                        snackError({
+                            messageTxt: error.message,
+                            headerId: 'paramsRetrievingError',
                         })
                     );
             }
@@ -127,7 +120,7 @@ const App = () => {
             console.error('Unexpected Notification WebSocket error', event);
         };
         return ws;
-    }, [updateParams, enqueueSnackbar, intlRef]);
+    }, [updateParams, snackError]);
 
     // Can't use lazy initializer because useMatch is a hook
     const [initialMatchSilentRenewCallbackUrl] = useState(
@@ -198,26 +191,18 @@ const App = () => {
             fetchConfigParameters(COMMON_APP_NAME)
                 .then((params) => updateParams(params))
                 .catch((error) =>
-                    displayErrorMessageWithSnackbar({
-                        errorMessage: error.message,
-                        enqueueSnackbar: enqueueSnackbar,
-                        headerMessage: {
-                            headerMessageId: 'paramsRetrievingError',
-                            intlRef: intlRef,
-                        },
+                    snackError({
+                        messageTxt: error.message,
+                        headerId: 'paramsRetrievingError',
                     })
                 );
 
             fetchConfigParameters(APP_NAME)
                 .then((params) => updateParams(params))
                 .catch((error) =>
-                    displayErrorMessageWithSnackbar({
-                        errorMessage: error.message,
-                        enqueueSnackbar: enqueueSnackbar,
-                        headerMessage: {
-                            headerMessageId: 'paramsRetrievingError',
-                            intlRef: intlRef,
-                        },
+                    snackError({
+                        messageTxt: error.message,
+                        headerId: 'paramsRetrievingError',
                     })
                 );
 
@@ -230,8 +215,7 @@ const App = () => {
         user,
         dispatch,
         updateParams,
-        enqueueSnackbar,
-        intlRef,
+        snackError,
         connectNotificationsUpdateConfig,
     ]);
 
