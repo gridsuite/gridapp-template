@@ -64,7 +64,7 @@ function handleResponse(response, expectsJson) {
     }
 }
 
-function backendFetch(url, expectsJson, init, withAuth = true) {
+function prepareRequest(init, token) {
     if (!(typeof init == 'undefined' || typeof init == 'object')) {
         throw new TypeError(
             'Argument 2 of backendFetch is not an object' + typeof init
@@ -72,12 +72,22 @@ function backendFetch(url, expectsJson, init, withAuth = true) {
     }
     const initCopy = Object.assign({}, init);
     initCopy.headers = new Headers(initCopy.headers || {});
-    if (withAuth) {
-        initCopy.headers.append('Authorization', 'Bearer ' + getToken());
-    }
+    const tokenCopy = token ? token : getToken();
+    initCopy.headers.append('Authorization', 'Bearer ' + tokenCopy);
+    return initCopy;
+}
 
+function backendFetch(url, init, token) {
+    const initCopy = prepareRequest(init, token);
     return fetch(url, initCopy).then((response) =>
-        handleResponse(response, expectsJson)
+        handleResponse(response, false)
+    );
+}
+
+function backendFetchJson(url, init) {
+    const initCopy = prepareRequest(init);
+    return fetch(url, initCopy).then((response) =>
+        handleResponse(response, true)
     );
 }
 
@@ -97,14 +107,10 @@ export function fetchValidateUser(user) {
 
     return backendFetch(
         CheckAccessUrl,
-        false,
         {
             method: 'head',
-            headers: {
-                Authorization: 'Bearer ' + user?.id_token,
-            },
         },
-        false
+        user?.id_token
     )
         .then((response) => {
             //if the response is ok, the responseCode will be either 200 or 204 otherwise it's an error and it will be caught
@@ -118,21 +124,22 @@ export function fetchValidateUser(user) {
 
 export function fetchAppsAndUrls() {
     console.info(`Fetching apps and urls...`);
-    return backendFetch('env.json', true).then((res) => {
-        return backendFetch(
-            res.appsMetadataServerUrl + '/apps-metadata.json',
-            true,
-            undefined,
-            false
-        );
-    });
+    return fetch('env.json')
+        .then((res) => res.json())
+        .then((res) => {
+            return fetch(
+                res.appsMetadataServerUrl + '/apps-metadata.json'
+            ).then((response) => {
+                return response.json();
+            });
+        });
 }
 
 export function fetchConfigParameters(appName) {
     console.info('Fetching UI configuration params for app : ' + appName);
     const fetchParams =
         PREFIX_CONFIG_QUERIES + `/v1/applications/${appName}/parameters`;
-    return backendFetch(fetchParams, true);
+    return backendFetchJson(fetchParams);
 }
 
 export function fetchConfigParameter(name) {
@@ -145,7 +152,7 @@ export function fetchConfigParameter(name) {
     const fetchParams =
         PREFIX_CONFIG_QUERIES +
         `/v1/applications/${appName}/parameters/${name}`;
-    return backendFetch(fetchParams, true);
+    return backendFetchJson(fetchParams);
 }
 
 export function updateConfigParameter(name, value) {
@@ -160,5 +167,5 @@ export function updateConfigParameter(name, value) {
         PREFIX_CONFIG_QUERIES +
         `/v1/applications/${appName}/parameters/${name}?value=` +
         encodeURIComponent(value);
-    return backendFetch(updateParams, false, { method: 'put' });
+    return backendFetch(updateParams, { method: 'put' });
 }
