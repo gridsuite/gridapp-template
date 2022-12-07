@@ -58,27 +58,34 @@ function parseError(text) {
     }
 }
 
-function handleResponse(response, expectsJson) {
-    if (response.ok) {
-        return expectsJson ? response.json() : response;
-    } else {
-        return response.text().then((text) => {
-            const errorJson = parseError(text);
-            if (errorJson) {
-                return Promise.reject({
-                    status: errorJson.status,
-                    statusText: errorJson.error,
-                    message: errorJson.message || response.statusText,
-                });
-            } else {
-                return Promise.reject({
-                    status: response.status,
-                    statusText: response.statusText,
-                    message: response.statusText,
-                });
-            }
-        });
-    }
+function handleError(response) {
+    return response.text().then((text) => {
+        const errorName = 'HttpResponseError : ';
+        let error;
+        const errorJson = parseError(text);
+        if (
+            errorJson &&
+            errorJson.status &&
+            errorJson.error &&
+            errorJson.message
+        ) {
+            error = new Error(
+                errorName +
+                    errorJson.status +
+                    ' ' +
+                    errorJson.error +
+                    ', message : ' +
+                    errorJson.message
+            );
+            error.status = errorJson.status;
+        } else {
+            error = new Error(
+                errorName + response.status + ' ' + response.statusText
+            );
+            error.status = response.status;
+        }
+        throw error;
+    });
 }
 
 function prepareRequest(init, token) {
@@ -94,18 +101,25 @@ function prepareRequest(init, token) {
     return initCopy;
 }
 
-function backendFetch(url, init, token) {
-    const initCopy = prepareRequest(init, token);
+function safeFetch(url, initCopy) {
     return fetch(url, initCopy).then((response) =>
-        handleResponse(response, false)
+        response.ok ? response : handleError(response)
     );
 }
 
-function backendFetchJson(url, init) {
-    const initCopy = prepareRequest(init);
-    return fetch(url, initCopy).then((response) =>
-        handleResponse(response, true)
-    );
+export function backendFetch(url, init, token) {
+    const initCopy = prepareRequest(init, token);
+    return safeFetch(url, initCopy);
+}
+
+export function backendFetchText(url, init, token) {
+    const initCopy = prepareRequest(init, token);
+    return safeFetch(url, initCopy).then((safeResponse) => safeResponse.text());
+}
+
+export function backendFetchJson(url, init, token) {
+    const initCopy = prepareRequest(init, token);
+    return safeFetch(url, initCopy).then((safeResponse) => safeResponse.json());
 }
 
 export function fetchValidateUser(user) {
@@ -130,12 +144,12 @@ export function fetchValidateUser(user) {
         user?.id_token
     )
         .then((response) => {
-            //if the response is ok, the responseCode will be either 200 or 204 otherwise it's an error and it will be caught
+            //if the response is ok, the responseCode will be either 200 or 204 otherwise it's a Http error and it will be caught
             return response.status === 200;
         })
         .catch((error) => {
             if (error.status === 403) return false;
-            else throw new Error(error.status + ' ' + error.statusText);
+            else throw error;
         });
 }
 
