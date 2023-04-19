@@ -38,12 +38,12 @@ it('renders', async () => {
                 <BrowserRouter>
                     <Provider store={store}>
                         <StyledEngineProvider injectFirst>
-                        <ThemeProvider theme={createTheme({})}>
-                            <SnackbarProvider hideIconVariant={false}>
-                                <CssBaseline />
-                                <App />
-                            </SnackbarProvider>
-                        </ThemeProvider>
+                            <ThemeProvider theme={createTheme({})}>
+                                <SnackbarProvider hideIconVariant={false}>
+                                    <CssBaseline />
+                                    <App />
+                                </SnackbarProvider>
+                            </ThemeProvider>
                         </StyledEngineProvider>
                     </Provider>
                 </BrowserRouter>
