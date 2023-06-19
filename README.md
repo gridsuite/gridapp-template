@@ -7,4 +7,5 @@ To customize this repository for an app, search and replace the string XXX with 
 
 ## Typescript config
 
-Files tsconfig.json and src/react-app-env.d.ts both results from create-react-app typescript template (version 5)
+Files tsconfig.json and src/react-app-env.d.ts both results from create-react-app typescript template (version 5).
+Some property values have been changed to meet the project needs (ex: target, baseUrl,...).
