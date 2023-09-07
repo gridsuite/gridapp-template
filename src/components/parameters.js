@@ -10,7 +10,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useSelector } from 'react-redux';
-import makeStyles from '@mui/styles/makeStyles';
 import {
     Grid,
     Box,
@@ -27,20 +26,20 @@ import {
 import { updateConfigParameter } from '../utils/rest-api';
 import { useSnackMessage } from '@gridsuite/commons-ui';
 
-const useStyles = makeStyles((theme) => ({
-    title: {
+export const styles = {
+    title: (theme) => ({
         padding: theme.spacing(2),
-    },
-    grid: {
+    }),
+    grid: (theme) => ({
         padding: theme.spacing(2),
-    },
+    }),
     controlItem: {
         justifyContent: 'flex-end',
     },
     button: {
         marginBottom: '30px',
     },
-}));
+};
 
 export function useParameterState(paramName) {
     const { snackError } = useSnackMessage();
@@ -71,8 +70,6 @@ export function useParameterState(paramName) {
 }
 
 const Parameters = ({ showParameters, hideParameters }) => {
-    const classes = useStyles();
-
     const [tabIndex, setTabIndex] = useState(0);
 
     function TabPanel(props) {
@@ -93,7 +90,7 @@ const Parameters = ({ showParameters, hideParameters }) => {
     }
 
     function GUITab() {
-        return <Grid container spacing={2} className={classes.grid} />;
+        return <Grid container spacing={2} sx={styles.grid} />;
     }
 
     return (
@@ -108,7 +105,7 @@ const Parameters = ({ showParameters, hideParameters }) => {
                 <Typography
                     component="span"
                     variant="h5"
-                    className={classes.title}
+                    sx={styles.title}
                 >
                     <FormattedMessage id="parameters" />
                 </Typography>
@@ -135,7 +132,7 @@ const Parameters = ({ showParameters, hideParameters }) => {
                             onClick={hideParameters}
                             variant="contained"
                             color="primary"
-                            className={classes.button}
+                            sx={styles.button}
                         >
                             <FormattedMessage id="close" />
                         </Button>
