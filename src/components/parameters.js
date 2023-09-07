@@ -102,11 +102,7 @@ const Parameters = ({ showParameters, hideParameters }) => {
             fullWidth={true}
         >
             <DialogTitle id="form-dialog-title">
-                <Typography
-                    component="span"
-                    variant="h5"
-                    sx={styles.title}
-                >
+                <Typography component="span" variant="h5" sx={styles.title}>
                     <FormattedMessage id="parameters" />
                 </Typography>
             </DialogTitle>
