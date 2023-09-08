@@ -26,7 +26,7 @@ import {
 import { updateConfigParameter } from '../utils/rest-api';
 import { useSnackMessage } from '@gridsuite/commons-ui';
 
-export const styles = {
+const styles = {
     title: (theme) => ({
         padding: theme.spacing(2),
     }),
