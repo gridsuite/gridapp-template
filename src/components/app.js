@@ -37,6 +37,7 @@ import { Box, Typography } from '@mui/material';
 
 import {
     connectNotificationsWsUpdateConfig,
+    fetchAuthorizationCodeFlowFeatureFlag,
     fetchConfigParameter,
     fetchConfigParameters,
     fetchValidateUser,
@@ -130,11 +131,16 @@ const App = () => {
 
     const initialize = useCallback(() => {
         if (process.env.REACT_APP_USE_AUTHENTICATION === 'true') {
-            return initializeAuthenticationProd(
-                dispatch,
-                initialMatchSilentRenewCallbackUrl != null,
-                fetch('idpSettings.json'),
-                fetchValidateUser
+            return fetchAuthorizationCodeFlowFeatureFlag().then(
+                (authorizationCodeFlowEnabled) => {
+                    return initializeAuthenticationProd(
+                        dispatch,
+                        initialMatchSilentRenewCallbackUrl != null,
+                        fetch('idpSettings.json'),
+                        fetchValidateUser,
+                        authorizationCodeFlowEnabled
+                    );
+                }
             );
         } else {
             return initializeAuthenticationDev(
