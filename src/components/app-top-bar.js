@@ -9,10 +9,12 @@ import { LIGHT_THEME, logout, TopBar } from '@gridsuite/commons-ui';
 import Parameters, { useParameterState } from './parameters';
 import { APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAppsAndUrls } from '../utils/rest-api';
+import { fetchAppsAndUrls, fetchVersion } from '../utils/rest-api';
+import { getServersInfos } from '../rest/study';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
+import AppPackage from '../../package.json';
 
 const AppTopBar = ({ user, userManager }) => {
     const navigate = useNavigate();
@@ -38,14 +40,6 @@ const AppTopBar = ({ user, userManager }) => {
         }
     }, [user]);
 
-    function hideParameters() {
-        setShowParameters(false);
-    }
-
-    function onLogoClicked() {
-        navigate.replace('/');
-    }
-
     return (
         <>
             <TopBar
@@ -58,12 +52,50 @@ const AppTopBar = ({ user, userManager }) => {
                         <PowsyblLogo /> //GridXXXLogoDark
                     )
                 }
+                appVersion={AppPackage.version}
+                appLicense={AppPackage.license}
                 onParametersClick={() => setShowParameters(true)}
                 onLogoutClick={() => logout(dispatch, userManager.instance)}
-                onLogoClick={() => onLogoClicked()}
+                onLogoClick={() => navigate.replace('/')}
                 user={user}
                 appsAndUrls={appsAndUrls}
-                onAboutClick={() => console.debug('about')}
+                getGlobalVersion={(setGlobalVersion) =>
+                    fetchVersion()
+                        .then((res) => setGlobalVersion(res.deployVersion))
+                        .catch((reason) => {
+                            console.error(
+                                'Error while fetching the version : ' + reason
+                            );
+                            setGlobalVersion(null);
+                        })
+                }
+                getAdditionalModules={(setServers) =>
+                    getServersInfos(user?.id_token)
+                        .then((res) =>
+                            setServers(
+                                Object.entries(res).map(([name, infos]) => ({
+                                    name:
+                                        infos?.build?.name ||
+                                        infos?.build?.artifact ||
+                                        name,
+                                    type: 'server',
+                                    version: infos?.build?.version,
+                                    gitTag:
+                                        infos?.git?.tags ||
+                                        infos?.git?.commit?.id[
+                                            'describe-short'
+                                        ],
+                                }))
+                            )
+                        )
+                        .catch((reason) => {
+                            console.error(
+                                'Error while fetching the servers infos : ' +
+                                    reason
+                            );
+                            setServers(null);
+                        })
+                }
                 onThemeClick={handleChangeTheme}
                 theme={themeLocal}
                 onLanguageClick={handleChangeLanguage}
@@ -71,7 +103,7 @@ const AppTopBar = ({ user, userManager }) => {
             />
             <Parameters
                 showParameters={showParameters}
-                hideParameters={hideParameters}
+                hideParameters={() => setShowParameters(false)}
             />
         </>
     );
