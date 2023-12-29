@@ -211,9 +211,16 @@ export function fetchAppsAndUrls(): Promise<Array<Record<string, any>>> {
         .then((response: ReqResponse) => response.json());
 }
 
+export type ConfigParameter = {
+    //TODO check with config-server swagger
+    name: string;
+    value: any;
+    [propertiesName: string]: unknown; //temporary
+};
+export type ConfigParameters = Array<ConfigParameter>;
 export function fetchConfigParameters(
     appName: string
-): ReturnType<typeof backendFetchJson> {
+): Promise<ConfigParameters> {
     console.info(`Fetching UI configuration params for app : ${appName}`);
     const fetchParams = `${PREFIX_CONFIG_QUERIES}/v1/applications/${appName}/parameters`;
     return backendFetchJson(fetchParams);
