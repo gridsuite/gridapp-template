@@ -8,6 +8,7 @@
 import { APP_NAME, getAppName } from './config-params';
 import { store } from '../redux/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
+import { AppState } from '../redux/reducer';
 
 export type EnvJson = typeof import('../../public/env.json');
 
@@ -34,8 +35,8 @@ const PREFIX_CONFIG_QUERIES = `${process.env.REACT_APP_API_GATEWAY}/config`;
 const PREFIX_CONFIG_NOTIFICATION_WS = `${process.env.REACT_APP_WS_GATEWAY}/config-notification`;
 
 function getToken(): Token {
-    const state = store.getState();
-    return state.user.id_token;
+    const state: AppState = store.getState();
+    return state.user?.id_token;
 }
 
 export function connectNotificationsWsUpdateConfig(): ReconnectingWebSocket {
@@ -188,7 +189,7 @@ export function fetchAuthorizationCodeFlowFeatureFlag(): Promise<boolean> {
         });
 }
 
-export function fetchVersion(): Promise<Record<string, any> | Error> {
+export function fetchVersion(): Promise<Record<string, any>> {
     console.info(`Fetching global metadata...`);
     return fetchEnv()
         .then((env: EnvJson) =>
