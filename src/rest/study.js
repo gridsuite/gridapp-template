@@ -14,7 +14,7 @@ const API_URL =
 
 export function getServersInfos(token) {
     return backendFetchJson(
-        `${API_URL}/servers/about`,
+        `${API_URL}/servers/about?view=yyy`,
         {
             headers: {
                 Accept: 'application/json',
