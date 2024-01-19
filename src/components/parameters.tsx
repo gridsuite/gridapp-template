@@ -18,11 +18,13 @@ import { useSelector } from 'react-redux';
 import {
     Box,
     Button,
+    ButtonProps,
     Container,
     Dialog,
     DialogContent,
     DialogTitle,
     Grid,
+    ModalProps,
     Tab,
     Tabs,
     Typography,
@@ -82,7 +84,12 @@ export function useParameterState<
 const Parameters: FunctionComponent<
     PropsWithChildren<{
         showParameters: boolean;
-        hideParameters: (event: object, reason?: string) => void; //(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void;  //(event: MouseEvent<Element>): void
+        hideParameters: (
+            event?:
+                | Parameters<NonNullable<ModalProps['onClose']>>[0]
+                | Parameters<NonNullable<ButtonProps['onClick']>>[0],
+            reason?: Parameters<NonNullable<ModalProps['onClose']>>[1]
+        ) => void;
     }>
 > = (props) => {
     const [tabIndex, setTabIndex] = useState(0);
