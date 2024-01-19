@@ -22,7 +22,7 @@ export type ServerAbout = {
 
 export function getServersInfos(token: Token): Promise<ServerAbout[]> {
     return backendFetchJson(
-        `${API_URL}/servers/about`,
+        `${API_URL}/servers/about?view=yyy`,
         {
             headers: {
                 Accept: 'application/json',
