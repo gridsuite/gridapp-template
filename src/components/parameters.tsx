@@ -18,13 +18,11 @@ import { useSelector } from 'react-redux';
 import {
     Box,
     Button,
-    ButtonProps,
     Container,
     Dialog,
     DialogContent,
     DialogTitle,
     Grid,
-    ModalProps,
     Tab,
     Tabs,
     Typography,
@@ -65,7 +63,7 @@ export function useParameterState<
     }, [paramGlobalState]);
 
     const handleChangeParamLocalState = useCallback(
-        (value: any) => {
+        (value: T) => {
             setParamLocalState(value);
             updateConfigParameter(paramName, value).catch((error) => {
                 setParamLocalState(paramGlobalState);
@@ -85,10 +83,8 @@ const Parameters: FunctionComponent<
     PropsWithChildren<{
         showParameters: boolean;
         hideParameters: (
-            event?:
-                | Parameters<NonNullable<ModalProps['onClose']>>[0]
-                | Parameters<NonNullable<ButtonProps['onClick']>>[0],
-            reason?: Parameters<NonNullable<ModalProps['onClose']>>[1]
+            event?: Event | object,
+            reason?: 'escapeKeyDown' | 'backdropClick'
         ) => void;
     }>
 > = (props) => {

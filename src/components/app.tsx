@@ -109,8 +109,8 @@ const App: FunctionComponent = () => {
             const ws = connectNotificationsWsUpdateConfig();
             ws.onmessage = function (event) {
                 let eventData = JSON.parse(event.data);
-                if (eventData.headers && eventData.headers['parameterName']) {
-                    fetchConfigParameter(eventData.headers['parameterName'])
+                if (eventData.headers?.parameterName) {
+                    fetchConfigParameter(eventData.headers.parameterName)
                         .then((param) => updateParams([param]))
                         .catch((error) =>
                             snackError({

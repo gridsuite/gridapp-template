@@ -12,21 +12,15 @@ import { APP_NAME } from '../utils/config-params';
 const LOCAL_STORAGE_THEME_KEY = (APP_NAME + '_THEME').toUpperCase();
 const LOCAL_STORAGE_LANGUAGE_KEY = (APP_NAME + '_LANGUAGE').toUpperCase();
 
-export function getLocalStorageTheme(): ReturnType<
-    (typeof Storage.prototype)['getItem']
-> {
+export function getLocalStorageTheme(): string {
     return localStorage.getItem(LOCAL_STORAGE_THEME_KEY) || DARK_THEME;
 }
 
-export function saveLocalStorageTheme(
-    theme: string
-): ReturnType<(typeof Storage.prototype)['setItem']> {
+export function saveLocalStorageTheme(theme: string): void {
     localStorage.setItem(LOCAL_STORAGE_THEME_KEY, theme);
 }
 
-export function getLocalStorageLanguage(): NonNullable<
-    ReturnType<(typeof Storage.prototype)['getItem']>
-> {
+export function getLocalStorageLanguage(): string {
     return localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) || LANG_SYSTEM;
 }
 

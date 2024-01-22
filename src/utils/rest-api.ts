@@ -10,8 +10,6 @@ import { store } from '../redux/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
 import { AppState } from '../redux/reducer';
 
-export type EnvJson = typeof import('../../public/env.json');
-
 export interface ErrorWithStatus extends Error {
     status?: number;
 }
@@ -159,6 +157,16 @@ export function fetchValidateUser(user: Record<string, any>): Promise<boolean> {
         });
 }
 
+export type EnvJson = typeof import('../../public/env.json') & {
+    // https://github.com/gridsuite/deployment/blob/main/docker-compose/env.json
+    // https://github.com/gridsuite/deployment/blob/main/k8s/live/azure-dev/env.json
+    // https://github.com/gridsuite/deployment/blob/main/k8s/live/azure-integ/env.json
+    // https://github.com/gridsuite/deployment/blob/main/k8s/live/local/env.json
+    appsMetadataServerUrl?: Url;
+    mapBoxToken?: string;
+    //[key: string]: string;
+};
+
 function fetchEnv(): Promise<EnvJson> {
     return fetch('env.json').then((res: ReqResponse) => res.json());
 }
@@ -178,7 +186,7 @@ export function fetchAuthorizationCodeFlowFeatureFlag(): Promise<boolean> {
                         : 'disabled'
                 }`
             );
-            return res.authorizationCodeFlowFeatureFlag;
+            return res.authorizationCodeFlowFeatureFlag || false;
         })
         .catch((error) => {
             console.error(error);
@@ -189,7 +197,11 @@ export function fetchAuthorizationCodeFlowFeatureFlag(): Promise<boolean> {
         });
 }
 
-export function fetchVersion(): Promise<Record<string, any>> {
+export type VersionJson = {
+    deployVersion?: string;
+};
+
+export function fetchVersion(): Promise<VersionJson> {
     console.info(`Fetching global metadata...`);
     return fetchEnv()
         .then((env: EnvJson) =>
@@ -202,7 +214,42 @@ export function fetchVersion(): Promise<Record<string, any>> {
         });
 }
 
-export function fetchAppsAndUrls(): Promise<Array<Record<string, any>>> {
+export type MetadataCommon = {
+    name: string;
+    url: Url;
+    appColor: string;
+    hiddenInAppsMenu: boolean;
+};
+
+export type MetadataStudy = MetadataCommon & {
+    readonly name: 'Study';
+    resources?: Array<{
+        types: string[];
+        path: string;
+    }>;
+    predefinedEquipmentProperties?: {
+        substation?: {
+            region?: string[];
+            tso?: string[];
+            totallyFree?: any[];
+            Demo?: string[];
+        };
+        load?: {
+            codeOI?: any[];
+        };
+    };
+    defaultParametersValues?: {
+        fluxConvention?: string;
+        enableDeveloperMode?: string; //maybe 'true'|'false' type?
+        mapManualRefresh?: string; //maybe 'true'|'false' type?
+    };
+};
+
+// https://github.com/gridsuite/deployment/blob/main/docker-compose/docker-compose.base.yml
+// https://github.com/gridsuite/deployment/blob/main/k8s/resources/common/config/apps-metadata.json
+export type MetadataJson = MetadataCommon | MetadataStudy;
+
+export function fetchAppsAndUrls(): Promise<MetadataJson[]> {
     console.info(`Fetching apps and urls...`);
     return fetchEnv()
         .then((env: EnvJson) =>
@@ -211,15 +258,14 @@ export function fetchAppsAndUrls(): Promise<Array<Record<string, any>>> {
         .then((response: ReqResponse) => response.json());
 }
 
+// https://github.com/gridsuite/config-server/blob/main/src/main/java/org/gridsuite/config/server/dto/ParameterInfos.java
 export type ConfigParameter = {
-    //TODO check with config-server swagger
     name: string;
-    value: any;
-    [propertiesName: string]: unknown; //temporary
+    value: string;
 };
-export type ConfigParameters = Array<ConfigParameter>;
+export type ConfigParameters = ConfigParameter[];
 export function fetchConfigParameters(
-    appName: string
+    appName: string = APP_NAME
 ): Promise<ConfigParameters> {
     console.info(`Fetching UI configuration params for app : ${appName}`);
     const fetchParams = `${PREFIX_CONFIG_QUERIES}/v1/applications/${appName}/parameters`;
