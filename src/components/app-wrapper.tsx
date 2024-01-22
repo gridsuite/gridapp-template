@@ -27,6 +27,7 @@ import {
 import { IntlProvider } from 'react-intl';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
+import { SupportedLanguages } from '../utils/language';
 import messages_en from '../translations/en.json';
 import messages_fr from '../translations/fr.json';
 import messages_plugins_en from '../plugins/translations/en.json';
@@ -97,7 +98,7 @@ const getMuiTheme = (theme: unknown): Theme => {
     }
 };
 
-const messages: Record<string, IntlConfig['messages']> = {
+const messages: Record<SupportedLanguages, IntlConfig['messages']> = {
     en: {
         ...messages_en,
         ...login_en,

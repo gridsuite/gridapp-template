@@ -10,7 +10,11 @@ import { LIGHT_THEME, logout, TopBar } from '@gridsuite/commons-ui';
 import Parameters, { useParameterState } from './parameters';
 import { APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAppsAndUrls, fetchVersion } from '../utils/rest-api';
+import {
+    fetchAppsAndUrls,
+    fetchVersion,
+    MetadataJson,
+} from '../utils/rest-api';
 import { getServersInfos } from '../rest/study';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
@@ -30,9 +34,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
 
     const dispatch = useDispatch();
 
-    const [appsAndUrls, setAppsAndUrls] = useState<
-        Awaited<ReturnType<typeof fetchAppsAndUrls>>
-    >([]);
+    const [appsAndUrls, setAppsAndUrls] = useState<MetadataJson[]>([]);
 
     const theme = useSelector((state: AppState) => state[PARAM_THEME]);
 
