@@ -34,5 +34,5 @@ export function getServersInfos(token: Token): Promise<ServerAbout[]> {
     ).catch((error) => {
         console.error(`Error while fetching the servers infos : ${error}`);
         throw error;
-    });
+    }) as Promise<ServerAbout[]>;
 }

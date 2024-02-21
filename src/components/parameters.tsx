@@ -26,12 +26,12 @@ import {
     Tab,
     Tabs,
     Typography,
+    TypographyTypeMap,
 } from '@mui/material';
 import { CSSObject, Theme } from '@emotion/react';
 import { updateConfigParameter } from '../utils/rest-api';
 import { useSnackMessage } from '@gridsuite/commons-ui';
-import { AppState } from '../redux/reducer';
-import { TypographyTypeMap } from '@mui/material/Typography/Typography';
+import { AppState, AppStateKey } from '../redux/reducer';
 
 const styles = {
     title: (theme: Theme): CSSObject => ({
@@ -48,14 +48,11 @@ const styles = {
     } as CSSObject,
 };
 
-export function useParameterState<
-    K extends keyof AppState,
-    T extends AppState[K]
->(paramName: K): [T, (value: T) => void] {
+export function useParameterState<K extends AppStateKey>(
+    paramName: K
+): [AppState[K], (value: AppState[K]) => void] {
     const { snackError } = useSnackMessage();
-
     const paramGlobalState = useSelector((state: AppState) => state[paramName]);
-
     const [paramLocalState, setParamLocalState] = useState(paramGlobalState);
 
     useEffect(() => {
@@ -63,15 +60,16 @@ export function useParameterState<
     }, [paramGlobalState]);
 
     const handleChangeParamLocalState = useCallback(
-        (value: T) => {
+        (value: AppState[K]) => {
             setParamLocalState(value);
-            updateConfigParameter(paramName, value).catch((error) => {
-                setParamLocalState(paramGlobalState);
-                snackError({
-                    messageTxt: error.message,
-                    headerId: 'paramsChangingError',
+            updateConfigParameter(paramName, value as string) //TODO how to check/cast?
+                .catch((error) => {
+                    setParamLocalState(paramGlobalState);
+                    snackError({
+                        messageTxt: error.message,
+                        headerId: 'paramsChangingError',
+                    });
                 });
-            });
         },
         [paramName, snackError, setParamLocalState, paramGlobalState]
     );

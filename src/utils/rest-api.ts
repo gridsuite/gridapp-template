@@ -5,11 +5,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { APP_NAME, getAppName } from './config-params';
+import {
+    APP_NAME,
+    getAppName,
+    PARAM_LANGUAGE,
+    PARAM_THEME,
+} from './config-params';
 import { store } from '../redux/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
 import { AppState } from '../redux/reducer';
 import { User } from './auth';
+import { LanguageParameters } from './language';
 
 export interface ErrorWithStatus extends Error {
     status?: number;
@@ -259,10 +265,15 @@ export function fetchAppsAndUrls(): Promise<MetadataJson[]> {
 }
 
 // https://github.com/gridsuite/config-server/blob/main/src/main/java/org/gridsuite/config/server/dto/ParameterInfos.java
-export type ConfigParameter = {
-    name: string;
-    value: string;
-};
+export type ConfigParameter =
+    | {
+          readonly name: typeof PARAM_LANGUAGE;
+          value: LanguageParameters;
+      }
+    | {
+          readonly name: typeof PARAM_THEME;
+          value: string;
+      };
 export type ConfigParameters = ConfigParameter[];
 export function fetchConfigParameters(
     appName: string = APP_NAME

@@ -7,6 +7,7 @@
 
 import App from './app';
 import React, { FunctionComponent } from 'react';
+import { CssBaseline } from '@mui/material';
 import {
     createTheme,
     StyledEngineProvider,
@@ -33,7 +34,6 @@ import messages_fr from '../translations/fr.json';
 import messages_plugins_en from '../plugins/translations/en.json';
 import messages_plugins_fr from '../plugins/translations/fr.json';
 import { store } from '../redux/store';
-import CssBaseline from '@mui/material/CssBaseline';
 import { PARAM_THEME } from '../utils/config-params';
 import { IntlConfig } from 'react-intl/src/types';
 import { AppState } from '../redux/reducer';

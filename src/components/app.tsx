@@ -37,7 +37,6 @@ import {
 } from '../redux/actions';
 import { AppState } from '../redux/reducer';
 import {
-    ConfigParameter,
     ConfigParameters,
     connectNotificationsWsUpdateConfig,
     fetchAuthorizationCodeFlowFeatureFlag,
@@ -52,11 +51,9 @@ import {
     PARAM_LANGUAGE,
     PARAM_THEME,
 } from '../utils/config-params';
-import { getComputedLanguage, LanguageParameters } from '../utils/language';
+import { getComputedLanguage } from '../utils/language';
 import AppTopBar, { AppTopBarProps } from './app-top-bar';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import { Simulate } from 'react-dom/test-utils';
-import error = Simulate.error;
 import { getErrorMessage } from '../utils/error';
 
 const App: FunctionComponent = () => {
