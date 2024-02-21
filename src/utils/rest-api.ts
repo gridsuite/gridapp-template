@@ -9,15 +9,15 @@ import { APP_NAME, getAppName } from './config-params';
 import { store } from '../redux/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
 import { AppState } from '../redux/reducer';
+import { User } from './auth';
 
 export interface ErrorWithStatus extends Error {
     status?: number;
 }
 
-export type Url = Exclude<Parameters<typeof fetch>[0], Request>; //string | URL;
-export type InitRequest = Partial<Parameters<typeof fetch>[1]>; //Partial<RequestInit>;
+export type Url = string | URL;
+export type InitRequest = Partial<RequestInit>;
 export type Token = string;
-export type ReqResponse = Awaited<ReturnType<typeof fetch>>;
 
 const PREFIX_USER_ADMIN_SERVER_QUERIES = `${process.env.REACT_APP_API_GATEWAY}/user-admin`;
 
@@ -32,9 +32,9 @@ const PREFIX_USER_ADMIN_SERVER_QUERIES = `${process.env.REACT_APP_API_GATEWAY}/u
 const PREFIX_CONFIG_QUERIES = `${process.env.REACT_APP_API_GATEWAY}/config`;
 const PREFIX_CONFIG_NOTIFICATION_WS = `${process.env.REACT_APP_WS_GATEWAY}/config-notification`;
 
-function getToken(): Token {
+function getToken(): Token | null {
     const state: AppState = store.getState();
-    return state.user?.id_token;
+    return state.user?.id_token ?? null;
 }
 
 export function connectNotificationsWsUpdateConfig(): ReconnectingWebSocket {
@@ -54,7 +54,7 @@ export function connectNotificationsWsUpdateConfig(): ReconnectingWebSocket {
     return reconnectingWebSocket;
 }
 
-function parseError(text: string): any {
+function parseError(text: string) {
     try {
         return JSON.parse(text);
     } catch (err) {
@@ -62,7 +62,7 @@ function parseError(text: string): any {
     }
 }
 
-function handleError(response: ReqResponse): Promise<never> {
+function handleError(response: Response): Promise<never> {
     return response.text().then((text: string) => {
         const errorName = 'HttpResponseError : ';
         let error: ErrorWithStatus;
@@ -95,8 +95,8 @@ function prepareRequest(init?: InitRequest, token?: Token): RequestInit {
     return initCopy;
 }
 
-function safeFetch(url: Url, initCopy?: InitRequest): ReturnType<typeof fetch> {
-    return fetch(url, initCopy).then((response: ReqResponse) =>
+function safeFetch(url: Url, initCopy?: InitRequest) {
+    return fetch(url, initCopy).then((response: Response) =>
         response.ok ? response : handleError(response)
     );
 }
@@ -105,7 +105,7 @@ export function backendFetch(
     url: Url,
     init?: InitRequest,
     token?: Token
-): ReturnType<typeof safeFetch> {
+): Promise<Response> {
     return safeFetch(url, prepareRequest(init, token));
 }
 
@@ -113,8 +113,8 @@ export function backendFetchText(
     url: Url,
     init?: InitRequest,
     token?: Token
-): ReturnType<Body['text']> {
-    return backendFetch(url, init, token).then((safeResponse: ReqResponse) =>
+): Promise<string> {
+    return backendFetch(url, init, token).then((safeResponse: Response) =>
         safeResponse.text()
     );
 }
@@ -123,13 +123,13 @@ export function backendFetchJson(
     url: Url,
     init?: InitRequest,
     token?: Token
-): ReturnType<Body['json']> {
-    return backendFetch(url, init, token).then((safeResponse: ReqResponse) =>
+): Promise<unknown> {
+    return backendFetch(url, init, token).then((safeResponse: Response) =>
         safeResponse.json()
     );
 }
 
-export function fetchValidateUser(user: Record<string, any>): Promise<boolean> {
+export function fetchValidateUser(user: User): Promise<boolean> {
     const sub = user?.profile?.sub;
     if (!sub) {
         return Promise.reject(
@@ -144,7 +144,7 @@ export function fetchValidateUser(user: Record<string, any>): Promise<boolean> {
     console.debug(CheckAccessUrl);
 
     return backendFetch(CheckAccessUrl, { method: 'head' }, user?.id_token)
-        .then((response: ReqResponse) => {
+        .then((response: Response) => {
             //if the response is ok, the responseCode will be either 200 or 204 otherwise it's a Http error and it will be caught
             return response.status === 200;
         })
@@ -168,7 +168,7 @@ export type EnvJson = typeof import('../../public/env.json') & {
 };
 
 function fetchEnv(): Promise<EnvJson> {
-    return fetch('env.json').then((res: ReqResponse) => res.json());
+    return fetch('env.json').then((res: Response) => res.json());
 }
 
 export function fetchAuthorizationCodeFlowFeatureFlag(): Promise<boolean> {
@@ -177,8 +177,8 @@ export function fetchAuthorizationCodeFlowFeatureFlag(): Promise<boolean> {
         .then((env: EnvJson) =>
             fetch(`${env.appsMetadataServerUrl}/authentication.json`)
         )
-        .then((res: ReqResponse) => res.json())
-        .then((res: Record<string, any>) => {
+        .then((res: Response) => res.json())
+        .then((res: { authorizationCodeFlowFeatureFlag: boolean }) => {
             console.log(
                 `Authorization code flow is ${
                     res.authorizationCodeFlowFeatureFlag
@@ -207,7 +207,7 @@ export function fetchVersion(): Promise<VersionJson> {
         .then((env: EnvJson) =>
             fetch(`${env.appsMetadataServerUrl}/version.json`)
         )
-        .then((response: ReqResponse) => response.json())
+        .then((response: Response) => response.json())
         .catch((reason) => {
             console.error(`Error while fetching the version : ${reason}`);
             return reason;
@@ -223,19 +223,19 @@ export type MetadataCommon = {
 
 export type MetadataStudy = MetadataCommon & {
     readonly name: 'Study';
-    resources?: Array<{
+    resources?: {
         types: string[];
         path: string;
-    }>;
+    }[];
     predefinedEquipmentProperties?: {
         substation?: {
             region?: string[];
             tso?: string[];
-            totallyFree?: any[];
+            totallyFree?: unknown[];
             Demo?: string[];
         };
         load?: {
-            codeOI?: any[];
+            codeOI?: string[];
         };
     };
     defaultParametersValues?: {
@@ -255,7 +255,7 @@ export function fetchAppsAndUrls(): Promise<MetadataJson[]> {
         .then((env: EnvJson) =>
             fetch(`${env.appsMetadataServerUrl}/apps-metadata.json`)
         )
-        .then((response: ReqResponse) => response.json());
+        .then((response: Response) => response.json());
 }
 
 // https://github.com/gridsuite/config-server/blob/main/src/main/java/org/gridsuite/config/server/dto/ParameterInfos.java
@@ -269,22 +269,20 @@ export function fetchConfigParameters(
 ): Promise<ConfigParameters> {
     console.info(`Fetching UI configuration params for app : ${appName}`);
     const fetchParams = `${PREFIX_CONFIG_QUERIES}/v1/applications/${appName}/parameters`;
-    return backendFetchJson(fetchParams);
+    return backendFetchJson(fetchParams) as Promise<ConfigParameters>;
 }
 
-export function fetchConfigParameter(
-    name: string
-): ReturnType<typeof backendFetchJson> {
+export function fetchConfigParameter(name: string): Promise<ConfigParameter> {
     const appName = getAppName(name);
     console.info(`Fetching UI config parameter '${name}' for app '${appName}'`);
     const fetchParams = `${PREFIX_CONFIG_QUERIES}/v1/applications/${appName}/parameters/${name}`;
-    return backendFetchJson(fetchParams);
+    return backendFetchJson(fetchParams) as Promise<ConfigParameter>;
 }
 
 export function updateConfigParameter(
     name: string,
     value: Parameters<typeof encodeURIComponent>[0]
-): ReturnType<typeof backendFetch> {
+): Promise<never> {
     const appName = getAppName(name);
     console.info(
         `Updating config parameter '${name}=${value}' for app '${appName}'`
@@ -292,5 +290,5 @@ export function updateConfigParameter(
     const updateParams = `${PREFIX_CONFIG_QUERIES}/v1/applications/${appName}/parameters/${name}?value=${encodeURIComponent(
         value
     )}`;
-    return backendFetch(updateParams, { method: 'put' });
+    return backendFetch(updateParams, { method: 'put' }).then();
 }

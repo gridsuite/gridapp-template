@@ -90,7 +90,7 @@ const darkTheme: Theme = createTheme({
     mapboxStyle: 'mapbox://styles/mapbox/dark-v9',
 });
 
-const getMuiTheme = (theme: unknown): Theme => {
+const getMuiTheme = (theme: string): Theme => {
     if (theme === LIGHT_THEME) {
         return lightTheme;
     } else {
@@ -115,7 +115,7 @@ const messages: Record<SupportedLanguages, IntlConfig['messages']> = {
     },
 };
 
-const basename = new URL(document.querySelector('base')?.href || '').pathname;
+const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
 const AppWrapperWithRedux: FunctionComponent = () => {
     const computedLanguage = useSelector(

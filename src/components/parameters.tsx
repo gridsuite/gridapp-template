@@ -79,20 +79,17 @@ export function useParameterState<
     return [paramLocalState, handleChangeParamLocalState];
 }
 
-const Parameters: FunctionComponent<
-    PropsWithChildren<{
-        showParameters: boolean;
-        hideParameters: (
-            event?: Event | object,
-            reason?: 'escapeKeyDown' | 'backdropClick'
-        ) => void;
-    }>
-> = (props) => {
+export type ParametersProps = PropsWithChildren<{
+    showParameters: boolean;
+    hideParameters: () => void;
+}>;
+
+const Parameters: FunctionComponent<ParametersProps> = (props) => {
     const [tabIndex, setTabIndex] = useState(0);
 
-    function TabPanel<T = number>(
+    function TabPanel(
         props: PropsWithChildren<
-            TypographyTypeMap<{ index: T; value: T }>['props']
+            TypographyTypeMap<{ index: number; value: number }>['props']
         >
     ): ReactElement {
         const { children, value, index, ...other } = props;

@@ -52,9 +52,12 @@ import {
     PARAM_LANGUAGE,
     PARAM_THEME,
 } from '../utils/config-params';
-import { getComputedLanguage } from '../utils/language';
+import { getComputedLanguage, LanguageParameters } from '../utils/language';
 import AppTopBar, { AppTopBarProps } from './app-top-bar';
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import { Simulate } from 'react-dom/test-utils';
+import error = Simulate.error;
+import { getErrorMessage } from '../utils/error';
 
 const App: FunctionComponent = () => {
     const { snackError } = useSnackMessage();
@@ -81,10 +84,10 @@ const App: FunctionComponent = () => {
 
     const location = useLocation();
 
-    const updateParams: (p: ConfigParameters) => void = useCallback(
+    const updateParams = useCallback(
         (params: ConfigParameters) => {
             console.debug('received UI parameters : ', params);
-            params.forEach((param: ConfigParameter) => {
+            params.forEach((param) => {
                 switch (param.name) {
                     case PARAM_THEME:
                         dispatch(selectTheme(param.value));
@@ -98,14 +101,15 @@ const App: FunctionComponent = () => {
                         );
                         break;
                     default:
+                        break;
                 }
             });
         },
         [dispatch]
     );
 
-    const connectNotificationsUpdateConfig: () => ReconnectingWebSocket =
-        useCallback(() => {
+    const connectNotificationsUpdateConfig =
+        useCallback((): ReconnectingWebSocket => {
             const ws = connectNotificationsWsUpdateConfig();
             ws.onmessage = function (event) {
                 let eventData = JSON.parse(event.data);
@@ -133,7 +137,7 @@ const App: FunctionComponent = () => {
         })
     );
 
-    const initialize: () => Promise<UserManager> = useCallback(() => {
+    const initialize = useCallback((): Promise<UserManager | undefined> => {
         if (process.env.REACT_APP_USE_AUTHENTICATION === 'true') {
             return fetchAuthorizationCodeFlowFeatureFlag().then(
                 (authorizationCodeFlowEnabled) =>
@@ -160,11 +164,14 @@ const App: FunctionComponent = () => {
 
     useEffect(() => {
         initialize()
-            .then((userManager: UserManager | undefined) => {
-                setUserManager({ instance: userManager || null, error: null });
+            .then((userManager) => {
+                setUserManager({ instance: userManager ?? null, error: null });
             })
-            .catch((error: any) => {
-                setUserManager({ instance: null, error: error.message });
+            .catch((error: unknown) => {
+                setUserManager({
+                    instance: null,
+                    error: getErrorMessage(error),
+                });
             });
         // Note: initialize and initialMatchSilentRenewCallbackUrl won't change
     }, [initialize, initialMatchSilentRenewCallbackUrl, dispatch]);
