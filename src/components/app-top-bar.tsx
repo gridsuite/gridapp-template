@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { LIGHT_THEME, logout, TopBar } from '@gridsuite/commons-ui';
 import Parameters, { useParameterState } from './parameters';
 import { APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
@@ -44,6 +44,8 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
         useParameterState(PARAM_LANGUAGE);
 
     const [showParameters, setShowParameters] = useState(false);
+    const displayParameters = useCallback(() => setShowParameters(true), []);
+    const hideParameters = useCallback(() => setShowParameters(false), []);
 
     useEffect(() => {
         if (props.user !== null) {
@@ -67,7 +69,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
                 }
                 appVersion={AppPackage.version}
                 appLicense={AppPackage.license}
-                onParametersClick={() => setShowParameters(true)}
+                onParametersClick={displayParameters}
                 onLogoutClick={() =>
                     logout(dispatch, props.userManager.instance)
                 }
@@ -85,7 +87,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
             />
             <Parameters
                 showParameters={showParameters}
-                hideParameters={() => setShowParameters(false)}
+                hideParameters={hideParameters}
             />
         </>
     );
