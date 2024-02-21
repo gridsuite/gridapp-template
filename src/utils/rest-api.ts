@@ -208,9 +208,9 @@ export function fetchVersion(): Promise<VersionJson> {
             fetch(`${env.appsMetadataServerUrl}/version.json`)
         )
         .then((response: Response) => response.json())
-        .catch((reason) => {
-            console.error(`Error while fetching the version : ${reason}`);
-            return reason;
+        .catch((error) => {
+            console.error(`Error while fetching the version : ${error}`);
+            throw error;
         });
 }
 

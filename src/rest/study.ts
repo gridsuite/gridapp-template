@@ -31,8 +31,8 @@ export function getServersInfos(token: Token): Promise<ServerAbout[]> {
             cache: 'default',
         },
         token
-    ).catch((reason) => {
-        console.error(`Error while fetching the servers infos : ${reason}`);
-        return reason;
+    ).catch((error) => {
+        console.error(`Error while fetching the servers infos : ${error}`);
+        throw error;
     });
 }
