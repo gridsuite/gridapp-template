@@ -4,26 +4,43 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import React, { useEffect, useState } from 'react';
+
+import React, {
+    FunctionComponent,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react';
 import { LIGHT_THEME, logout, TopBar } from '@gridsuite/commons-ui';
 import Parameters, { useParameterState } from './parameters';
 import { APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAppsAndUrls, fetchVersion } from '../utils/rest-api';
+import {
+    fetchAppsAndUrls,
+    fetchVersion,
+    MetadataJson,
+} from '../utils/rest-api';
 import { getServersInfos } from '../rest/study';
-import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
 import AppPackage from '../../package.json';
+import { AppState } from '../redux/reducer';
 
-const AppTopBar = ({ user, userManager }) => {
+export type AppTopBarProps = {
+    user?: AppState['user'];
+    userManager: {
+        instance: unknown | null;
+        error: string | null;
+    };
+};
+const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
 
-    const [appsAndUrls, setAppsAndUrls] = useState([]);
+    const [appsAndUrls, setAppsAndUrls] = useState<MetadataJson[]>([]);
 
-    const theme = useSelector((state) => state[PARAM_THEME]);
+    const theme = useSelector((state: AppState) => state[PARAM_THEME]);
 
     const [themeLocal, handleChangeTheme] = useParameterState(PARAM_THEME);
 
@@ -31,14 +48,16 @@ const AppTopBar = ({ user, userManager }) => {
         useParameterState(PARAM_LANGUAGE);
 
     const [showParameters, setShowParameters] = useState(false);
+    const displayParameters = useCallback(() => setShowParameters(true), []);
+    const hideParameters = useCallback(() => setShowParameters(false), []);
 
     useEffect(() => {
-        if (user !== null) {
+        if (props.user !== null) {
             fetchAppsAndUrls().then((res) => {
                 setAppsAndUrls(res);
             });
         }
-    }, [user]);
+    }, [props.user]);
 
     return (
         <>
@@ -54,10 +73,12 @@ const AppTopBar = ({ user, userManager }) => {
                 }
                 appVersion={AppPackage.version}
                 appLicense={AppPackage.license}
-                onParametersClick={() => setShowParameters(true)}
-                onLogoutClick={() => logout(dispatch, userManager.instance)}
-                onLogoClick={() => navigate.replace('/')}
-                user={user}
+                onParametersClick={displayParameters}
+                onLogoutClick={() =>
+                    logout(dispatch, props.userManager.instance)
+                }
+                onLogoClick={() => navigate('/', { replace: true })}
+                user={props.user}
                 appsAndUrls={appsAndUrls}
                 globalVersionPromise={() =>
                     fetchVersion().then((res) => res?.deployVersion)
@@ -70,15 +91,9 @@ const AppTopBar = ({ user, userManager }) => {
             />
             <Parameters
                 showParameters={showParameters}
-                hideParameters={() => setShowParameters(false)}
+                hideParameters={hideParameters}
             />
         </>
     );
 };
-
-AppTopBar.propTypes = {
-    user: PropTypes.object,
-    userManager: PropTypes.object.isRequired,
-};
-
 export default AppTopBar;

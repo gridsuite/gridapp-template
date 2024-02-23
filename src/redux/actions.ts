@@ -6,22 +6,34 @@
  */
 
 import { PARAM_LANGUAGE } from '../utils/config-params';
+import { Action } from 'redux';
+import { AppState } from './reducer';
 
 export const SELECT_THEME = 'SELECT_THEME';
-
-export function selectTheme(theme) {
+export type ThemeAction = Readonly<Action<typeof SELECT_THEME>> & {
+    theme: string;
+};
+export function selectTheme(theme: string): ThemeAction {
     return { type: SELECT_THEME, theme: theme };
 }
 
 export const SELECT_LANGUAGE = 'SELECT_LANGUAGE';
-
-export function selectLanguage(language) {
+export type LanguageAction = Readonly<Action<typeof SELECT_LANGUAGE>> & {
+    [PARAM_LANGUAGE]: AppState['language'];
+};
+export function selectLanguage(language: AppState['language']): LanguageAction {
     return { type: SELECT_LANGUAGE, [PARAM_LANGUAGE]: language };
 }
 
 export const SELECT_COMPUTED_LANGUAGE = 'SELECT_COMPUTED_LANGUAGE';
-
-export function selectComputedLanguage(computedLanguage) {
+export type ComputedLanguageAction = Readonly<
+    Action<typeof SELECT_COMPUTED_LANGUAGE>
+> & {
+    computedLanguage: AppState['computedLanguage'];
+};
+export function selectComputedLanguage(
+    computedLanguage: AppState['computedLanguage']
+): ComputedLanguageAction {
     return {
         type: SELECT_COMPUTED_LANGUAGE,
         computedLanguage: computedLanguage,

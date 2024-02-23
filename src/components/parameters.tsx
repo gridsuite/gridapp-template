@@ -5,47 +5,54 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
-
+import React, {
+    FunctionComponent,
+    PropsWithChildren,
+    ReactElement,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react';
 import { FormattedMessage } from 'react-intl';
-
 import { useSelector } from 'react-redux';
 import {
-    Grid,
     Box,
     Button,
     Container,
     Dialog,
     DialogContent,
     DialogTitle,
+    Grid,
     Tab,
     Tabs,
     Typography,
+    TypographyTypeMap,
 } from '@mui/material';
-
+import { CSSObject, Theme } from '@emotion/react';
 import { updateConfigParameter } from '../utils/rest-api';
 import { useSnackMessage } from '@gridsuite/commons-ui';
+import { AppState, AppStateKey } from '../redux/reducer';
 
 const styles = {
-    title: (theme) => ({
+    title: (theme: Theme): CSSObject => ({
         padding: theme.spacing(2),
     }),
-    grid: (theme) => ({
+    grid: (theme: Theme): CSSObject => ({
         padding: theme.spacing(2),
     }),
     controlItem: {
         justifyContent: 'flex-end',
-    },
+    } as CSSObject,
     button: {
         marginBottom: '30px',
-    },
+    } as CSSObject,
 };
 
-export function useParameterState(paramName) {
+export function useParameterState<K extends AppStateKey>(
+    paramName: K
+): [AppState[K], (value: AppState[K]) => void] {
     const { snackError } = useSnackMessage();
-
-    const paramGlobalState = useSelector((state) => state[paramName]);
-
+    const paramGlobalState = useSelector((state: AppState) => state[paramName]);
     const [paramLocalState, setParamLocalState] = useState(paramGlobalState);
 
     useEffect(() => {
@@ -53,15 +60,16 @@ export function useParameterState(paramName) {
     }, [paramGlobalState]);
 
     const handleChangeParamLocalState = useCallback(
-        (value) => {
+        (value: AppState[K]) => {
             setParamLocalState(value);
-            updateConfigParameter(paramName, value).catch((error) => {
-                setParamLocalState(paramGlobalState);
-                snackError({
-                    messageTxt: error.message,
-                    headerId: 'paramsChangingError',
+            updateConfigParameter(paramName, value as string) //TODO how to check/cast?
+                .catch((error) => {
+                    setParamLocalState(paramGlobalState);
+                    snackError({
+                        messageTxt: error.message,
+                        headerId: 'paramsChangingError',
+                    });
                 });
-            });
         },
         [paramName, snackError, setParamLocalState, paramGlobalState]
     );
@@ -69,34 +77,44 @@ export function useParameterState(paramName) {
     return [paramLocalState, handleChangeParamLocalState];
 }
 
-const Parameters = ({ showParameters, hideParameters }) => {
+function GUITab(): ReactElement {
+    return <Grid container spacing={2} sx={styles.grid} />;
+}
+
+type TabPanelProps = PropsWithChildren<
+    TypographyTypeMap<{ index: number; value: number }, 'div'>['props']
+>;
+function TabPanel({
+    children,
+    value,
+    index,
+    ...typoProps
+}: TabPanelProps): ReactElement {
+    return (
+        <Typography
+            component="div"
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...typoProps}
+        >
+            {value === index && <Box p={3}>{children}</Box>}
+        </Typography>
+    );
+}
+
+export type ParametersProps = PropsWithChildren<{
+    showParameters: boolean;
+    hideParameters: () => void;
+}>;
+const Parameters: FunctionComponent<ParametersProps> = (props) => {
     const [tabIndex, setTabIndex] = useState(0);
-
-    function TabPanel(props) {
-        const { children, value, index, ...other } = props;
-
-        return (
-            <Typography
-                component="div"
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && <Box p={3}>{children}</Box>}
-            </Typography>
-        );
-    }
-
-    function GUITab() {
-        return <Grid container spacing={2} sx={styles.grid} />;
-    }
 
     return (
         <Dialog
-            open={showParameters}
-            onClose={hideParameters}
+            open={props.showParameters}
+            onClose={props.hideParameters}
             aria-labelledby="form-dialog-title"
             maxWidth={'md'}
             fullWidth={true}
@@ -125,7 +143,7 @@ const Parameters = ({ showParameters, hideParameters }) => {
 
                     <Grid item xs={12}>
                         <Button
-                            onClick={hideParameters}
+                            onClick={props.hideParameters}
                             variant="contained"
                             color="primary"
                             sx={styles.button}
