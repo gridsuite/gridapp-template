@@ -44,7 +44,6 @@ import {
     fetchConfigParameters,
     fetchValidateUser,
 } from '../utils/rest-api';
-import { UserManager } from 'oidc-client';
 import {
     APP_NAME,
     COMMON_APP_NAME,
@@ -140,7 +139,7 @@ const App: FunctionComponent = () => {
         })
     );
 
-    const initialize = useCallback((): Promise<UserManager | undefined> => {
+    const initialize = useCallback((): Promise<unknown | undefined> => {
         if (process.env.REACT_APP_USE_AUTHENTICATION === 'true') {
             return fetchAuthorizationCodeFlowFeatureFlag().then(
                 (authorizationCodeFlowEnabled) =>

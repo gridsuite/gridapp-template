@@ -25,12 +25,11 @@ import { useNavigate } from 'react-router-dom';
 import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
 import AppPackage from '../../package.json';
 import { AppState } from '../redux/reducer';
-import { UserManager } from 'oidc-client';
 
 export type AppTopBarProps = {
     user?: AppState['user'];
     userManager: {
-        instance: typeof UserManager | null;
+        instance: unknown | null;
         error: string | null;
     };
 };
