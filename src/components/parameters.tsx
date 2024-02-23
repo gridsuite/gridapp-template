@@ -77,37 +77,39 @@ export function useParameterState<K extends AppStateKey>(
     return [paramLocalState, handleChangeParamLocalState];
 }
 
+function GUITab(): ReactElement {
+    return <Grid container spacing={2} sx={styles.grid} />;
+}
+
+type TabPanelProps = PropsWithChildren<
+    TypographyTypeMap<{ index: number; value: number }, 'div'>['props']
+>;
+function TabPanel({
+    children,
+    value,
+    index,
+    ...typoProps
+}: TabPanelProps): ReactElement {
+    return (
+        <Typography
+            component="div"
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...typoProps}
+        >
+            {value === index && <Box p={3}>{children}</Box>}
+        </Typography>
+    );
+}
+
 export type ParametersProps = PropsWithChildren<{
     showParameters: boolean;
     hideParameters: () => void;
 }>;
-
 const Parameters: FunctionComponent<ParametersProps> = (props) => {
     const [tabIndex, setTabIndex] = useState(0);
-
-    function TabPanel(
-        props: PropsWithChildren<
-            TypographyTypeMap<{ index: number; value: number }>['props']
-        >
-    ): ReactElement {
-        const { children, value, index, ...other } = props;
-        return (
-            <Typography
-                component="div"
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && <Box p={3}>{children}</Box>}
-            </Typography>
-        );
-    }
-
-    function GUITab(): ReactElement {
-        return <Grid container spacing={2} sx={styles.grid} />;
-    }
 
     return (
         <Dialog

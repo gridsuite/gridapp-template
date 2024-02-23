@@ -5,6 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import { backendFetchJson, Token } from '../utils/rest-api';
+import { getErrorMessage } from '../utils/error';
 
 const API_URL =
     '/api/' +
@@ -32,7 +33,9 @@ export function getServersInfos(token: Token): Promise<ServerAbout[]> {
         },
         token
     ).catch((error) => {
-        console.error(`Error while fetching the servers infos : ${error}`);
+        console.error(
+            `Error while fetching the servers infos : ${getErrorMessage(error)}`
+        );
         throw error;
     }) as Promise<ServerAbout[]>;
 }

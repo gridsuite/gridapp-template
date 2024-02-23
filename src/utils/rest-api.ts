@@ -16,6 +16,7 @@ import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
 import { AppState } from '../redux/reducer';
 import { User } from './auth';
 import { LanguageParameters } from './language';
+import { getErrorMessage } from './error';
 
 export interface ErrorWithStatus extends Error {
     status?: number;
@@ -215,7 +216,9 @@ export function fetchVersion(): Promise<VersionJson> {
         )
         .then((response: Response) => response.json())
         .catch((error) => {
-            console.error(`Error while fetching the version : ${error}`);
+            console.error(
+                `Error while fetching the version : ${getErrorMessage(error)}`
+            );
             throw error;
         });
 }

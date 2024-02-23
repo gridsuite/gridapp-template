@@ -5,7 +5,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, {
+    FunctionComponent,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react';
 import { LIGHT_THEME, logout, TopBar } from '@gridsuite/commons-ui';
 import Parameters, { useParameterState } from './parameters';
 import { APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
@@ -25,7 +30,7 @@ import { UserManager } from 'oidc-client';
 export type AppTopBarProps = {
     user?: AppState['user'];
     userManager: {
-        instance: UserManager | null;
+        instance: typeof UserManager | null;
         error: string | null;
     };
 };
