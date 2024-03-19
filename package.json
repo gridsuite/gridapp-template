@@ -82,10 +82,10 @@
         "@types/react": "^18.2.9",
         "@types/react-dom": "^18.2.4",
         "@types/react-window": "^1.8.8",
-        "eslint-config-prettier": "^8.0.0",
-        "eslint-plugin-prettier": "^4.0.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-prettier": "^5.0.0",
         "http-proxy-middleware": "^2.0.0",
-        "prettier": "^2.0.0",
+        "prettier": "^3.0.0",
         "typescript": "^5.1.3"
     }
 }
