@@ -31,7 +31,9 @@ afterEach(() => {
 });
 
 it('renders', async () => {
-    if(container === null) throw new Error('No container was defined');
+    if (container === null) {
+        throw new Error('No container was defined');
+    }
     const root = createRoot(container);
     await act(async () =>
         root.render(
