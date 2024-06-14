@@ -39,9 +39,9 @@ import { AppState } from '../redux/reducer';
 import {
     ConfigParameters,
     connectNotificationsWsUpdateConfig,
-    fetchAuthorizationCodeFlowFeatureFlag,
     fetchConfigParameter,
     fetchConfigParameters,
+    fetchIdpSettings,
     fetchValidateUser,
 } from '../utils/rest-api';
 import {
@@ -139,50 +139,45 @@ const App: FunctionComponent = () => {
         })
     );
 
-    const initialize = useCallback((): Promise<unknown | undefined> => {
-        if (process.env.REACT_APP_USE_AUTHENTICATION === 'true') {
-            return fetchAuthorizationCodeFlowFeatureFlag().then(
-                (authorizationCodeFlowEnabled) =>
-                    initializeAuthenticationProd(
-                        dispatch,
-                        initialMatchSilentRenewCallbackUrl != null,
-                        fetch('idpSettings.json'),
-                        fetchValidateUser,
-                        authorizationCodeFlowEnabled,
-                        initialMatchSigninCallbackUrl != null
-                    )
-            );
-        } else {
-            return initializeAuthenticationDev(
-                dispatch,
-                initialMatchSilentRenewCallbackUrl != null,
-                () =>
-                    new Promise((resolve) =>
-                        window.setTimeout(() => resolve(true), 500)
-                    ),
-                initialMatchSigninCallbackUrl != null
-            );
-        }
-        // Note: initialMatchSilentRenewCallbackUrl and dispatch don't change
-    }, [
-        initialMatchSilentRenewCallbackUrl,
-        dispatch,
-        initialMatchSigninCallbackUrl,
-    ]);
-
     useEffect(() => {
-        initialize()
-            .then((userManager) => {
-                setUserManager({ instance: userManager ?? null, error: null });
-            })
-            .catch((error: unknown) => {
+        // need subfunction when async as suggested by rule react-hooks/exhaustive-deps
+        (async function initializeAuthentication() {
+            try {
+                console.debug(
+                    `auth dev mode: ${process.env.REACT_APP_USE_AUTHENTICATION}`
+                );
+                setUserManager({
+                    instance:
+                        (await (process.env.REACT_APP_USE_AUTHENTICATION ===
+                        'true'
+                            ? initializeAuthenticationProd(
+                                  dispatch,
+                                  initialMatchSilentRenewCallbackUrl != null,
+                                  fetchIdpSettings,
+                                  fetchValidateUser,
+                                  initialMatchSigninCallbackUrl != null
+                              )
+                            : initializeAuthenticationDev(
+                                  dispatch,
+                                  initialMatchSilentRenewCallbackUrl != null,
+                                  validateUserDev,
+                                  initialMatchSigninCallbackUrl != null
+                              ))) ?? null,
+                    error: null,
+                });
+            } catch (error) {
                 setUserManager({
                     instance: null,
                     error: getErrorMessage(error),
                 });
-            });
-        // Note: initialize and initialMatchSilentRenewCallbackUrl won't change
-    }, [initialize, initialMatchSilentRenewCallbackUrl, dispatch]);
+            }
+        })();
+        // Note: dispatch and initialMatchSilentRenewCallbackUrl won't change
+    }, [
+        initialMatchSigninCallbackUrl,
+        initialMatchSilentRenewCallbackUrl,
+        dispatch,
+    ]);
 
     useEffect(() => {
         if (user !== null) {
@@ -280,3 +275,9 @@ const App: FunctionComponent = () => {
     );
 };
 export default App;
+
+function validateUserDev() {
+    return new Promise((resolve) =>
+        window.setTimeout(() => resolve(true), 500)
+    );
+}
