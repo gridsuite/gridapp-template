@@ -178,30 +178,8 @@ function fetchEnv(): Promise<EnvJson> {
     return fetch('env.json').then((res: Response) => res.json());
 }
 
-export function fetchAuthorizationCodeFlowFeatureFlag(): Promise<boolean> {
-    console.info(`Fetching authorization code flow feature flag...`);
-    return fetchEnv()
-        .then((env: EnvJson) =>
-            fetch(`${env.appsMetadataServerUrl}/authentication.json`)
-        )
-        .then((res: Response) => res.json())
-        .then((res: { authorizationCodeFlowFeatureFlag: boolean }) => {
-            console.log(
-                `Authorization code flow is ${
-                    res.authorizationCodeFlowFeatureFlag
-                        ? 'enabled'
-                        : 'disabled'
-                }`
-            );
-            return res.authorizationCodeFlowFeatureFlag || false;
-        })
-        .catch((error) => {
-            console.error(error);
-            console.warn(
-                `Something wrong happened when retrieving authentication.json: authorization code flow will be disabled`
-            );
-            return false;
-        });
+export function fetchIdpSettings() {
+    return fetch('idpSettings.json').then((res) => res.json());
 }
 
 export type VersionJson = {
