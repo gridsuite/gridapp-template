@@ -146,23 +146,23 @@ const App: FunctionComponent = () => {
                 console.debug(
                     `auth dev mode: ${process.env.REACT_APP_USE_AUTHENTICATION}`
                 );
+                const initAuth =
+                    process.env.REACT_APP_USE_AUTHENTICATION === 'true'
+                        ? initializeAuthenticationProd(
+                              dispatch,
+                              initialMatchSilentRenewCallbackUrl != null,
+                              fetchIdpSettings,
+                              fetchValidateUser,
+                              initialMatchSigninCallbackUrl != null
+                          )
+                        : initializeAuthenticationDev(
+                              dispatch,
+                              initialMatchSilentRenewCallbackUrl != null,
+                              validateUserDev,
+                              initialMatchSigninCallbackUrl != null
+                          );
                 setUserManager({
-                    instance:
-                        (await (process.env.REACT_APP_USE_AUTHENTICATION ===
-                        'true'
-                            ? initializeAuthenticationProd(
-                                  dispatch,
-                                  initialMatchSilentRenewCallbackUrl != null,
-                                  fetchIdpSettings,
-                                  fetchValidateUser,
-                                  initialMatchSigninCallbackUrl != null
-                              )
-                            : initializeAuthenticationDev(
-                                  dispatch,
-                                  initialMatchSilentRenewCallbackUrl != null,
-                                  validateUserDev,
-                                  initialMatchSigninCallbackUrl != null
-                              ))) ?? null,
+                    instance: (await initAuth) ?? null,
                     error: null,
                 });
             } catch (error) {
