@@ -5,6 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { User } from 'oidc-client';
 import {
     APP_NAME,
     getAppName,
@@ -14,7 +15,6 @@ import {
 import { store } from '../redux/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
 import { AppState } from '../redux/reducer';
-import { User } from './auth';
 import { LanguageParameters } from './language';
 import { getErrorMessage } from './error';
 

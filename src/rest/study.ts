@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { backendFetchJson, Token } from '../utils/rest-api';
+import { backendFetchJson } from '../utils/rest-api';
 import { getErrorMessage } from '../utils/error';
 
 const API_URL =
@@ -15,24 +15,20 @@ const API_URL =
 
 //TODO delete when commons-ui will be in typescript
 export type ServerAbout = {
-    type?: 'app' | 'server' | 'other';
-    name?: string;
+    type: 'app' | 'server' | 'other';
+    name: string;
     version?: string;
     gitTag?: string;
 };
 
-export function getServersInfos(token: Token): Promise<ServerAbout[]> {
-    return backendFetchJson(
-        `${API_URL}/servers/about?view=yyy`,
-        {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            cache: 'default',
+export function getServersInfos(): Promise<ServerAbout[]> {
+    return backendFetchJson(`${API_URL}/servers/about?view=yyy`, {
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
         },
-        token
-    ).catch((error) => {
+        cache: 'default',
+    }).catch((error) => {
         console.error(
             `Error while fetching the servers infos : ${getErrorMessage(error)}`
         );

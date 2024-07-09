@@ -6,21 +6,20 @@
  */
 
 import { AnyAction, createReducer, Draft } from '@reduxjs/toolkit';
-
+import { User } from 'oidc-client';
 import {
     getLocalStorageComputedLanguage,
     getLocalStorageLanguage,
     getLocalStorageTheme,
     saveLocalStorageTheme,
 } from './local-storage';
-
 import {
     ComputedLanguageAction,
+    LanguageAction,
     SELECT_COMPUTED_LANGUAGE,
     SELECT_THEME,
     ThemeAction,
 } from './actions';
-
 import {
     LOGOUT_ERROR,
     RESET_AUTHENTICATION_ROUTER_ERROR,
@@ -33,7 +32,6 @@ import {
 import { PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { ReducerWithInitialState } from '@reduxjs/toolkit/dist/createReducer';
 import { LanguageParameters, SupportedLanguages } from '../utils/language';
-import { User } from '../utils/auth';
 
 export type AppState = {
     computedLanguage: SupportedLanguages;
@@ -59,7 +57,7 @@ const initialState: AppState = {
     computedLanguage: getLocalStorageComputedLanguage(),
 };
 
-export type Actions = AnyAction | ThemeAction | ComputedLanguageAction;
+export type Actions = AnyAction | ThemeAction | LanguageAction | ComputedLanguageAction;
 
 export type AppStateKey = keyof AppState;
 

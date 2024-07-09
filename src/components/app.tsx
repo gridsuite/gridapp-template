@@ -54,6 +54,7 @@ import { getComputedLanguage } from '../utils/language';
 import AppTopBar, { AppTopBarProps } from './app-top-bar';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { getErrorMessage } from '../utils/error';
+import { AppDispatch } from '../redux/store';
 
 const App: FunctionComponent = () => {
     const { snackError } = useSnackMessage();
@@ -76,7 +77,7 @@ const App: FunctionComponent = () => {
 
     const navigate = useNavigate();
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const location = useLocation();
 
