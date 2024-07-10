@@ -20,9 +20,9 @@ import {
     ThemeAction,
 } from './actions';
 import {
+    AuthenticationActions,
     AuthenticationRouterErrorAction,
     AuthenticationRouterErrorState,
-    CommonActions,
     CommonStoreState,
     GsLang,
     GsLangUser,
@@ -49,7 +49,7 @@ export type AppState = CommonStoreState & {
     [PARAM_THEME]: GsTheme;
     [PARAM_LANGUAGE]: GsLang;
 
-    signInCallbackError: string | null;
+    signInCallbackError: Error | null;
     authenticationRouterError: AuthenticationRouterErrorState | null;
     showAuthenticationRouterLogin: boolean;
 };
@@ -68,7 +68,7 @@ const initialState: AppState = {
 };
 
 export type Actions =
-    | CommonActions
+    | AuthenticationActions
     | ThemeAction
     | LanguageAction
     | ComputedLanguageAction;
