@@ -22,6 +22,7 @@ import {
 } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Box, Typography } from '@mui/material';
+import { UserManager } from 'oidc-client';
 import {
     AuthenticationRouter,
     CardErrorBoundary,
@@ -140,7 +141,7 @@ const App: FunctionComponent = () => {
         })
     );
 
-    const initialize = useCallback((): Promise<unknown | undefined> => {
+    const initialize = useCallback((): Promise<UserManager> => {
         if (process.env.REACT_APP_USE_AUTHENTICATION === 'true') {
             return fetchAuthorizationCodeFlowFeatureFlag().then(
                 (authorizationCodeFlowEnabled) =>

@@ -18,6 +18,7 @@ import {
     card_error_boundary_en,
     card_error_boundary_fr,
     CardErrorBoundary,
+    GsLangUser,
     LIGHT_THEME,
     login_en,
     login_fr,
@@ -28,7 +29,6 @@ import {
 import { IntlProvider } from 'react-intl';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
-import { SupportedLanguages } from '../utils/language';
 import messages_en from '../translations/en.json';
 import messages_fr from '../translations/fr.json';
 import messages_plugins_en from '../plugins/translations/en.json';
@@ -98,7 +98,7 @@ const getMuiTheme = (theme: string): Theme => {
     }
 };
 
-const messages: Record<SupportedLanguages, IntlConfig['messages']> = {
+const messages: Record<GsLangUser, IntlConfig['messages']> = {
     en: {
         ...messages_en,
         ...login_en,

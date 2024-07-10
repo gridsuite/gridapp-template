@@ -5,8 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { AnyAction, createReducer, Draft } from '@reduxjs/toolkit';
-import { User } from 'oidc-client';
+import { createReducer, Draft } from '@reduxjs/toolkit';
 import {
     getLocalStorageComputedLanguage,
     getLocalStorageLanguage,
@@ -21,26 +20,37 @@ import {
     ThemeAction,
 } from './actions';
 import {
+    AuthenticationRouterErrorAction,
+    AuthenticationRouterErrorState,
+    CommonActions,
+    CommonStoreState,
+    GsLang,
+    GsLangUser,
+    GsTheme,
     LOGOUT_ERROR,
+    LogoutErrorAction,
     RESET_AUTHENTICATION_ROUTER_ERROR,
     SHOW_AUTH_INFO_LOGIN,
+    ShowAuthenticationRouterLoginAction,
     SIGNIN_CALLBACK_ERROR,
+    SignInCallbackErrorAction,
     UNAUTHORIZED_USER_INFO,
+    UnauthorizedUserAction,
     USER,
     USER_VALIDATION_ERROR,
+    UserAction,
+    UserValidationErrorAction,
 } from '@gridsuite/commons-ui';
 import { PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { ReducerWithInitialState } from '@reduxjs/toolkit/dist/createReducer';
-import { LanguageParameters, SupportedLanguages } from '../utils/language';
 
-export type AppState = {
-    computedLanguage: SupportedLanguages;
-    [PARAM_THEME]: string;
-    [PARAM_LANGUAGE]: LanguageParameters;
+export type AppState = CommonStoreState & {
+    computedLanguage: GsLangUser;
+    [PARAM_THEME]: GsTheme;
+    [PARAM_LANGUAGE]: GsLang;
 
-    user: User | null; //TODO use true definition when commons-ui passed to typescript
-    signInCallbackError: unknown;
-    authenticationRouterError: unknown;
+    signInCallbackError: string | null;
+    authenticationRouterError: AuthenticationRouterErrorState | null;
     showAuthenticationRouterLogin: boolean;
 };
 
@@ -57,7 +67,11 @@ const initialState: AppState = {
     computedLanguage: getLocalStorageComputedLanguage(),
 };
 
-export type Actions = AnyAction | ThemeAction | LanguageAction | ComputedLanguageAction;
+export type Actions =
+    | CommonActions
+    | ThemeAction
+    | LanguageAction
+    | ComputedLanguageAction;
 
 export type AppStateKey = keyof AppState;
 
@@ -72,20 +86,20 @@ export const reducer: ReducerWithInitialState<AppState> = createReducer(
             }
         );
 
-        builder.addCase(USER, (state: Draft<AppState>, action: AnyAction) => {
+        builder.addCase(USER, (state: Draft<AppState>, action: UserAction) => {
             state.user = action.user;
         });
 
         builder.addCase(
             SIGNIN_CALLBACK_ERROR,
-            (state: Draft<AppState>, action: AnyAction) => {
+            (state: Draft<AppState>, action: SignInCallbackErrorAction) => {
                 state.signInCallbackError = action.signInCallbackError;
             }
         );
 
         builder.addCase(
             UNAUTHORIZED_USER_INFO,
-            (state: Draft<AppState>, action: AnyAction) => {
+            (state: Draft<AppState>, action: UnauthorizedUserAction) => {
                 state.authenticationRouterError =
                     action.authenticationRouterError;
             }
@@ -93,7 +107,7 @@ export const reducer: ReducerWithInitialState<AppState> = createReducer(
 
         builder.addCase(
             LOGOUT_ERROR,
-            (state: Draft<AppState>, action: AnyAction) => {
+            (state: Draft<AppState>, action: LogoutErrorAction) => {
                 state.authenticationRouterError =
                     action.authenticationRouterError;
             }
@@ -101,7 +115,7 @@ export const reducer: ReducerWithInitialState<AppState> = createReducer(
 
         builder.addCase(
             USER_VALIDATION_ERROR,
-            (state: Draft<AppState>, action: AnyAction) => {
+            (state: Draft<AppState>, action: UserValidationErrorAction) => {
                 state.authenticationRouterError =
                     action.authenticationRouterError;
             }
@@ -109,14 +123,20 @@ export const reducer: ReducerWithInitialState<AppState> = createReducer(
 
         builder.addCase(
             RESET_AUTHENTICATION_ROUTER_ERROR,
-            (state: Draft<AppState>, action: AnyAction) => {
+            (
+                state: Draft<AppState>,
+                action: AuthenticationRouterErrorAction
+            ) => {
                 state.authenticationRouterError = null;
             }
         );
 
         builder.addCase(
             SHOW_AUTH_INFO_LOGIN,
-            (state: Draft<AppState>, action: AnyAction) => {
+            (
+                state: Draft<AppState>,
+                action: ShowAuthenticationRouterLoginAction
+            ) => {
                 state.showAuthenticationRouterLogin =
                     action.showAuthenticationRouterLogin;
             }

@@ -11,7 +11,12 @@ import React, {
     useEffect,
     useState,
 } from 'react';
-import { LIGHT_THEME, logout, TopBar } from '@gridsuite/commons-ui';
+import {
+    LIGHT_THEME,
+    logout,
+    TopBar,
+    UserManagerState,
+} from '@gridsuite/commons-ui';
 import Parameters, { useParameterState } from './parameters';
 import { APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,10 +34,7 @@ import { AppDispatch } from '../redux/store';
 
 export type AppTopBarProps = {
     user?: AppState['user'];
-    userManager: {
-        instance: unknown | null;
-        error: string | null;
-    };
+    userManager: UserManagerState;
 };
 const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
     const navigate = useNavigate();

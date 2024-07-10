@@ -6,6 +6,7 @@
  */
 
 import { User } from 'oidc-client';
+import { GsLangUser, GsTheme } from '@gridsuite/commons-ui';
 import {
     APP_NAME,
     getAppName,
@@ -15,7 +16,6 @@ import {
 import { store } from '../redux/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
 import { AppState } from '../redux/reducer';
-import { LanguageParameters } from './language';
 import { getErrorMessage } from './error';
 
 export interface ErrorWithStatus extends Error {
@@ -271,13 +271,14 @@ export function fetchAppsAndUrls(): Promise<MetadataJson[]> {
 export type ConfigParameter =
     | {
           readonly name: typeof PARAM_LANGUAGE;
-          value: LanguageParameters;
+          value: GsLangUser;
       }
     | {
           readonly name: typeof PARAM_THEME;
-          value: string;
+          value: GsTheme;
       };
 export type ConfigParameters = ConfigParameter[];
+
 export function fetchConfigParameters(
     appName: string = APP_NAME
 ): Promise<ConfigParameters> {
