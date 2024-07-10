@@ -11,7 +11,12 @@ import React, {
     useEffect,
     useState,
 } from 'react';
-import { LIGHT_THEME, logout, TopBar } from '@gridsuite/commons-ui';
+import {
+    LIGHT_THEME,
+    logout,
+    TopBar,
+    UserManagerState,
+} from '@gridsuite/commons-ui';
 import Parameters, { useParameterState } from './parameters';
 import { APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,18 +30,16 @@ import { useNavigate } from 'react-router-dom';
 import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
 import AppPackage from '../../package.json';
 import { AppState } from '../redux/reducer';
+import { AppDispatch } from '../redux/store';
 
 export type AppTopBarProps = {
     user?: AppState['user'];
-    userManager: {
-        instance: unknown | null;
-        error: string | null;
-    };
+    userManager: UserManagerState;
 };
 const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
     const navigate = useNavigate();
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const [appsAndUrls, setAppsAndUrls] = useState<MetadataJson[]>([]);
 
@@ -78,10 +81,12 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
                     logout(dispatch, props.userManager.instance)
                 }
                 onLogoClick={() => navigate('/', { replace: true })}
-                user={props.user}
+                user={props.user ?? undefined}
                 appsAndUrls={appsAndUrls}
                 globalVersionPromise={() =>
-                    fetchVersion().then((res) => res?.deployVersion)
+                    fetchVersion().then(
+                        (res) => res?.deployVersion ?? 'unknown'
+                    )
                 }
                 additionalModulesPromise={getServersInfos}
                 onThemeClick={handleChangeTheme}

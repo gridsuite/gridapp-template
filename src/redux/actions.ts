@@ -5,15 +5,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { GsTheme } from '@gridsuite/commons-ui';
 import { PARAM_LANGUAGE } from '../utils/config-params';
 import { Action } from 'redux';
 import { AppState } from './reducer';
 
 export const SELECT_THEME = 'SELECT_THEME';
 export type ThemeAction = Readonly<Action<typeof SELECT_THEME>> & {
-    theme: string;
+    theme: GsTheme;
 };
-export function selectTheme(theme: string): ThemeAction {
+
+export function selectTheme(theme: GsTheme): ThemeAction {
     return { type: SELECT_THEME, theme: theme };
 }
 
@@ -21,6 +23,7 @@ export const SELECT_LANGUAGE = 'SELECT_LANGUAGE';
 export type LanguageAction = Readonly<Action<typeof SELECT_LANGUAGE>> & {
     [PARAM_LANGUAGE]: AppState['language'];
 };
+
 export function selectLanguage(language: AppState['language']): LanguageAction {
     return { type: SELECT_LANGUAGE, [PARAM_LANGUAGE]: language };
 }
@@ -31,6 +34,7 @@ export type ComputedLanguageAction = Readonly<
 > & {
     computedLanguage: AppState['computedLanguage'];
 };
+
 export function selectComputedLanguage(
     computedLanguage: AppState['computedLanguage']
 ): ComputedLanguageAction {
