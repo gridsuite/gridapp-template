@@ -5,6 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { Env, GsLangUser, GsTheme } from '@gridsuite/commons-ui';
+import { User } from 'oidc-client';
 import {
     APP_NAME,
     getAppName,
@@ -14,13 +16,22 @@ import {
 import { store } from '../redux/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
 import { AppState } from '../redux/reducer';
-import { User } from './auth';
-import { LanguageParameters } from './language';
 import { getErrorMessage } from './error';
 
 export interface ErrorWithStatus extends Error {
     status?: number;
 }
+
+// TODO remove when exported in commons-ui (src/utils/AuthService.ts)
+type IdpSettings = {
+    authority: string;
+    client_id: string;
+    redirect_uri: string;
+    post_logout_redirect_uri: string;
+    silent_redirect_uri: string;
+    scope: string;
+    maxExpiresIn?: number;
+};
 
 export type Url = string | URL;
 export type InitRequest = Partial<RequestInit>;
@@ -164,44 +175,14 @@ export function fetchValidateUser(user: User): Promise<boolean> {
         });
 }
 
-export type EnvJson = typeof import('../../public/env.json') & {
-    // https://github.com/gridsuite/deployment/blob/main/docker-compose/env.json
-    // https://github.com/gridsuite/deployment/blob/main/k8s/live/azure-dev/env.json
-    // https://github.com/gridsuite/deployment/blob/main/k8s/live/azure-integ/env.json
-    // https://github.com/gridsuite/deployment/blob/main/k8s/live/local/env.json
-    appsMetadataServerUrl?: Url;
-    mapBoxToken?: string;
-    //[key: string]: string;
-};
+export type EnvJson = Env & typeof import('../../public/env.json');
 
 function fetchEnv(): Promise<EnvJson> {
     return fetch('env.json').then((res: Response) => res.json());
 }
 
-export function fetchAuthorizationCodeFlowFeatureFlag(): Promise<boolean> {
-    console.info(`Fetching authorization code flow feature flag...`);
-    return fetchEnv()
-        .then((env: EnvJson) =>
-            fetch(`${env.appsMetadataServerUrl}/authentication.json`)
-        )
-        .then((res: Response) => res.json())
-        .then((res: { authorizationCodeFlowFeatureFlag: boolean }) => {
-            console.log(
-                `Authorization code flow is ${
-                    res.authorizationCodeFlowFeatureFlag
-                        ? 'enabled'
-                        : 'disabled'
-                }`
-            );
-            return res.authorizationCodeFlowFeatureFlag || false;
-        })
-        .catch((error) => {
-            console.error(error);
-            console.warn(
-                `Something wrong happened when retrieving authentication.json: authorization code flow will be disabled`
-            );
-            return false;
-        });
+export function fetchIdpSettings(): Promise<IdpSettings> {
+    return fetch('idpSettings.json').then((res) => res.json());
 }
 
 export type VersionJson = {
@@ -271,13 +252,14 @@ export function fetchAppsAndUrls(): Promise<MetadataJson[]> {
 export type ConfigParameter =
     | {
           readonly name: typeof PARAM_LANGUAGE;
-          value: LanguageParameters;
+          value: GsLangUser;
       }
     | {
           readonly name: typeof PARAM_THEME;
-          value: string;
+          value: GsTheme;
       };
 export type ConfigParameters = ConfigParameter[];
+
 export function fetchConfigParameters(
     appName: string = APP_NAME
 ): Promise<ConfigParameters> {

@@ -8,3 +8,4 @@ import { createStore, Store } from 'redux';
 import { Actions, AppState, reducer } from './reducer';
 
 export const store: Store<AppState, Actions> = createStore(reducer);
+export type AppDispatch = typeof store.dispatch;
