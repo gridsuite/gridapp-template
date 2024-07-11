@@ -22,7 +22,6 @@ import {
 } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Box, Typography } from '@mui/material';
-import { UserManager } from 'oidc-client';
 import {
     AuthenticationRouter,
     CardErrorBoundary,
@@ -278,7 +277,7 @@ const App: FunctionComponent = () => {
 };
 export default App;
 
-function validateUserDev() {
+function validateUserDev(): Promise<boolean> {
     return new Promise((resolve) =>
         window.setTimeout(() => resolve(true), 500)
     );

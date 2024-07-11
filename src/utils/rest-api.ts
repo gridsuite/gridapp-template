@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { GsLangUser, GsTheme } from '@gridsuite/commons-ui';
-import { Env, IdpSettings } from '@gridsuite/commons-ui';
+import { Env, GsLangUser, GsTheme } from '@gridsuite/commons-ui';
+import { User } from 'oidc-client';
 import {
     APP_NAME,
     getAppName,
@@ -21,6 +21,17 @@ import { getErrorMessage } from './error';
 export interface ErrorWithStatus extends Error {
     status?: number;
 }
+
+// TODO remove when exported in commons-ui (src/utils/AuthService.ts)
+type IdpSettings = {
+    authority: string;
+    client_id: string;
+    redirect_uri: string;
+    post_logout_redirect_uri: string;
+    silent_redirect_uri: string;
+    scope: string;
+    maxExpiresIn?: number;
+};
 
 export type Url = string | URL;
 export type InitRequest = Partial<RequestInit>;
