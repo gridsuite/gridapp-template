@@ -51,10 +51,11 @@
     },
     "jest": {
         "moduleNameMapper": {
-            "\\.svg": "<rootDir>/src/__mocks__/svgrMock.js"
+            "\\.svg": "<rootDir>/src/__mocks__/svgrMock.js",
+            "^.+\\.(css|less|scss)$": "identity-obj-proxy"
         },
         "transformIgnorePatterns": [
-            "node_modules/(?!@gridsuite/commons-ui)/"
+            "node_modules/(?!@gridsuite/commons-ui|react-dnd|dnd-core|@react-dnd)"
         ]
     },
     "eslintConfig": {
