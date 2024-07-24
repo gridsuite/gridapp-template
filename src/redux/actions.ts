@@ -5,8 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { GsTheme } from '@gridsuite/commons-ui';
-import { PARAM_LANGUAGE } from '../utils/config-params';
+import { GsTheme, PARAM_LANGUAGE } from '@gridsuite/commons-ui';
 import { Action } from 'redux';
 import { AppState } from './reducer';
 
