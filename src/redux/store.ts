@@ -6,6 +6,12 @@
  */
 import { createStore, Store } from 'redux';
 import { Actions, AppState, reducer } from './reducer';
+import { initCommonServices } from '@gridsuite/commons-ui';
+import { APP_NAME } from '../utils/config-params';
 
 export const store: Store<AppState, Actions> = createStore(reducer);
 export type AppDispatch = typeof store.dispatch;
+
+export function getUser() {
+    return store.getState().user;
+}

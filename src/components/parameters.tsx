@@ -29,7 +29,7 @@ import {
     TypographyTypeMap,
 } from '@mui/material';
 import { CSSObject, Theme } from '@emotion/react';
-import { updateConfigParameter } from '../utils/rest-api';
+import { configSrv } from '../services';
 import { useSnackMessage } from '@gridsuite/commons-ui';
 import { AppState, AppStateKey } from '../redux/reducer';
 
@@ -62,7 +62,8 @@ export function useParameterState<K extends AppStateKey>(
     const handleChangeParamLocalState = useCallback(
         (value: AppState[K]) => {
             setParamLocalState(value);
-            updateConfigParameter(paramName, value as string) //TODO how to check/cast?
+            configSrv
+                .updateConfigParameter(paramName, value as string) //TODO how to check/cast?
                 .catch((error) => {
                     setParamLocalState(paramGlobalState);
                     snackError({
