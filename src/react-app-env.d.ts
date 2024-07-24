@@ -6,3 +6,26 @@
  */
 
 /// <reference types="react-scripts" />
+
+import { UrlString } from '@gridsuite/commons-ui';
+
+type EnvDev = {
+    REACT_APP_USE_AUTHENTICATION: true;
+    REACT_APP_SRV_STUDY_URI: string;
+};
+
+type EnvProd = {
+    REACT_APP_USE_AUTHENTICATION: false;
+    REACT_APP_API_GATEWAY: string;
+    REACT_APP_WS_GATEWAY: string;
+};
+
+type EnvCompile = EnvProd | EnvDev;
+
+declare global {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    namespace NodeJS {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        interface ProcessEnv extends EnvCompile {}
+    }
+}
