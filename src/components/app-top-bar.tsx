@@ -12,6 +12,7 @@ import React, {
     useState,
 } from 'react';
 import {
+    AppMetadataCommon,
     LIGHT_THEME,
     logout,
     TopBar,
@@ -20,11 +21,7 @@ import {
 import Parameters, { useParameterState } from './parameters';
 import { APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    fetchAppsAndUrls,
-    fetchVersion,
-    MetadataJson,
-} from '../utils/rest-api';
+import { fetchAppsAndUrls, fetchVersion } from '../utils/rest-api';
 import { getServersInfos } from '../rest/study';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
@@ -41,7 +38,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
 
     const dispatch = useDispatch<AppDispatch>();
 
-    const [appsAndUrls, setAppsAndUrls] = useState<MetadataJson[]>([]);
+    const [appsAndUrls, setAppsAndUrls] = useState<AppMetadataCommon[]>([]);
 
     const theme = useSelector((state: AppState) => state[PARAM_THEME]);
 
@@ -55,7 +52,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
     const hideParameters = useCallback(() => setShowParameters(false), []);
 
     useEffect(() => {
-        if (props.user !== null) {
+        if (props.user !== undefined) {
             fetchAppsAndUrls().then((res) => {
                 setAppsAndUrls(res);
             });
@@ -81,7 +78,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
                     logout(dispatch, props.userManager.instance)
                 }
                 onLogoClick={() => navigate('/', { replace: true })}
-                user={props.user ?? undefined}
+                user={props.user}
                 appsAndUrls={appsAndUrls}
                 globalVersionPromise={() =>
                     fetchVersion().then(

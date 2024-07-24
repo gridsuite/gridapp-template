@@ -11,7 +11,6 @@
     "dependencies": {
         "@emotion/react": "^11.11.4",
         "@emotion/styled": "^11.11.5",
-        "@gridsuite/commons-ui": "0.63.0",
         "@hookform/resolvers": "^3.3.4",
         "@mui/icons-material": "^5.15.14",
         "@mui/lab": "^5.0.0-alpha.169",
@@ -82,6 +81,7 @@
     },
     "devDependencies": {
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "@gridsuite/commons-ui": "file:../_frontend/commons-ui/gridsuite-commons-ui-0.63.2.tgz",
         "@types/core-js": "^2.5.8",
         "@types/eslint-config-prettier": "^6.11.3",
         "@types/jest": "^27.5.2",

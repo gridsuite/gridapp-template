@@ -181,7 +181,7 @@ const App: FunctionComponent = () => {
     ]);
 
     useEffect(() => {
-        if (user !== null) {
+        if (user !== undefined) {
             fetchConfigParameters(COMMON_APP_NAME)
                 .then((params) => updateParams(params))
                 .catch((error) =>
@@ -215,7 +215,7 @@ const App: FunctionComponent = () => {
         <>
             <AppTopBar user={user} userManager={userManager} />
             <CardErrorBoundary>
-                {user !== null ? (
+                {user !== undefined ? (
                     <Routes>
                         <Route
                             path="/"
