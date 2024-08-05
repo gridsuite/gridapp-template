@@ -7,12 +7,7 @@
 
 import { Env, GsLangUser, GsTheme } from '@gridsuite/commons-ui';
 import { User } from 'oidc-client';
-import {
-    APP_NAME,
-    getAppName,
-    PARAM_LANGUAGE,
-    PARAM_THEME,
-} from './config-params';
+import { APP_NAME, getAppName, PARAM_LANGUAGE, PARAM_THEME } from './config-params';
 import { store } from '../redux/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
 import { AppState } from '../redux/reducer';
@@ -56,18 +51,12 @@ function getToken(): Token | null {
 }
 
 export function connectNotificationsWsUpdateConfig(): ReconnectingWebSocket {
-    const webSocketBaseUrl = document.baseURI
-        .replace(/^http:\/\//, 'ws://')
-        .replace(/^https:\/\//, 'wss://');
+    const webSocketBaseUrl = document.baseURI.replace(/^http:\/\//, 'ws://').replace(/^https:\/\//, 'wss://');
     const webSocketUrl = `${webSocketBaseUrl}${PREFIX_CONFIG_NOTIFICATION_WS}/notify?appName=${APP_NAME}`;
 
-    const reconnectingWebSocket = new ReconnectingWebSocket(
-        () => `${webSocketUrl}&access_token=${getToken()}`
-    );
+    const reconnectingWebSocket = new ReconnectingWebSocket(() => `${webSocketUrl}&access_token=${getToken()}`);
     reconnectingWebSocket.onopen = function (event: Event) {
-        console.info(
-            `Connected Websocket update config ui ${webSocketUrl} ...`
-        );
+        console.info(`Connected Websocket update config ui ${webSocketUrl} ...`);
     };
     return reconnectingWebSocket;
 }
@@ -91,9 +80,7 @@ function handleError(response: Response): Promise<never> {
             ) as ErrorWithStatus;
             error.status = errorJson.status;
         } else {
-            error = new Error(
-                `${errorName}${response.status} ${response.statusText}`
-            ) as ErrorWithStatus;
+            error = new Error(`${errorName}${response.status} ${response.statusText}`) as ErrorWithStatus;
             error.status = response.status;
         }
         throw error;
@@ -102,9 +89,7 @@ function handleError(response: Response): Promise<never> {
 
 function prepareRequest(init?: InitRequest, token?: Token): RequestInit {
     if (!(typeof init == 'undefined' || typeof init == 'object')) {
-        throw new TypeError(
-            `Argument 2 of backendFetch is not an object ${typeof init}`
-        );
+        throw new TypeError(`Argument 2 of backendFetch is not an object ${typeof init}`);
     }
     const initCopy: RequestInit = { ...init };
     initCopy.headers = new Headers(initCopy.headers || {});
@@ -114,47 +99,25 @@ function prepareRequest(init?: InitRequest, token?: Token): RequestInit {
 }
 
 function safeFetch(url: Url, initCopy?: InitRequest) {
-    return fetch(url, initCopy).then((response: Response) =>
-        response.ok ? response : handleError(response)
-    );
+    return fetch(url, initCopy).then((response: Response) => (response.ok ? response : handleError(response)));
 }
 
-export function backendFetch(
-    url: Url,
-    init?: InitRequest,
-    token?: Token
-): Promise<Response> {
+export function backendFetch(url: Url, init?: InitRequest, token?: Token): Promise<Response> {
     return safeFetch(url, prepareRequest(init, token));
 }
 
-export function backendFetchText(
-    url: Url,
-    init?: InitRequest,
-    token?: Token
-): Promise<string> {
-    return backendFetch(url, init, token).then((safeResponse: Response) =>
-        safeResponse.text()
-    );
+export function backendFetchText(url: Url, init?: InitRequest, token?: Token): Promise<string> {
+    return backendFetch(url, init, token).then((safeResponse: Response) => safeResponse.text());
 }
 
-export function backendFetchJson(
-    url: Url,
-    init?: InitRequest,
-    token?: Token
-): Promise<unknown> {
-    return backendFetch(url, init, token).then((safeResponse: Response) =>
-        safeResponse.json()
-    );
+export function backendFetchJson(url: Url, init?: InitRequest, token?: Token): Promise<unknown> {
+    return backendFetch(url, init, token).then((safeResponse: Response) => safeResponse.json());
 }
 
 export function fetchValidateUser(user: User): Promise<boolean> {
     const sub = user?.profile?.sub;
     if (!sub) {
-        return Promise.reject(
-            new Error(
-                `Error : Fetching access for missing user.profile.sub : ${user}`
-            )
-        );
+        return Promise.reject(new Error(`Error : Fetching access for missing user.profile.sub : ${user}`));
     }
 
     console.info(`Fetching access for user...`);
@@ -192,14 +155,10 @@ export type VersionJson = {
 export function fetchVersion(): Promise<VersionJson> {
     console.info(`Fetching global metadata...`);
     return fetchEnv()
-        .then((env: EnvJson) =>
-            fetch(`${env.appsMetadataServerUrl}/version.json`)
-        )
+        .then((env: EnvJson) => fetch(`${env.appsMetadataServerUrl}/version.json`))
         .then((response: Response) => response.json())
         .catch((error) => {
-            console.error(
-                `Error while fetching the version : ${getErrorMessage(error)}`
-            );
+            console.error(`Error while fetching the version : ${getErrorMessage(error)}`);
             throw error;
         });
 }
@@ -242,9 +201,7 @@ export type MetadataJson = MetadataCommon | MetadataStudy;
 export function fetchAppsAndUrls(): Promise<MetadataJson[]> {
     console.info(`Fetching apps and urls...`);
     return fetchEnv()
-        .then((env: EnvJson) =>
-            fetch(`${env.appsMetadataServerUrl}/apps-metadata.json`)
-        )
+        .then((env: EnvJson) => fetch(`${env.appsMetadataServerUrl}/apps-metadata.json`))
         .then((response: Response) => response.json());
 }
 
@@ -260,9 +217,7 @@ export type ConfigParameter =
       };
 export type ConfigParameters = ConfigParameter[];
 
-export function fetchConfigParameters(
-    appName: string = APP_NAME
-): Promise<ConfigParameters> {
+export function fetchConfigParameters(appName: string = APP_NAME): Promise<ConfigParameters> {
     console.info(`Fetching UI configuration params for app : ${appName}`);
     const fetchParams = `${PREFIX_CONFIG_QUERIES}/v1/applications/${appName}/parameters`;
     return backendFetchJson(fetchParams) as Promise<ConfigParameters>;
@@ -275,14 +230,9 @@ export function fetchConfigParameter(name: string): Promise<ConfigParameter> {
     return backendFetchJson(fetchParams) as Promise<ConfigParameter>;
 }
 
-export function updateConfigParameter(
-    name: string,
-    value: Parameters<typeof encodeURIComponent>[0]
-): Promise<never> {
+export function updateConfigParameter(name: string, value: Parameters<typeof encodeURIComponent>[0]): Promise<never> {
     const appName = getAppName(name);
-    console.info(
-        `Updating config parameter '${name}=${value}' for app '${appName}'`
-    );
+    console.info(`Updating config parameter '${name}=${value}' for app '${appName}'`);
     const updateParams = `${PREFIX_CONFIG_QUERIES}/v1/applications/${appName}/parameters/${name}?value=${encodeURIComponent(
         value
     )}`;

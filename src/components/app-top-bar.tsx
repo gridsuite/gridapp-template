@@ -5,26 +5,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, {
-    FunctionComponent,
-    useCallback,
-    useEffect,
-    useState,
-} from 'react';
-import {
-    LIGHT_THEME,
-    logout,
-    TopBar,
-    UserManagerState,
-} from '@gridsuite/commons-ui';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { LIGHT_THEME, logout, TopBar, UserManagerState } from '@gridsuite/commons-ui';
 import Parameters, { useParameterState } from './parameters';
 import { APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    fetchAppsAndUrls,
-    fetchVersion,
-    MetadataJson,
-} from '../utils/rest-api';
+import { fetchAppsAndUrls, fetchVersion, MetadataJson } from '../utils/rest-api';
 import { getServersInfos } from '../rest/study';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
@@ -47,8 +33,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
 
     const [themeLocal, handleChangeTheme] = useParameterState(PARAM_THEME);
 
-    const [languageLocal, handleChangeLanguage] =
-        useParameterState(PARAM_LANGUAGE);
+    const [languageLocal, handleChangeLanguage] = useParameterState(PARAM_LANGUAGE);
 
     const [showParameters, setShowParameters] = useState(false);
     const displayParameters = useCallback(() => setShowParameters(true), []);
@@ -77,27 +62,18 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
                 appVersion={AppPackage.version}
                 appLicense={AppPackage.license}
                 onParametersClick={displayParameters}
-                onLogoutClick={() =>
-                    logout(dispatch, props.userManager.instance)
-                }
+                onLogoutClick={() => logout(dispatch, props.userManager.instance)}
                 onLogoClick={() => navigate('/', { replace: true })}
                 user={props.user ?? undefined}
                 appsAndUrls={appsAndUrls}
-                globalVersionPromise={() =>
-                    fetchVersion().then(
-                        (res) => res?.deployVersion ?? 'unknown'
-                    )
-                }
+                globalVersionPromise={() => fetchVersion().then((res) => res?.deployVersion ?? 'unknown')}
                 additionalModulesPromise={getServersInfos}
                 onThemeClick={handleChangeTheme}
                 theme={themeLocal}
                 onLanguageClick={handleChangeLanguage}
                 language={languageLocal}
             />
-            <Parameters
-                showParameters={showParameters}
-                hideParameters={hideParameters}
-            />
+            <Parameters showParameters={showParameters} hideParameters={hideParameters} />
         </>
     );
 };

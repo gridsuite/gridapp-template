@@ -5,21 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, {
-    FunctionComponent,
-    useCallback,
-    useEffect,
-    useState,
-} from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    Navigate,
-    Route,
-    Routes,
-    useLocation,
-    useMatch,
-    useNavigate,
-} from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Box, Typography } from '@mui/material';
 import {
@@ -30,11 +18,7 @@ import {
     initializeAuthenticationProd,
     useSnackMessage,
 } from '@gridsuite/commons-ui';
-import {
-    selectComputedLanguage,
-    selectLanguage,
-    selectTheme,
-} from '../redux/actions';
+import { selectComputedLanguage, selectLanguage, selectTheme } from '../redux/actions';
 import { AppState } from '../redux/reducer';
 import {
     ConfigParameters,
@@ -44,12 +28,7 @@ import {
     fetchIdpSettings,
     fetchValidateUser,
 } from '../utils/rest-api';
-import {
-    APP_NAME,
-    COMMON_APP_NAME,
-    PARAM_LANGUAGE,
-    PARAM_THEME,
-} from '../utils/config-params';
+import { APP_NAME, COMMON_APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { getComputedLanguage } from '../utils/language';
 import AppTopBar, { AppTopBarProps } from './app-top-bar';
 import ReconnectingWebSocket from 'reconnecting-websocket';
@@ -61,19 +40,11 @@ const App: FunctionComponent = () => {
 
     const user = useSelector((state: AppState) => state.user);
 
-    const signInCallbackError = useSelector(
-        (state: AppState) => state.signInCallbackError
-    );
-    const authenticationRouterError = useSelector(
-        (state: AppState) => state.authenticationRouterError
-    );
-    const showAuthenticationRouterLogin = useSelector(
-        (state: AppState) => state.showAuthenticationRouterLogin
-    );
+    const signInCallbackError = useSelector((state: AppState) => state.signInCallbackError);
+    const authenticationRouterError = useSelector((state: AppState) => state.authenticationRouterError);
+    const showAuthenticationRouterLogin = useSelector((state: AppState) => state.showAuthenticationRouterLogin);
 
-    const [userManager, setUserManager] = useState<
-        AppTopBarProps['userManager']
-    >({ instance: null, error: null });
+    const [userManager, setUserManager] = useState<AppTopBarProps['userManager']>({ instance: null, error: null });
 
     const navigate = useNavigate();
 
@@ -91,11 +62,7 @@ const App: FunctionComponent = () => {
                         break;
                     case PARAM_LANGUAGE:
                         dispatch(selectLanguage(param.value));
-                        dispatch(
-                            selectComputedLanguage(
-                                getComputedLanguage(param.value)
-                            )
-                        );
+                        dispatch(selectComputedLanguage(getComputedLanguage(param.value)));
                         break;
                     default:
                         break;
@@ -105,27 +72,26 @@ const App: FunctionComponent = () => {
         [dispatch]
     );
 
-    const connectNotificationsUpdateConfig =
-        useCallback((): ReconnectingWebSocket => {
-            const ws = connectNotificationsWsUpdateConfig();
-            ws.onmessage = function (event) {
-                let eventData = JSON.parse(event.data);
-                if (eventData.headers?.parameterName) {
-                    fetchConfigParameter(eventData.headers.parameterName)
-                        .then((param) => updateParams([param]))
-                        .catch((error) =>
-                            snackError({
-                                messageTxt: error.message,
-                                headerId: 'paramsRetrievingError',
-                            })
-                        );
-                }
-            };
-            ws.onerror = function (event) {
-                console.error('Unexpected Notification WebSocket error', event);
-            };
-            return ws;
-        }, [updateParams, snackError]);
+    const connectNotificationsUpdateConfig = useCallback((): ReconnectingWebSocket => {
+        const ws = connectNotificationsWsUpdateConfig();
+        ws.onmessage = function (event) {
+            let eventData = JSON.parse(event.data);
+            if (eventData.headers?.parameterName) {
+                fetchConfigParameter(eventData.headers.parameterName)
+                    .then((param) => updateParams([param]))
+                    .catch((error) =>
+                        snackError({
+                            messageTxt: error.message,
+                            headerId: 'paramsRetrievingError',
+                        })
+                    );
+            }
+        };
+        ws.onerror = function (event) {
+            console.error('Unexpected Notification WebSocket error', event);
+        };
+        return ws;
+    }, [updateParams, snackError]);
 
     // Can't use lazy initializer because useMatch is a hook
     const [initialMatchSilentRenewCallbackUrl] = useState(
@@ -144,9 +110,7 @@ const App: FunctionComponent = () => {
         // need subfunction when async as suggested by rule react-hooks/exhaustive-deps
         (async function initializeAuthentication() {
             try {
-                console.debug(
-                    `auth dev mode: ${process.env.REACT_APP_USE_AUTHENTICATION}`
-                );
+                console.debug(`auth dev mode: ${process.env.REACT_APP_USE_AUTHENTICATION}`);
                 const initAuth =
                     process.env.REACT_APP_USE_AUTHENTICATION === 'true'
                         ? initializeAuthenticationProd(
@@ -174,11 +138,7 @@ const App: FunctionComponent = () => {
             }
         })();
         // Note: dispatch and initialMatchSilentRenewCallbackUrl won't change
-    }, [
-        initialMatchSigninCallbackUrl,
-        initialMatchSilentRenewCallbackUrl,
-        dispatch,
-    ]);
+    }, [initialMatchSigninCallbackUrl, initialMatchSilentRenewCallbackUrl, dispatch]);
 
     useEffect(() => {
         if (user !== null) {
@@ -203,13 +163,7 @@ const App: FunctionComponent = () => {
             const ws = connectNotificationsUpdateConfig();
             return () => ws.close();
         }
-    }, [
-        user,
-        dispatch,
-        updateParams,
-        snackError,
-        connectNotificationsUpdateConfig,
-    ]);
+    }, [user, dispatch, updateParams, snackError, connectNotificationsUpdateConfig]);
 
     return (
         <>
@@ -221,33 +175,16 @@ const App: FunctionComponent = () => {
                             path="/"
                             element={
                                 <Box mt={20}>
-                                    <Typography
-                                        variant="h3"
-                                        color="textPrimary"
-                                        align="center"
-                                    >
+                                    <Typography variant="h3" color="textPrimary" align="center">
                                         Connected
                                     </Typography>
                                 </Box>
                             }
                         />
-                        <Route
-                            path="/sign-in-callback"
-                            element={
-                                <Navigate
-                                    replace
-                                    to={getPreLoginPath() || '/'}
-                                />
-                            }
-                        />
+                        <Route path="/sign-in-callback" element={<Navigate replace to={getPreLoginPath() || '/'} />} />
                         <Route
                             path="/logout-callback"
-                            element={
-                                <h1>
-                                    Error: logout failed; you are still logged
-                                    in.
-                                </h1>
-                            }
+                            element={<h1>Error: logout failed; you are still logged in.</h1>}
                         />
                         <Route
                             path="*"
@@ -263,9 +200,7 @@ const App: FunctionComponent = () => {
                         userManager={userManager}
                         signInCallbackError={signInCallbackError}
                         authenticationRouterError={authenticationRouterError}
-                        showAuthenticationRouterLogin={
-                            showAuthenticationRouterLogin
-                        }
+                        showAuthenticationRouterLogin={showAuthenticationRouterLogin}
                         dispatch={dispatch}
                         navigate={navigate}
                         location={location}
@@ -278,7 +213,5 @@ const App: FunctionComponent = () => {
 export default App;
 
 function validateUserDev(): Promise<boolean> {
-    return new Promise((resolve) =>
-        window.setTimeout(() => resolve(true), 500)
-    );
+    return new Promise((resolve) => window.setTimeout(() => resolve(true), 500));
 }
