@@ -8,12 +8,7 @@
 import App from './app';
 import React, { FunctionComponent } from 'react';
 import { CssBaseline } from '@mui/material';
-import {
-    createTheme,
-    StyledEngineProvider,
-    Theme,
-    ThemeProvider,
-} from '@mui/material/styles';
+import { createTheme, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material/styles';
 import {
     card_error_boundary_en,
     card_error_boundary_fr,
@@ -118,15 +113,10 @@ const messages: Record<GsLangUser, IntlConfig['messages']> = {
 const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
 const AppWrapperWithRedux: FunctionComponent = () => {
-    const computedLanguage = useSelector(
-        (state: AppState) => state.computedLanguage
-    );
+    const computedLanguage = useSelector((state: AppState) => state.computedLanguage);
     const theme = useSelector((state: AppState) => state[PARAM_THEME]);
     return (
-        <IntlProvider
-            locale={computedLanguage}
-            messages={messages[computedLanguage]}
-        >
+        <IntlProvider locale={computedLanguage} messages={messages[computedLanguage]}>
             <BrowserRouter basename={basename}>
                 <StyledEngineProvider injectFirst>
                     <ThemeProvider theme={getMuiTheme(theme)}>

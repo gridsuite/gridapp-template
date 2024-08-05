@@ -15,11 +15,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
 import { store } from '../redux/store';
-import {
-    createTheme,
-    StyledEngineProvider,
-    ThemeProvider,
-} from '@mui/material/styles';
+import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { SnackbarProvider } from '@gridsuite/commons-ui';
 import { CssBaseline } from '@mui/material';
 
