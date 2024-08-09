@@ -32,31 +32,12 @@ export type { EnvJson } from './app-local';
 
 export const appLocalSrv = new AppLocalSvc(),
     appsMetadataSrv = new AppsMetadataComSvc(appLocalSrv),
-    configSrv = new ConfigComSvc(
-        APP_NAME,
-        getUser,
-        process.env.REACT_APP_API_GATEWAY as UrlString
-    ),
-    configNotificationSrv = new ConfigNotificationComSvc(
-        getUser,
-        process.env.REACT_APP_WS_GATEWAY as UrlString
-    ),
-    directorySrv = new DirectoryComSvc(
-        getUser,
-        process.env.REACT_APP_API_GATEWAY as UrlString
-    ),
-    exploreSrv = new ExploreComSvc(
-        getUser,
-        process.env.REACT_APP_API_GATEWAY as UrlString
-    ),
-    studySrv = new StudyComSvc(
-        getUser,
-        process.env.REACT_APP_API_GATEWAY as UrlString
-    ),
-    userAdminSrv = new UserAdminComSvc(
-        getUser,
-        process.env.REACT_APP_API_GATEWAY as UrlString
-    );
+    configSrv = new ConfigComSvc(APP_NAME, getUser, process.env.REACT_APP_API_GATEWAY as UrlString),
+    configNotificationSrv = new ConfigNotificationComSvc(getUser, process.env.REACT_APP_WS_GATEWAY as UrlString),
+    directorySrv = new DirectoryComSvc(getUser, process.env.REACT_APP_API_GATEWAY as UrlString),
+    exploreSrv = new ExploreComSvc(getUser, process.env.REACT_APP_API_GATEWAY as UrlString),
+    studySrv = new StudyComSvc(getUser, process.env.REACT_APP_API_GATEWAY as UrlString),
+    userAdminSrv = new UserAdminComSvc(getUser, process.env.REACT_APP_API_GATEWAY as UrlString);
 
 setCommonServices(
     appLocalSrv,

@@ -5,14 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, {
-    FunctionComponent,
-    PropsWithChildren,
-    ReactElement,
-    useCallback,
-    useEffect,
-    useState,
-} from 'react';
+import React, { FunctionComponent, PropsWithChildren, ReactElement, useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
 import {
@@ -48,9 +41,7 @@ const styles = {
     } as CSSObject,
 };
 
-export function useParameterState<K extends AppStateKey>(
-    paramName: K
-): [AppState[K], (value: AppState[K]) => void] {
+export function useParameterState<K extends AppStateKey>(paramName: K): [AppState[K], (value: AppState[K]) => void] {
     const { snackError } = useSnackMessage();
     const paramGlobalState = useSelector((state: AppState) => state[paramName]);
     const [paramLocalState, setParamLocalState] = useState(paramGlobalState);
@@ -82,15 +73,8 @@ function GUITab(): ReactElement {
     return <Grid container spacing={2} sx={styles.grid} />;
 }
 
-type TabPanelProps = PropsWithChildren<
-    TypographyTypeMap<{ index: number; value: number }, 'div'>['props']
->;
-function TabPanel({
-    children,
-    value,
-    index,
-    ...typoProps
-}: TabPanelProps): ReactElement {
+type TabPanelProps = PropsWithChildren<TypographyTypeMap<{ index: number; value: number }, 'div'>['props']>;
+function TabPanel({ children, value, index, ...typoProps }: TabPanelProps): ReactElement {
     return (
         <Typography
             component="div"
@@ -143,12 +127,7 @@ const Parameters: FunctionComponent<ParametersProps> = (props) => {
                     </TabPanel>
 
                     <Grid item xs={12}>
-                        <Button
-                            onClick={props.hideParameters}
-                            variant="contained"
-                            color="primary"
-                            sx={styles.button}
-                        >
+                        <Button onClick={props.hideParameters} variant="contained" color="primary" sx={styles.button}>
                             <FormattedMessage id="close" />
                         </Button>
                     </Grid>

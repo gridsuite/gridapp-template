@@ -5,12 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, {
-    FunctionComponent,
-    useCallback,
-    useEffect,
-    useState,
-} from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import Parameters, { useParameterState } from './parameters';
 import { APP_NAME } from '../utils/config-params';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,8 +40,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
 
     const [themeLocal, handleChangeTheme] = useParameterState(PARAM_THEME);
 
-    const [languageLocal, handleChangeLanguage] =
-        useParameterState(PARAM_LANGUAGE);
+    const [languageLocal, handleChangeLanguage] = useParameterState(PARAM_LANGUAGE);
 
     const [showParameters, setShowParameters] = useState(false);
     const displayParameters = useCallback(() => setShowParameters(true), []);
@@ -64,16 +58,10 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
         }
     }, [props.user]);
     const globalVersionFetcher = useCallback(
-        () =>
-            appsMetadataSrv
-                .fetchVersion()
-                .then((res) => res?.deployVersion ?? 'unknown'),
+        () => appsMetadataSrv.fetchVersion().then((res) => res?.deployVersion ?? 'unknown'),
         []
     );
-    const additionalModulesFetcher = useCallback(
-        () => studySrv.getServersInfos('yyy'),
-        []
-    );
+    const additionalModulesFetcher = useCallback(() => studySrv.getServersInfos('yyy'), []);
 
     return (
         <>
@@ -101,10 +89,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
                 onLanguageClick={handleChangeLanguage}
                 language={languageLocal}
             />
-            <Parameters
-                showParameters={showParameters}
-                hideParameters={hideParameters}
-            />
+            <Parameters showParameters={showParameters} hideParameters={hideParameters} />
         </>
     );
 };

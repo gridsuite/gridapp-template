@@ -28,15 +28,11 @@ export function selectLanguage(language: AppState['language']): LanguageAction {
 }
 
 export const SELECT_COMPUTED_LANGUAGE = 'SELECT_COMPUTED_LANGUAGE';
-export type ComputedLanguageAction = Readonly<
-    Action<typeof SELECT_COMPUTED_LANGUAGE>
-> & {
+export type ComputedLanguageAction = Readonly<Action<typeof SELECT_COMPUTED_LANGUAGE>> & {
     computedLanguage: AppState['computedLanguage'];
 };
 
-export function selectComputedLanguage(
-    computedLanguage: AppState['computedLanguage']
-): ComputedLanguageAction {
+export function selectComputedLanguage(computedLanguage: AppState['computedLanguage']): ComputedLanguageAction {
     return {
         type: SELECT_COMPUTED_LANGUAGE,
         computedLanguage: computedLanguage,
