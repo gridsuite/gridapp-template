@@ -20,7 +20,7 @@ To check dependencies license compatibility with this project one locally, pleas
 npm run licenses-check
 ```
 
-Notes : 
+Notes :
 * Check [license-checker-config.json](license-checker-config.json) for license white list and exclusion.
 If you need to update this list, please inform organization's owners.
 * Excluded dependencies :
