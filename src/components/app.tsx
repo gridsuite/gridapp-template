@@ -13,26 +13,23 @@ import { Box, Typography } from '@mui/material';
 import {
     AuthenticationRouter,
     CardErrorBoundary,
+    COMMON_APP_NAME,
+    ConfigParameters,
+    getComputedLanguage,
+    getErrorMessage,
     getPreLoginPath,
     initializeAuthenticationDev,
     initializeAuthenticationProd,
+    PARAM_LANGUAGE,
+    PARAM_THEME,
     useSnackMessage,
 } from '@gridsuite/commons-ui';
 import { selectComputedLanguage, selectLanguage, selectTheme } from '../redux/actions';
 import { AppState } from '../redux/reducer';
-import {
-    ConfigParameters,
-    connectNotificationsWsUpdateConfig,
-    fetchConfigParameter,
-    fetchConfigParameters,
-    fetchIdpSettings,
-    fetchValidateUser,
-} from '../utils/rest-api';
-import { APP_NAME, COMMON_APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
-import { getComputedLanguage } from '../utils/language';
+import { appLocalSrv, configNotificationSrv, configSrv, userAdminSrv } from '../services';
+import { APP_NAME } from '../utils/config-params';
 import AppTopBar, { AppTopBarProps } from './app-top-bar';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import { getErrorMessage } from '../utils/error';
 import { AppDispatch } from '../redux/store';
 
 const App: FunctionComponent = () => {
@@ -73,11 +70,12 @@ const App: FunctionComponent = () => {
     );
 
     const connectNotificationsUpdateConfig = useCallback((): ReconnectingWebSocket => {
-        const ws = connectNotificationsWsUpdateConfig();
+        const ws = configNotificationSrv.connectNotificationsWsUpdateConfig(APP_NAME);
         ws.onmessage = function (event) {
             let eventData = JSON.parse(event.data);
             if (eventData.headers?.parameterName) {
-                fetchConfigParameter(eventData.headers.parameterName)
+                configSrv
+                    .fetchConfigParameter(eventData.headers.parameterName)
                     .then((param) => updateParams([param]))
                     .catch((error) =>
                         snackError({
@@ -116,8 +114,8 @@ const App: FunctionComponent = () => {
                         ? initializeAuthenticationProd(
                               dispatch,
                               initialMatchSilentRenewCallbackUrl != null,
-                              fetchIdpSettings,
-                              fetchValidateUser,
+                              appLocalSrv.fetchIdpSettings,
+                              userAdminSrv.fetchValidateUser,
                               initialMatchSigninCallbackUrl != null
                           )
                         : initializeAuthenticationDev(
@@ -141,8 +139,9 @@ const App: FunctionComponent = () => {
     }, [initialMatchSigninCallbackUrl, initialMatchSilentRenewCallbackUrl, dispatch]);
 
     useEffect(() => {
-        if (user !== null) {
-            fetchConfigParameters(COMMON_APP_NAME)
+        if (user !== undefined) {
+            configSrv
+                .fetchConfigParameters(COMMON_APP_NAME)
                 .then((params) => updateParams(params))
                 .catch((error) =>
                     snackError({
@@ -151,7 +150,8 @@ const App: FunctionComponent = () => {
                     })
                 );
 
-            fetchConfigParameters(APP_NAME)
+            configSrv
+                .fetchConfigParameters(APP_NAME)
                 .then((params) => updateParams(params))
                 .catch((error) =>
                     snackError({
@@ -169,7 +169,7 @@ const App: FunctionComponent = () => {
         <>
             <AppTopBar user={user} userManager={userManager} />
             <CardErrorBoundary>
-                {user !== null ? (
+                {user !== undefined ? (
                     <Routes>
                         <Route
                             path="/"

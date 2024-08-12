@@ -17,6 +17,7 @@ import {
     LIGHT_THEME,
     login_en,
     login_fr,
+    PARAM_THEME,
     SnackbarProvider,
     top_bar_en,
     top_bar_fr,
@@ -29,7 +30,6 @@ import messages_fr from '../translations/fr.json';
 import messages_plugins_en from '../plugins/translations/en.json';
 import messages_plugins_fr from '../plugins/translations/fr.json';
 import { store } from '../redux/store';
-import { PARAM_THEME } from '../utils/config-params';
 import { IntlConfig } from 'react-intl/src/types';
 import { AppState } from '../redux/reducer';
 

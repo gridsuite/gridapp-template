@@ -18,9 +18,5 @@ module.exports = function (app) {
             ws: true,
         })
     );
-    app.use(
-        createProxyMiddleware('http://localhost:5001/api/study-server', {
-            pathRewrite: { '^/api/study-server/': '/' },
-        })
-    );
+    // TODO: redirect localhost:9000/api/gateway/study directly to http://localhost:5001/
 };
