@@ -81,7 +81,7 @@
     },
     "devDependencies": {
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-        "@gridsuite/commons-ui": "file:../_frontend/commons-ui/gridsuite-commons-ui-0.63.2.tgz",
+        "@gridsuite/commons-ui": "file:../_frontend/commons-ui/gridsuite-commons-ui-0.63.4.tgz",
         "@types/core-js": "^2.5.8",
         "@types/eslint-config-prettier": "^6.11.3",
         "@types/jest": "^27.5.2",
