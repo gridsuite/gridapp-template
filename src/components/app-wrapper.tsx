@@ -10,16 +10,16 @@ import React, { FunctionComponent } from 'react';
 import { CssBaseline } from '@mui/material';
 import { createTheme, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material/styles';
 import {
-    card_error_boundary_en,
-    card_error_boundary_fr,
     CardErrorBoundary,
+    cardErrorBoundaryEn,
+    cardErrorBoundaryFr,
     GsLangUser,
     LIGHT_THEME,
-    login_en,
-    login_fr,
+    loginEn,
+    loginFr,
     SnackbarProvider,
-    top_bar_en,
-    top_bar_fr,
+    topBarEn,
+    topBarFr,
 } from '@gridsuite/commons-ui';
 import { IntlProvider } from 'react-intl';
 import { BrowserRouter } from 'react-router-dom';
@@ -96,16 +96,16 @@ const getMuiTheme = (theme: string): Theme => {
 const messages: Record<GsLangUser, IntlConfig['messages']> = {
     en: {
         ...messages_en,
-        ...login_en,
-        ...top_bar_en,
-        ...card_error_boundary_en,
+        ...loginEn,
+        ...topBarEn,
+        ...cardErrorBoundaryEn,
         ...messages_plugins_en, // keep it at the end to allow translation overwriting
     },
     fr: {
         ...messages_fr,
-        ...login_fr,
-        ...top_bar_fr,
-        ...card_error_boundary_fr,
+        ...loginFr,
+        ...topBarFr,
+        ...cardErrorBoundaryFr,
         ...messages_plugins_fr, // keep it at the end to allow translation overwriting
     },
 };
