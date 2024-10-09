@@ -36,7 +36,6 @@ import {
     UserValidationErrorAction,
 } from '@gridsuite/commons-ui';
 import { PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
-import { ReducerWithInitialState } from '@reduxjs/toolkit/dist/createReducer';
 
 export type AppState = CommonStoreState & {
     computedLanguage: GsLangUser;
@@ -65,7 +64,7 @@ export type Actions = AuthenticationActions | ThemeAction | LanguageAction | Com
 
 export type AppStateKey = keyof AppState;
 
-export const reducer: ReducerWithInitialState<AppState> = createReducer(initialState, (builder) => {
+export const reducer = createReducer(initialState, (builder) => {
     builder.addCase(SELECT_THEME, (state: Draft<AppState>, action: ThemeAction) => {
         state.theme = action.theme;
         saveLocalStorageTheme(state.theme);
