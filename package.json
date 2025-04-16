@@ -93,7 +93,7 @@
         "@types/react-window": "^1.8.8",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-prettier": "^4.2.1",
-        "http-proxy-middleware": "^2.0.6",
+        "http-proxy-middleware": "^2.0.9",
         "license-checker": "^25.0.1",
         "prettier": "^2.8.8",
         "typescript": "5.1.6"
