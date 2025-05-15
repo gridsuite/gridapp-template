@@ -26,7 +26,6 @@ import {
     fetchConfigParameter,
     fetchConfigParameters,
     fetchIdpSettings,
-    fetchValidateUser,
 } from '../utils/rest-api';
 import { APP_NAME, COMMON_APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
 import { getComputedLanguage } from '../utils/language';
@@ -117,13 +116,11 @@ const App: FunctionComponent = () => {
                               dispatch,
                               initialMatchSilentRenewCallbackUrl != null,
                               fetchIdpSettings,
-                              fetchValidateUser,
                               initialMatchSigninCallbackUrl != null
                           )
                         : initializeAuthenticationDev(
                               dispatch,
                               initialMatchSilentRenewCallbackUrl != null,
-                              validateUserDev,
                               initialMatchSigninCallbackUrl != null
                           );
                 setUserManager({
@@ -211,7 +208,3 @@ const App: FunctionComponent = () => {
     );
 };
 export default App;
-
-function validateUserDev(): Promise<boolean> {
-    return new Promise((resolve) => window.setTimeout(() => resolve(true), 500));
-}

@@ -6,7 +6,6 @@
  */
 
 import { Env, GsLangUser, GsTheme } from '@gridsuite/commons-ui';
-import { User } from 'oidc-client';
 import { APP_NAME, getAppName, PARAM_LANGUAGE, PARAM_THEME } from './config-params';
 import { store } from '../redux/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
@@ -112,30 +111,6 @@ export function backendFetchText(url: Url, init?: InitRequest, token?: Token): P
 
 export function backendFetchJson(url: Url, init?: InitRequest, token?: Token): Promise<unknown> {
     return backendFetch(url, init, token).then((safeResponse: Response) => safeResponse.json());
-}
-
-export function fetchValidateUser(user: User): Promise<boolean> {
-    const sub = user?.profile?.sub;
-    if (!sub) {
-        return Promise.reject(new Error(`Error : Fetching access for missing user.profile.sub : ${user}`));
-    }
-
-    console.info(`Fetching access for user...`);
-    const CheckAccessUrl = `${PREFIX_USER_ADMIN_SERVER_QUERIES}/v1/users/${sub}`;
-    console.debug(CheckAccessUrl);
-
-    return backendFetch(CheckAccessUrl, { method: 'head' }, user?.id_token)
-        .then((response: Response) => {
-            //if the response is ok, the responseCode will be either 200 or 204 otherwise it's a Http error and it will be caught
-            return response.status === 200;
-        })
-        .catch((error) => {
-            if (error.status === 403) {
-                return false;
-            } else {
-                throw error;
-            }
-        });
 }
 
 export type EnvJson = Env & typeof import('../../public/env.json');
