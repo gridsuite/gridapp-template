@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'workflow-upgrade'
   pull_request:
 
 jobs:
