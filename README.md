@@ -5,6 +5,8 @@ This template setup the authentication mechanism and provides a configured empty
 
 To customize this repository for an app, search and replace the string `XXX` with the name of the app. For example, GridXXX -> GridFoo, gridXXX-app -> gridfoo-app.
 
+Replace the Sonar projectKey `gridsuite_gridapp-template` in `sonar-project.properties` with the name of your project. For example, gridsuite_gridapp-template -> gridsuite_gridfoo-app.
+
 Create a new view in study-server and replace `yyy` with the new token in rest api `src/rest/study.ts`.
 
 ## Typescript config
