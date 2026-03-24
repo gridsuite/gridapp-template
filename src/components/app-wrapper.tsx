@@ -28,10 +28,9 @@ import messages_en from '../translations/en.json';
 import messages_fr from '../translations/fr.json';
 import messages_plugins_en from '../plugins/translations/en.json';
 import messages_plugins_fr from '../plugins/translations/fr.json';
-import { store } from '../redux/store';
-import { PARAM_THEME } from '../utils/config-params';
+import { RootState, store } from '../redux/store';
 import { IntlConfig } from 'react-intl/src/types';
-import { AppState } from '../redux/reducer';
+import { selectTheme } from '../redux/selectors';
 
 const lightTheme: Theme = createTheme({
     palette: {
@@ -113,8 +112,8 @@ const messages: Record<GsLangUser, IntlConfig['messages']> = {
 const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
 const AppWrapperWithRedux: FunctionComponent = () => {
-    const computedLanguage = useSelector((state: AppState) => state.computedLanguage);
-    const theme = useSelector((state: AppState) => state[PARAM_THEME]);
+    const computedLanguage = useSelector((state: RootState) => state.settings.computedLanguage);
+    const theme = useSelector(selectTheme);
     return (
         <IntlProvider locale={computedLanguage} messages={messages[computedLanguage]}>
             <BrowserRouter basename={basename}>

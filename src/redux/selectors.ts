@@ -1,0 +1,13 @@
+/**
+ * Copyright (c) 2020, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+import { RootState } from './types';
+
+export const selectUser = (state: RootState) => state.session.user;
+export const selectLanguage = (state: RootState) => state.settings.language;
+export const selectTheme = (state: RootState) => state.settings.theme;
+export const selectAuth = (state: RootState) => state.auth;

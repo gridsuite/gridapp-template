@@ -24,7 +24,8 @@ import {
 import { CSSObject, Theme } from '@emotion/react';
 import { updateConfigParameter } from '../utils/rest-api';
 import { useSnackMessage } from '@gridsuite/commons-ui';
-import { AppState, AppStateKey } from '../redux/reducer';
+import { RootState } from '../redux/store';
+import { AppStateKey, SettingsState } from '../redux/types';
 
 const styles = {
     title: (theme: Theme): CSSObject => ({
@@ -41,9 +42,11 @@ const styles = {
     } as CSSObject,
 };
 
-export function useParameterState<K extends AppStateKey>(paramName: K): [AppState[K], (value: AppState[K]) => void] {
+export function useParameterState<K extends AppStateKey>(
+    paramName: K
+): [SettingsState[K], (value: SettingsState[K]) => void] {
     const { snackError } = useSnackMessage();
-    const paramGlobalState = useSelector((state: AppState) => state[paramName]);
+    const paramGlobalState = useSelector((state: RootState) => state.settings[paramName]);
     const [paramLocalState, setParamLocalState] = useState(paramGlobalState);
 
     useEffect(() => {
@@ -51,7 +54,7 @@ export function useParameterState<K extends AppStateKey>(paramName: K): [AppStat
     }, [paramGlobalState]);
 
     const handleChangeParamLocalState = useCallback(
-        (value: AppState[K]) => {
+        (value: SettingsState[K]) => {
             setParamLocalState(value);
             updateConfigParameter(paramName, value as string) //TODO how to check/cast?
                 .catch((error) => {

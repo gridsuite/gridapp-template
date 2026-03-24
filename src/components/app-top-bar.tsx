@@ -15,11 +15,12 @@ import { getServersInfos } from '../rest/study';
 import { useNavigate } from 'react-router-dom';
 import PowsyblLogo from '../images/powsybl_logo.svg?react';
 import AppPackage from '../../package.json';
-import { AppState } from '../redux/reducer';
 import { AppDispatch } from '../redux/store';
+import { selectTheme } from '../redux/selectors';
+import { SessionState } from '../redux/types';
 
 export type AppTopBarProps = {
-    user?: AppState['user'];
+    user?: SessionState['user'];
     userManager: UserManagerState;
 };
 const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
@@ -29,7 +30,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
 
     const [appsAndUrls, setAppsAndUrls] = useState<MetadataJson[]>([]);
 
-    const theme = useSelector((state: AppState) => state[PARAM_THEME]);
+    const theme = useSelector(selectTheme);
 
     const [themeLocal, handleChangeTheme] = useParameterState(PARAM_THEME);
 

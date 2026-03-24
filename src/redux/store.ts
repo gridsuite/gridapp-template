@@ -4,8 +4,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { createStore, Store } from 'redux';
-import { Actions, AppState, reducer } from './reducer';
+import { configureStore } from '@reduxjs/toolkit';
+import { reducer } from './reducer';
 
-export const store: Store<AppState, Actions> = createStore(reducer);
+export const store = configureStore({
+    reducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }),
+});
+
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

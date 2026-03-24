@@ -10,7 +10,6 @@ import { User } from 'oidc-client';
 import { APP_NAME, getAppName, PARAM_LANGUAGE, PARAM_THEME } from './config-params';
 import { store } from '../redux/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
-import { AppState } from '../redux/reducer';
 import { getErrorMessage } from './error';
 
 export interface ErrorWithStatus extends Error {
@@ -46,8 +45,8 @@ const PREFIX_CONFIG_QUERIES = `${import.meta.env.VITE_API_GATEWAY}/config`;
 const PREFIX_CONFIG_NOTIFICATION_WS = `${import.meta.env.VITE_WS_GATEWAY}/config-notification`;
 
 function getToken(): Token | null {
-    const state: AppState = store.getState();
-    return state.user?.id_token ?? null;
+    const state = store.getState();
+    return state.session.user?.id_token ?? null;
 }
 
 export function connectNotificationsWsUpdateConfig(): ReconnectingWebSocket {

@@ -19,7 +19,6 @@ import {
     useSnackMessage,
 } from '@gridsuite/commons-ui';
 import { selectComputedLanguage, selectLanguage, selectTheme } from '../redux/actions';
-import { AppState } from '../redux/reducer';
 import {
     ConfigParameters,
     connectNotificationsWsUpdateConfig,
@@ -34,15 +33,16 @@ import AppTopBar, { AppTopBarProps } from './app-top-bar';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { getErrorMessage } from '../utils/error';
 import { AppDispatch } from '../redux/store';
+import { selectAuth, selectUser } from '../redux/selectors';
 
 const App: FunctionComponent = () => {
     const { snackError } = useSnackMessage();
 
-    const user = useSelector((state: AppState) => state.user);
-
-    const signInCallbackError = useSelector((state: AppState) => state.signInCallbackError);
-    const authenticationRouterError = useSelector((state: AppState) => state.authenticationRouterError);
-    const showAuthenticationRouterLogin = useSelector((state: AppState) => state.showAuthenticationRouterLogin);
+    const user = useSelector(selectUser);
+    const auth = useSelector(selectAuth);
+    const signInCallbackError = auth.error;
+    const authenticationRouterError = auth.authenticationRouterError;
+    const showAuthenticationRouterLogin = auth.showLogin;
 
     const [userManager, setUserManager] = useState<AppTopBarProps['userManager']>({ instance: null, error: null });
 
