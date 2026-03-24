@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import App from './app';
+import App from '../App';
 import React, { FunctionComponent } from 'react';
 import { CssBaseline } from '@mui/material';
 import { createTheme, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material/styles';
@@ -24,13 +24,13 @@ import {
 import { IntlProvider } from 'react-intl';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
-import messages_en from '../translations/en.json';
-import messages_fr from '../translations/fr.json';
-import messages_plugins_en from '../plugins/translations/en.json';
-import messages_plugins_fr from '../plugins/translations/fr.json';
-import { RootState, store } from '../redux/store';
+import messages_en from '../../translations/en.json';
+import messages_fr from '../../translations/fr.json';
+import messages_plugins_en from '../../plugins/translations/en.json';
+import messages_plugins_fr from '../../plugins/translations/fr.json';
+import { RootState, store } from '../store';
 import { IntlConfig } from 'react-intl/src/types';
-import { selectTheme } from '../redux/selectors';
+import { selectTheme } from '../../features/settings/model/selectors';
 
 const lightTheme: Theme = createTheme({
     palette: {
@@ -132,7 +132,7 @@ const AppWrapperWithRedux: FunctionComponent = () => {
     );
 };
 
-const AppWrapper: FunctionComponent = () => {
+const AppProviders: FunctionComponent = () => {
     return (
         <Provider store={store}>
             <AppWrapperWithRedux />
@@ -140,4 +140,4 @@ const AppWrapper: FunctionComponent = () => {
     );
 };
 
-export default AppWrapper;
+export default AppProviders;

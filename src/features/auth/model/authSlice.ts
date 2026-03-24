@@ -20,7 +20,7 @@ import {
     USER_VALIDATION_ERROR,
     UserValidationErrorAction,
 } from '@gridsuite/commons-ui';
-import { AuthState } from '../types';
+import { AuthState } from './types';
 
 const initialState: AuthState = {
     error: null,

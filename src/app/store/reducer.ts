@@ -7,13 +7,20 @@
 
 import { combineReducers } from '@reduxjs/toolkit';
 import { AuthenticationActions } from '@gridsuite/commons-ui';
-import { ComputedLanguageAction, LanguageAction, ThemeAction } from './actions';
-import { authReducer } from './slices/authSlice';
-import { sessionReducer } from './slices/sessionSlice';
-import { settingsReducer } from './slices/settingsSlice';
+import { authReducer } from '../../features/auth/model/authSlice';
+import { sessionReducer } from '../../features/auth/model/sessionSlice';
+import { ComputedLanguageAction, LanguageAction, ThemeAction } from '../../features/settings/model/actions';
+import { settingsReducer } from '../../features/settings/model/settingsSlice';
+import { AuthState, SessionState } from '../../features/auth/model/types';
+import { SettingsState } from '../../features/settings/model/types';
 
-export type { AppState, AppStateKey, RootState } from './types';
+export type RootState = {
+    session: SessionState;
+    settings: SettingsState;
+    auth: AuthState;
+};
 
+export type AppState = RootState;
 export type Actions = AuthenticationActions | ThemeAction | LanguageAction | ComputedLanguageAction;
 
 export const reducer = combineReducers({

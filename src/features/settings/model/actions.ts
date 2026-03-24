@@ -6,9 +6,9 @@
  */
 
 import { GsTheme } from '@gridsuite/commons-ui';
-import { PARAM_LANGUAGE } from '../utils/config-params';
+import { PARAM_LANGUAGE } from '../../../shared/lib/config-params';
 import { Action } from 'redux';
-import { RootState } from './types';
+import { SettingsState } from './types';
 
 export const SELECT_THEME = 'SELECT_THEME';
 export type ThemeAction = Readonly<Action<typeof SELECT_THEME>> & {
@@ -21,21 +21,19 @@ export function selectTheme(theme: GsTheme): ThemeAction {
 
 export const SELECT_LANGUAGE = 'SELECT_LANGUAGE';
 export type LanguageAction = Readonly<Action<typeof SELECT_LANGUAGE>> & {
-    [PARAM_LANGUAGE]: RootState['settings']['language'];
+    [PARAM_LANGUAGE]: SettingsState['language'];
 };
 
-export function selectLanguage(language: RootState['settings']['language']): LanguageAction {
+export function selectLanguage(language: SettingsState['language']): LanguageAction {
     return { type: SELECT_LANGUAGE, [PARAM_LANGUAGE]: language };
 }
 
 export const SELECT_COMPUTED_LANGUAGE = 'SELECT_COMPUTED_LANGUAGE';
 export type ComputedLanguageAction = Readonly<Action<typeof SELECT_COMPUTED_LANGUAGE>> & {
-    computedLanguage: RootState['settings']['computedLanguage'];
+    computedLanguage: SettingsState['computedLanguage'];
 };
 
-export function selectComputedLanguage(
-    computedLanguage: RootState['settings']['computedLanguage']
-): ComputedLanguageAction {
+export function selectComputedLanguage(computedLanguage: SettingsState['computedLanguage']): ComputedLanguageAction {
     return {
         type: SELECT_COMPUTED_LANGUAGE,
         computedLanguage: computedLanguage,

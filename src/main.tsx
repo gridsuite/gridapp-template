@@ -10,12 +10,12 @@ import 'typeface-roboto';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import AppWrapper from './components/app-wrapper';
+import AppProviders from './app/providers/AppProviders';
 
 const container = document.getElementById('root');
 if (container) {
     const root = createRoot(container);
-    root.render(<AppWrapper />);
+    root.render(<AppProviders />);
 } else {
     document.write("<b>Can't start the application...</b>");
     throw new Error('No root container found');

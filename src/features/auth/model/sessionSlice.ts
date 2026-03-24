@@ -7,7 +7,7 @@
 
 import { createSlice, Draft } from '@reduxjs/toolkit';
 import { USER, UserAction } from '@gridsuite/commons-ui';
-import { SessionState } from '../types';
+import { SessionState } from './types';
 
 const initialState: SessionState = {
     user: null,

@@ -5,16 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { AuthenticationRouterErrorState, CommonStoreState, GsLang, GsLangUser, GsTheme } from '@gridsuite/commons-ui';
+import { AuthenticationRouterErrorState, CommonStoreState } from '@gridsuite/commons-ui';
 
 export type SessionState = {
     user: CommonStoreState['user'];
-};
-
-export type SettingsState = {
-    language: GsLang;
-    computedLanguage: GsLangUser;
-    theme: GsTheme;
 };
 
 export type AuthState = {
@@ -22,12 +16,3 @@ export type AuthState = {
     authenticationRouterError: AuthenticationRouterErrorState | null;
     showLogin: boolean;
 };
-
-export type RootState = {
-    session: SessionState;
-    settings: SettingsState;
-    auth: AuthState;
-};
-
-export type AppState = RootState;
-export type AppStateKey = keyof SettingsState;

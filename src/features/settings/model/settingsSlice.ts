@@ -11,7 +11,7 @@ import {
     getLocalStorageLanguage,
     getLocalStorageTheme,
     saveLocalStorageTheme,
-} from '../local-storage';
+} from './local-storage';
 import {
     ComputedLanguageAction,
     LanguageAction,
@@ -19,8 +19,8 @@ import {
     SELECT_LANGUAGE,
     SELECT_THEME,
     ThemeAction,
-} from '../actions';
-import { SettingsState } from '../types';
+} from './actions';
+import { SettingsState } from './types';
 
 const initialState: SettingsState = {
     language: getLocalStorageLanguage(),

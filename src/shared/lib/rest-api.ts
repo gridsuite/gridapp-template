@@ -8,7 +8,7 @@
 import { Env, GsLangUser, GsTheme } from '@gridsuite/commons-ui';
 import { User } from 'oidc-client';
 import { APP_NAME, getAppName, PARAM_LANGUAGE, PARAM_THEME } from './config-params';
-import { store } from '../redux/store';
+import { store } from '../../app/store';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
 import { getErrorMessage } from './error';
 
@@ -137,7 +137,7 @@ export function fetchValidateUser(user: User): Promise<boolean> {
         });
 }
 
-export type EnvJson = Env & typeof import('../../public/env.json');
+export type EnvJson = Env & typeof import('../../../public/env.json');
 
 function fetchEnv(): Promise<EnvJson> {
     return fetch('env.json').then((res: Response) => res.json());

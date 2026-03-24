@@ -6,8 +6,8 @@
  */
 
 import { DARK_THEME, GsLang, GsLangUser, GsTheme, LANG_SYSTEM } from '@gridsuite/commons-ui';
-import { getComputedLanguage } from '../utils/language';
-import { APP_NAME } from '../utils/config-params';
+import { getComputedLanguage } from '../../../shared/lib/language';
+import { APP_NAME } from '../../../shared/lib/config-params';
 
 const LOCAL_STORAGE_THEME_KEY = (APP_NAME + '_THEME').toUpperCase();
 const LOCAL_STORAGE_LANGUAGE_KEY = (APP_NAME + '_LANGUAGE').toUpperCase();

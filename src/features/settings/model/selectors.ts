@@ -5,9 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { RootState } from './types';
+import { RootState } from '../../../app/store/reducer';
 
-export const selectUser = (state: RootState) => state.session.user;
 export const selectLanguage = (state: RootState) => state.settings.language;
 export const selectTheme = (state: RootState) => state.settings.theme;
-export const selectAuth = (state: RootState) => state.auth;

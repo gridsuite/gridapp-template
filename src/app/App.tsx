@@ -7,18 +7,15 @@
 
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, Route, Routes, useLocation, useMatch, useNavigate } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
-import { Box, Typography } from '@mui/material';
+import { useLocation, useMatch, useNavigate } from 'react-router-dom';
 import {
     AuthenticationRouter,
     CardErrorBoundary,
-    getPreLoginPath,
     initializeAuthenticationDev,
     initializeAuthenticationProd,
     useSnackMessage,
 } from '@gridsuite/commons-ui';
-import { selectComputedLanguage, selectLanguage, selectTheme } from '../redux/actions';
+import { selectComputedLanguage, selectLanguage, selectTheme } from '../features/settings/model/actions';
 import {
     ConfigParameters,
     connectNotificationsWsUpdateConfig,
@@ -26,14 +23,16 @@ import {
     fetchConfigParameters,
     fetchIdpSettings,
     fetchValidateUser,
-} from '../utils/rest-api';
-import { APP_NAME, COMMON_APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
-import { getComputedLanguage } from '../utils/language';
-import AppTopBar, { AppTopBarProps } from './app-top-bar';
+} from '../shared/lib/rest-api';
+import { APP_NAME, COMMON_APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../shared/lib/config-params';
+import { getComputedLanguage } from '../shared/lib/language';
+import AppTopBar, { AppTopBarProps } from '../app/layout/AppTopBar';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import { getErrorMessage } from '../utils/error';
-import { AppDispatch } from '../redux/store';
-import { selectAuth, selectUser } from '../redux/selectors';
+import { getErrorMessage } from '../shared/lib/error';
+import { AppDispatch } from '../app/store';
+import { selectAuth, selectUser } from '../features/auth/model/selectors';
+import AppLayout from '../app/layout/AppLayout';
+import AppRouter from '../app/router/AppRouter';
 
 const App: FunctionComponent = () => {
     const { snackError } = useSnackMessage();
@@ -166,35 +165,10 @@ const App: FunctionComponent = () => {
     }, [user, dispatch, updateParams, snackError, connectNotificationsUpdateConfig]);
 
     return (
-        <>
-            <AppTopBar user={user} userManager={userManager} />
+        <AppLayout topBar={<AppTopBar user={user} userManager={userManager} />}>
             <CardErrorBoundary>
                 {user !== null ? (
-                    <Routes>
-                        <Route
-                            path="/"
-                            element={
-                                <Box mt={20}>
-                                    <Typography variant="h3" color="textPrimary" align="center">
-                                        Connected
-                                    </Typography>
-                                </Box>
-                            }
-                        />
-                        <Route path="/sign-in-callback" element={<Navigate replace to={getPreLoginPath() || '/'} />} />
-                        <Route
-                            path="/logout-callback"
-                            element={<h1>Error: logout failed; you are still logged in.</h1>}
-                        />
-                        <Route
-                            path="*"
-                            element={
-                                <h1>
-                                    <FormattedMessage id="PageNotFound" />
-                                </h1>
-                            }
-                        />
-                    </Routes>
+                    <AppRouter />
                 ) : (
                     <AuthenticationRouter
                         userManager={userManager}
@@ -207,7 +181,7 @@ const App: FunctionComponent = () => {
                     />
                 )}
             </CardErrorBoundary>
-        </>
+        </AppLayout>
     );
 };
 export default App;
