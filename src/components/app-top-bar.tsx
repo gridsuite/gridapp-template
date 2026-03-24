@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAppsAndUrls, fetchVersion, MetadataJson } from '../utils/rest-api';
 import { getServersInfos } from '../rest/study';
 import { useNavigate } from 'react-router-dom';
-import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
+import PowsyblLogo from '../images/powsybl_logo.svg?react';
 import AppPackage from '../../package.json';
 import { AppState } from '../redux/reducer';
 import { AppDispatch } from '../redux/store';

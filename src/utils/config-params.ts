@@ -6,7 +6,7 @@
  */
 
 export const COMMON_APP_NAME = 'common';
-export const APP_NAME = 'XXX';
+export const APP_NAME = 'study'; // TODO, set back to template
 
 export const PARAM_THEME = 'theme';
 export const PARAM_LANGUAGE = 'language';

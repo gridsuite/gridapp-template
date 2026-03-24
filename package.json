@@ -2,7 +2,6 @@
     "name": "gridXXX-app",
     "version": "0.1.0",
     "license": "MPL-2.0",
-    "homepage": ".",
     "private": true,
     "engines": {
         "node": ">=18",
@@ -20,6 +19,7 @@
         "@reduxjs/toolkit": "^2.2.3",
         "core-js": "^3.36.1",
         "notistack": "^3.0.1",
+        "oidc-client": "^1.11.5",
         "prop-types": "^15.8.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
@@ -27,26 +27,16 @@
         "react-intl": "^6.6.4",
         "react-redux": "^9.1.0",
         "react-router-dom": "^6.22.3",
-        "react-scripts": "^5.0.1",
         "react-window": "^1.8.10",
         "reconnecting-websocket": "^4.4.0",
         "redux": "^5.0.1",
         "typeface-roboto": "^1.1.13",
         "yup": "^1.4.0"
     },
-    "overrides": {
-        "react-scripts": {
-            "typescript": "$typescript"
-        }
-    },
     "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test --watchAll=false",
-        "test:watch": "react-scripts test",
-        "test:coverage": "react-scripts test --coverage",
-        "eject": "react-scripts eject",
-        "lint": "eslint . --ext js,mjs,jsx,ts,mts,tsx --max-warnings 0",
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
         "licenses-check": "license-checker --summary --excludePrivatePackages --production --onlyAllow \"$( jq -r .onlyAllow[] license-checker-config.json | tr '\n' ';')\" --excludePackages \"$( jq -r .excludePackages[] license-checker-config.json | tr '\n' ';')\""
     },
     "jest": {
@@ -57,16 +47,6 @@
         "transformIgnorePatterns": [
             "node_modules/(?!@gridsuite/commons-ui|react-dnd|dnd-core|@react-dnd)"
         ]
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "plugin:prettier/recommended"
-        ],
-        "rules": {
-            "prettier/prettier": "warn",
-            "curly": "error"
-        }
     },
     "browserslist": {
         "production": [
@@ -81,21 +61,23 @@
         ]
     },
     "devDependencies": {
-        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "@vitejs/plugin-react": "^5.0.0",
         "@types/core-js": "^2.5.8",
         "@types/eslint-config-prettier": "^6.11.3",
         "@types/jest": "^27.5.2",
         "@types/license-checker": "^25.0.6",
-        "@types/node": "^18.19.31",
+        "@types/node": "^20.19.0",
         "@types/prop-types": "^15.7.12",
         "@types/react": "^18.2.75",
         "@types/react-dom": "^18.2.24",
         "@types/react-window": "^1.8.8",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-prettier": "^4.2.1",
-        "http-proxy-middleware": "^2.0.6",
         "license-checker": "^25.0.1",
         "prettier": "^2.8.8",
-        "typescript": "5.1.6"
+        "typescript": "5.1.6",
+        "vite": "^7.1.7",
+        "vite-tsconfig-paths": "^5.1.4",
+        "vite-plugin-svgr": "^4.3.0"
     }
 }

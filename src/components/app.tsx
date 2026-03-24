@@ -110,9 +110,9 @@ const App: FunctionComponent = () => {
         // need subfunction when async as suggested by rule react-hooks/exhaustive-deps
         (async function initializeAuthentication() {
             try {
-                console.debug(`auth dev mode: ${process.env.REACT_APP_USE_AUTHENTICATION}`);
+                console.debug(`auth dev mode: ${import.meta.env.VITE_USE_AUTHENTICATION}`);
                 const initAuth =
-                    process.env.REACT_APP_USE_AUTHENTICATION === 'true'
+                    import.meta.env.VITE_USE_AUTHENTICATION === 'true'
                         ? initializeAuthenticationProd(
                               dispatch,
                               initialMatchSilentRenewCallbackUrl != null,
