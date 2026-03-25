@@ -9,7 +9,7 @@ import 'core-js/es/array/flat-map';
 import 'typeface-roboto';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
+import './app/styles/index.css';
 import AppProviders from './app/providers/AppProviders';
 
 const container = document.getElementById('root');

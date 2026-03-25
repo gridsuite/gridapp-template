@@ -1,0 +1,143 @@
+/**
+ * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+import App from '../App';
+import React, { FunctionComponent } from 'react';
+import { CssBaseline } from '@mui/material';
+import { createTheme, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material/styles';
+import {
+    CardErrorBoundary,
+    cardErrorBoundaryEn,
+    cardErrorBoundaryFr,
+    GsLangUser,
+    LIGHT_THEME,
+    loginEn,
+    loginFr,
+    SnackbarProvider,
+    topBarEn,
+    topBarFr,
+} from '@gridsuite/commons-ui';
+import { IntlProvider } from 'react-intl';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider, useSelector } from 'react-redux';
+import messages_en from '@/shared/translations/en/common.json';
+import messages_fr from '@/shared/translations/fr/common.json';
+import messages_plugins_en from '@/plugins/translations/en.json';
+import messages_plugins_fr from '@/plugins/translations/fr.json';
+import { RootState, store } from '../store';
+import { IntlConfig } from 'react-intl/src/types';
+import { selectTheme } from '@/features/app-settings/store/selectors';
+
+const lightTheme: Theme = createTheme({
+    palette: {
+        mode: 'light',
+    },
+    arrow: {
+        fill: '#212121',
+        stroke: '#212121',
+    },
+    arrow_hover: {
+        fill: 'white',
+        stroke: 'white',
+    },
+    circle: {
+        stroke: 'white',
+        fill: 'white',
+    },
+    circle_hover: {
+        stroke: '#212121',
+        fill: '#212121',
+    },
+    link: {
+        color: 'blue',
+    },
+    mapboxStyle: 'mapbox://styles/mapbox/light-v9',
+});
+
+const darkTheme: Theme = createTheme({
+    palette: {
+        mode: 'dark',
+    },
+    arrow: {
+        fill: 'white',
+        stroke: 'white',
+    },
+    arrow_hover: {
+        fill: '#424242',
+        stroke: '#424242',
+    },
+    circle: {
+        stroke: '#424242',
+        fill: '#424242',
+    },
+    circle_hover: {
+        stroke: 'white',
+        fill: 'white',
+    },
+    link: {
+        color: 'green',
+    },
+    mapboxStyle: 'mapbox://styles/mapbox/dark-v9',
+});
+
+const getMuiTheme = (theme: string): Theme => {
+    if (theme === LIGHT_THEME) {
+        return lightTheme;
+    } else {
+        return darkTheme;
+    }
+};
+
+const messages: Record<GsLangUser, IntlConfig['messages']> = {
+    en: {
+        ...messages_en,
+        ...loginEn,
+        ...topBarEn,
+        ...cardErrorBoundaryEn,
+        ...messages_plugins_en, // keep it at the end to allow translation overwriting
+    },
+    fr: {
+        ...messages_fr,
+        ...loginFr,
+        ...topBarFr,
+        ...cardErrorBoundaryFr,
+        ...messages_plugins_fr, // keep it at the end to allow translation overwriting
+    },
+};
+
+const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
+
+const AppWrapperWithRedux: FunctionComponent = () => {
+    const computedLanguage = useSelector((state: RootState) => state.settings.computedLanguage);
+    const theme = useSelector(selectTheme);
+    return (
+        <IntlProvider locale={computedLanguage} messages={messages[computedLanguage]}>
+            <BrowserRouter basename={basename}>
+                <StyledEngineProvider injectFirst>
+                    <ThemeProvider theme={getMuiTheme(theme)}>
+                        <SnackbarProvider hideIconVariant={false}>
+                            <CssBaseline />
+                            <CardErrorBoundary>
+                                <App />
+                            </CardErrorBoundary>
+                        </SnackbarProvider>
+                    </ThemeProvider>
+                </StyledEngineProvider>
+            </BrowserRouter>
+        </IntlProvider>
+    );
+};
+
+const AppProviders: FunctionComponent = () => {
+    return (
+        <Provider store={store}>
+            <AppWrapperWithRedux />
+        </Provider>
+    );
+};
+
+export default AppProviders;
