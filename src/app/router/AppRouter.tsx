@@ -8,7 +8,7 @@
 import React, { FunctionComponent } from 'react';
 import { Box, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router';
 import { getPreLoginPath } from '@gridsuite/commons-ui';
 
 const AppRouter: FunctionComponent = () => {

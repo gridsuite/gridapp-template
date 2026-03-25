@@ -7,7 +7,7 @@
 
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useMatch, useNavigate } from 'react-router-dom';
+import { useLocation, useMatch, useNavigate } from 'react-router';
 import {
     AuthenticationRouter,
     CardErrorBoundary,
@@ -109,35 +109,21 @@ const App: FunctionComponent = () => {
         // need subfunction when async as suggested by rule react-hooks/exhaustive-deps
         (async function initializeAuthentication() {
             try {
-                console.debug(`auth dev mode: ${import.meta.env.VITE_USE_AUTHENTICATION}`);
-                const initAuth =
-                    import.meta.env.VITE_USE_AUTHENTICATION === 'true'
-                        ? initializeAuthenticationProd(
-                              dispatch,
-                              initialMatchSilentRenewCallbackUrl != null,
-                              fetchIdpSettings,
-                              fetchValidateUser,
-                              initialMatchSigninCallbackUrl != null
-                          )
-                        : initializeAuthenticationDev(
-                              dispatch,
-                              initialMatchSilentRenewCallbackUrl != null,
-                              validateUserDev,
-                              initialMatchSigninCallbackUrl != null
-                          );
                 setUserManager({
-                    instance: (await initAuth) ?? null,
+                    instance: await initializeAuthenticationProd(
+                        dispatch,
+                        initialMatchSilentRenewCallbackUrl != null,
+                        fetchIdpSettings,
+                        initialMatchSigninCallbackUrl != null
+                    ),
                     error: null,
                 });
-            } catch (error) {
-                setUserManager({
-                    instance: null,
-                    error: getErrorMessage(error),
-                });
+            } catch (error: any) {
+                setUserManager({ instance: null, error: error.message });
             }
         })();
-        // Note: dispatch and initialMatchSilentRenewCallbackUrl won't change
-    }, [initialMatchSigninCallbackUrl, initialMatchSilentRenewCallbackUrl, dispatch]);
+        // Note: initialMatchSilentRenewCallbackUrl and dispatch don't change
+    }, [initialMatchSilentRenewCallbackUrl, dispatch, initialMatchSigninCallbackUrl]);
 
     useEffect(() => {
         if (user !== null) {

@@ -8,7 +8,7 @@
 import { useCallback, useState } from 'react';
 import { logout } from '@gridsuite/commons-ui';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import type { AppTopBarProps } from '@/app/layout/AppTopBar';
 import { AppDispatch } from '@/app/store';
 import { selectTheme } from '@/features/app-settings/store/selectors';
