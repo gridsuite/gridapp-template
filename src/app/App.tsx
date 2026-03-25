@@ -119,6 +119,8 @@ const App: FunctionComponent = () => {
                     error: null,
                 });
             } catch (error: any) {
+                console.log('ERROR', error);
+
                 setUserManager({ instance: null, error: error.message });
             }
         })();

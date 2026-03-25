@@ -22,7 +22,6 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
     const {
         additionalModulesPromise,
         appsAndUrls,
-        displayParameters,
         globalVersionPromise,
         handleChangeLanguage,
         handleChangeTheme,
@@ -49,7 +48,6 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
                 }
                 appVersion={AppPackage.version}
                 appLicense={AppPackage.license}
-                onParametersClick={displayParameters}
                 onLogoutClick={onLogoutClick}
                 onLogoClick={onLogoClick}
                 user={props.user ?? undefined}

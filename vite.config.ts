@@ -15,6 +15,11 @@ export default defineConfig({
     server: {
         port: 3000,
         proxy: {
+            '/api/monitor': {
+                target: 'http://localhost:5043',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api\/monitor\//, '/'),
+            },
             '/api/gateway': {
                 target: 'http://localhost:9000',
                 changeOrigin: true,
