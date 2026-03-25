@@ -4,9 +4,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
 import { GridSuiteModule } from '@gridsuite/commons-ui';
-import { backendFetchJson } from './rest-api';
-import { getErrorMessage } from './error';
+import { backendFetchJson } from '../../../shared/api/http';
+import { getErrorMessage } from '../../../shared/lib/error';
 
 const API_URL =
     '/api/' +

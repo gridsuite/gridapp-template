@@ -6,7 +6,7 @@
  */
 
 import { useCallback } from 'react';
-import { fetchVersion } from '../../shared/lib/rest-api';
+import { fetchVersion } from '../../shared/api/metadata';
 
 export function useTopBarVersion(): () => Promise<string> {
     return useCallback(() => fetchVersion().then((res) => res?.deployVersion ?? 'unknown'), []);

@@ -42,6 +42,7 @@ function GUITab(): ReactElement {
 }
 
 type TabPanelProps = PropsWithChildren<TypographyTypeMap<{ index: number; value: number }, 'div'>['props']>;
+
 function TabPanel({ children, value, index, ...typoProps }: TabPanelProps): ReactElement {
     return (
         <Typography
@@ -57,11 +58,12 @@ function TabPanel({ children, value, index, ...typoProps }: TabPanelProps): Reac
     );
 }
 
-export type ParametersProps = PropsWithChildren<{
+export type ParametersDialogProps = PropsWithChildren<{
     showParameters: boolean;
     hideParameters: () => void;
 }>;
-const Parameters: FunctionComponent<ParametersProps> = (props) => {
+
+const ParametersDialog: FunctionComponent<ParametersDialogProps> = (props) => {
     const [tabIndex, setTabIndex] = useState(0);
 
     return (
@@ -105,4 +107,4 @@ const Parameters: FunctionComponent<ParametersProps> = (props) => {
     );
 };
 
-export default Parameters;
+export default ParametersDialog;

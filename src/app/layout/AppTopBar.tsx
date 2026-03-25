@@ -7,9 +7,9 @@
 
 import React, { FunctionComponent } from 'react';
 import { LIGHT_THEME, TopBar, UserManagerState } from '@gridsuite/commons-ui';
-import Parameters from '../../shared/ui/Parameters';
-import { APP_NAME } from '../../shared/lib/config-params';
-import PowsyblLogo from '../../images/powsybl_logo.svg?react';
+import ParametersDialog from '../../features/settings/ui/ParametersDialog';
+import { APP_NAME } from '../config/app';
+import PowsyblLogo from '../../assets/images/powsybl_logo.svg?react';
 import AppPackage from '../../../package.json';
 import { SessionState } from '../../features/auth/model/types';
 import { useAppTopBar } from '../../features/topbar/useAppTopBar';
@@ -61,7 +61,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
                 onLanguageClick={handleChangeLanguage}
                 language={languageLocal}
             />
-            <Parameters showParameters={showParameters} hideParameters={hideParameters} />
+            <ParametersDialog showParameters={showParameters} hideParameters={hideParameters} />
         </>
     );
 };

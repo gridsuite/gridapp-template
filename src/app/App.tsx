@@ -21,15 +21,15 @@ import {
     connectNotificationsWsUpdateConfig,
     fetchConfigParameter,
     fetchConfigParameters,
-    fetchIdpSettings,
-    fetchValidateUser,
-} from '../shared/lib/rest-api';
-import { APP_NAME, COMMON_APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../shared/lib/config-params';
+} from '../shared/api/config';
+import { fetchIdpSettings, fetchValidateUser } from '../shared/api/auth';
+import { APP_NAME, COMMON_APP_NAME } from './config/app';
+import { PARAM_LANGUAGE, PARAM_THEME } from '../shared/config/parameters';
 import { getComputedLanguage } from '../shared/lib/language';
 import AppTopBar, { AppTopBarProps } from '../app/layout/AppTopBar';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { getErrorMessage } from '../shared/lib/error';
-import { AppDispatch } from '../app/store';
+import { AppDispatch } from './store';
 import { selectAuth, selectUser } from '../features/auth/model/selectors';
 import AppLayout from '../app/layout/AppLayout';
 import AppRouter from '../app/router/AppRouter';

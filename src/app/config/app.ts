@@ -5,15 +5,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { AppConfigParameter, PARAM_LANGUAGE, PARAM_THEME } from '../../shared/config/parameters';
+
 export const COMMON_APP_NAME = 'common';
 export const APP_NAME = 'study'; // TODO, set back to template
 
-export const PARAM_THEME = 'theme';
-export const PARAM_LANGUAGE = 'language';
-
 const COMMON_CONFIG_PARAMS_NAMES = new Set([PARAM_THEME, PARAM_LANGUAGE]);
-
-export type AppConfigParameter = typeof PARAM_THEME | typeof PARAM_LANGUAGE | string;
 
 export type AppConfigType = typeof COMMON_APP_NAME | typeof APP_NAME;
 

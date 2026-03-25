@@ -24,8 +24,8 @@ import {
 import { IntlProvider } from 'react-intl';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
-import messages_en from '../../translations/en.json';
-import messages_fr from '../../translations/fr.json';
+import messages_en from '../../shared/translations/en/common.json';
+import messages_fr from '../../shared/translations/fr/common.json';
 import messages_plugins_en from '../../plugins/translations/en.json';
 import messages_plugins_fr from '../../plugins/translations/fr.json';
 import { RootState, store } from '../store';

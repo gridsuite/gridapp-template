@@ -6,7 +6,7 @@
  */
 
 import { GsTheme } from '@gridsuite/commons-ui';
-import { PARAM_LANGUAGE } from '../../../shared/lib/config-params';
+import { PARAM_LANGUAGE } from '../../../shared/config/parameters';
 import { Action } from 'redux';
 import { SettingsState } from './types';
 
