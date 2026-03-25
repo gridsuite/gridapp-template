@@ -7,12 +7,12 @@
 
 import React, { FunctionComponent } from 'react';
 import { LIGHT_THEME, TopBar, UserManagerState } from '@gridsuite/commons-ui';
-import ParametersDialog from '@/features/settings/ui/ParametersDialog';
-import { APP_NAME } from '../config/app';
+import ParametersDialog from '@/features/app-settings/ui/ParametersDialog';
+import { APP_NAME } from '../config/config';
 import PowsyblLogo from '@/assets/images/powsybl_logo.svg?react';
 import AppPackage from '../../../package.json';
 import { SessionState } from '@/features/auth/model/types';
-import { useAppTopBar } from '@/features/topbar/useAppTopBar';
+import { useAppTopBar } from '@/features/topbar/hooks/use-app-top-bar';
 
 export type AppTopBarProps = {
     user?: SessionState['user'];

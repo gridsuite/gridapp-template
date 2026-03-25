@@ -11,12 +11,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { AppTopBarProps } from '@/app/layout/AppTopBar';
 import { AppDispatch } from '@/app/store';
-import { selectTheme } from '../settings/model/selectors';
+import { selectTheme } from '@/features/app-settings/store/selectors';
 import { PARAM_LANGUAGE, PARAM_THEME } from '@/shared/config/parameters';
-import { getServersInfos } from './api/study';
-import { useParameterState } from './useParameterState';
-import { useTopBarApps } from './useTopBarApps';
-import { useTopBarVersion } from './useTopBarVersion';
+import { getServersInfos } from '../api/fetch-about';
+import { useParameterState } from './use-parameter-state';
+import { useTopBarApps } from './use-top-bar-apps';
+import { useTopBarVersion } from './use-top-bar-version';
 
 export function useAppTopBar(props: AppTopBarProps) {
     const navigate = useNavigate();

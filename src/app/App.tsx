@@ -15,7 +15,7 @@ import {
     initializeAuthenticationProd,
     useSnackMessage,
 } from '@gridsuite/commons-ui';
-import { selectComputedLanguage, selectLanguage, selectTheme } from '../features/settings/model/actions';
+import { selectComputedLanguage, selectLanguage, selectTheme } from '../features/app-settings/store/actions';
 import {
     ConfigParameters,
     connectNotificationsWsUpdateConfig,
@@ -23,7 +23,7 @@ import {
     fetchConfigParameters,
 } from '../shared/api/config';
 import { fetchIdpSettings, fetchValidateUser } from '../shared/api/auth';
-import { APP_NAME, COMMON_APP_NAME } from './config/app';
+import { APP_NAME, COMMON_APP_NAME } from './config/config';
 import { PARAM_LANGUAGE, PARAM_THEME } from '../shared/config/parameters';
 import { getComputedLanguage } from '../shared/lib/language';
 import AppTopBar, { AppTopBarProps } from '../app/layout/AppTopBar';

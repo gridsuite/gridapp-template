@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import { useSnackMessage } from '@gridsuite/commons-ui';
 import { RootState } from '@/app/store';
 import { updateConfigParameter } from '@/shared/api/config';
-import { AppStateKey, SettingsState } from '../settings/model/types';
+import { AppStateKey, SettingsState } from '@/features/app-settings/store/types';
 
 export function useParameterState<K extends AppStateKey>(
     paramName: K

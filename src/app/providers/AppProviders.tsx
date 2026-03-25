@@ -30,7 +30,7 @@ import messages_plugins_en from '@/plugins/translations/en.json';
 import messages_plugins_fr from '@/plugins/translations/fr.json';
 import { RootState, store } from '../store';
 import { IntlConfig } from 'react-intl/src/types';
-import { selectTheme } from '@/features/settings/model/selectors';
+import { selectTheme } from '@/features/app-settings/store/selectors';
 
 const lightTheme: Theme = createTheme({
     palette: {

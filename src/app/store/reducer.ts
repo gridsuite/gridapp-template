@@ -7,12 +7,12 @@
 
 import { combineReducers } from '@reduxjs/toolkit';
 import { AuthenticationActions } from '@gridsuite/commons-ui';
-import { authReducer } from '@/features/auth/model/authSlice';
-import { sessionReducer } from '@/features/auth/model/sessionSlice';
-import { ComputedLanguageAction, LanguageAction, ThemeAction } from '@/features/settings/model/actions';
-import { settingsReducer } from '@/features/settings/model/settingsSlice';
+import { authReducer } from '@/features/auth/model/auth-slice';
+import { sessionReducer } from '@/features/auth/model/session-slice';
+import { ComputedLanguageAction, LanguageAction, ThemeAction } from '@/features/app-settings/store/actions';
+import { settingsReducer } from '@/features/app-settings/store/settings-slice';
 import { AuthState, SessionState } from '@/features/auth/model/types';
-import { SettingsState } from '@/features/settings/model/types';
+import { SettingsState } from '@/features/app-settings/store/types';
 
 export type RootState = {
     session: SessionState;
