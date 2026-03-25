@@ -14,7 +14,7 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import { store } from '../app/store';
+import { store } from './store';
 import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { SnackbarProvider } from '@gridsuite/commons-ui';
 import { CssBaseline } from '@mui/material';
