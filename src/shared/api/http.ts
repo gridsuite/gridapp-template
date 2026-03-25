@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { store } from '../../app/store';
+import { store } from '@/app/store';
 
 export interface ErrorWithStatus extends Error {
     status?: number;

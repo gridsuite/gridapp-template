@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { MetadataJson, fetchAppsAndUrls } from '../../shared/api/metadata';
+import { MetadataJson, fetchAppsAndUrls } from '@/shared/api/metadata';
 import { SessionState } from '../auth/model/types';
 
 export function useTopBarApps(user?: SessionState['user']): MetadataJson[] {

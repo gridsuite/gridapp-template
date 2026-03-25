@@ -7,8 +7,8 @@
 
 import { GsLangUser, GsTheme } from '@gridsuite/commons-ui';
 import ReconnectingWebSocket, { Event } from 'reconnecting-websocket';
-import { store } from '../../app/store';
-import { APP_NAME, getAppName } from '../../app/config/app';
+import { store } from '@/app/store';
+import { APP_NAME, getAppName } from '@/app/config/app';
 import { PARAM_LANGUAGE, PARAM_THEME } from '../config/parameters';
 import { backendFetch, backendFetchJson } from './http';
 

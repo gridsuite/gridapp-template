@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { RootState } from '../../../app/store/reducer';
+import { RootState } from '@/app/store/reducer';
 
 export const selectLanguage = (state: RootState) => state.settings.language;
 export const selectTheme = (state: RootState) => state.settings.theme;

@@ -8,8 +8,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useSnackMessage } from '@gridsuite/commons-ui';
-import { RootState } from '../../app/store';
-import { updateConfigParameter } from '../../shared/api/config';
+import { RootState } from '@/app/store';
+import { updateConfigParameter } from '@/shared/api/config';
 import { AppStateKey, SettingsState } from '../settings/model/types';
 
 export function useParameterState<K extends AppStateKey>(

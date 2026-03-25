@@ -1,8 +1,12 @@
 {
     "compilerOptions": {
         "target": "es6",
-        "baseUrl": "src",
-        "lib": ["dom", "dom.iterable", "esnext"],
+        "baseUrl": ".",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
         "allowJs": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
@@ -16,7 +20,17 @@
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
-        "types": ["vite/client", "jest"]
+        "types": [
+            "vite/client",
+            "jest"
+        ],
+        "paths": {
+            "@/*": [
+                "src/*"
+            ]
+        }
     },
-    "include": ["src"]
+    "include": [
+        "src"
+    ]
 }

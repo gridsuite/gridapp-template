@@ -6,8 +6,8 @@
  */
 
 import { GridSuiteModule } from '@gridsuite/commons-ui';
-import { backendFetchJson } from '../../../shared/api/http';
-import { getErrorMessage } from '../../../shared/lib/error';
+import { backendFetchJson } from '@/shared/api/http';
+import { getErrorMessage } from '@/shared/lib/error';
 
 const API_URL =
     '/api/' +
