@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { SubmitEventHandler, useState } from 'react';
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { executeProcess } from '../api/execute-process';
@@ -17,13 +17,12 @@ const ExecuteProcessForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleSubmit = async () => {
         setIsSubmitting(true);
         setErrorMessage(null);
 
         try {
-            const { executionId } = await executeProcess(formValues);
+            const executionId = await executeProcess(formValues);
             navigate(`/process-result/${executionId}`);
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : 'Process execution failed');

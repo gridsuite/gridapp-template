@@ -4,7 +4,3 @@ export type ExecuteProcessParams = {
     isDebug: boolean;
     userId: string;
 };
-
-export type ExecuteProcessResponse = {
-    executionId: string;
-};
