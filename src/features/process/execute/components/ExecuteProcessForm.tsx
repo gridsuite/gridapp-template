@@ -1,10 +1,21 @@
-import React, { SubmitEventHandler, useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField } from '@mui/material';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
-import { ExecuteProcessParams } from '../types/execute-process.types';
+import { z } from 'zod';
 import { useExecuteProcessMutation } from '@/shared/api/rtk-generated/api';
 
-const initialFormValues: ExecuteProcessParams = {
+const schema = z.object({
+    caseUuid: z.uuid(),
+    parameterUuid: z.uuid(),
+    userId: z.string().min(1),
+    isDebug: z.boolean(),
+});
+
+type FormValues = z.infer<typeof schema>;
+
+const defaultValues: FormValues = {
     caseUuid: '',
     parameterUuid: '',
     isDebug: false,
@@ -13,53 +24,84 @@ const initialFormValues: ExecuteProcessParams = {
 
 const ExecuteProcessForm = () => {
     const navigate = useNavigate();
-    const [formValues, setFormValues] = useState<ExecuteProcessParams>(initialFormValues);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [executeProcess, { isLoading: isSubmitting }] = useExecuteProcessMutation();
+    const { control, handleSubmit } = useForm<FormValues>({
+        resolver: zodResolver(schema),
+        defaultValues,
+    });
 
-    const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
-        event.preventDefault();
+    const onSubmit = handleSubmit(async (values) => {
         setErrorMessage(null);
 
         try {
             const executionId = await executeProcess({
-                caseUuid: formValues.caseUuid,
-                processConfigUuid: formValues.parameterUuid,
-                isDebug: formValues.isDebug,
-                userId: formValues.userId,
+                caseUuid: values.caseUuid,
+                processConfigUuid: values.parameterUuid,
+                isDebug: values.isDebug,
+                userId: values.userId,
             }).unwrap();
             navigate(`/process-result/${executionId}`);
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : 'Process execution failed');
         }
-    };
+    });
 
     return (
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={onSubmit}>
             <Stack spacing={2}>
-                <TextField
-                    label="caseUuid"
-                    value={formValues.caseUuid}
-                    onChange={(event) => setFormValues((prev) => ({ ...prev, caseUuid: event.target.value }))}
-                    required
+                <Controller
+                    name="caseUuid"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <TextField
+                            {...field}
+                            label="caseUuid"
+                            error={!!fieldState.error}
+                            helperText={fieldState.error?.message}
+                            required
+                        />
+                    )}
                 />
-                <TextField
-                    label="parameterUuid"
-                    value={formValues.parameterUuid}
-                    onChange={(event) => setFormValues((prev) => ({ ...prev, parameterUuid: event.target.value }))}
-                    required
+                <Controller
+                    name="parameterUuid"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <TextField
+                            {...field}
+                            label="parameterUuid"
+                            error={!!fieldState.error}
+                            helperText={fieldState.error?.message}
+                            required
+                        />
+                    )}
                 />
-                <TextField
-                    label="userId"
-                    value={formValues.userId}
-                    onChange={(event) => setFormValues((prev) => ({ ...prev, userId: event.target.value }))}
-                    required
+                <Controller
+                    name="userId"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <TextField
+                            {...field}
+                            label="userId"
+                            error={!!fieldState.error}
+                            helperText={fieldState.error?.message}
+                            required
+                        />
+                    )}
                 />
                 <FormControlLabel
                     control={
-                        <Switch
-                            checked={formValues.isDebug}
-                            onChange={(event) => setFormValues((prev) => ({ ...prev, isDebug: event.target.checked }))}
+                        <Controller
+                            name="isDebug"
+                            control={control}
+                            render={({ field }) => (
+                                <Switch
+                                    checked={field.value}
+                                    inputRef={field.ref}
+                                    onBlur={field.onBlur}
+                                    onChange={(_, checked) => field.onChange(checked)}
+                                />
+                            )}
                         />
                     }
                     label="isDebug"
