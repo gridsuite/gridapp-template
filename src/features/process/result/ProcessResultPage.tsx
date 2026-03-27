@@ -1,16 +1,17 @@
 import React from 'react';
 import { Alert, Box, CircularProgress, Container, Typography } from '@mui/material';
 import { useParams } from 'react-router';
-import { useGetProcessResultQuery } from './api/process-result.api';
+import { useGetExecutionResultsQuery } from '@/shared/api/rtk-generated/api';
 
 const ProcessResultPage = () => {
     const { uuid } = useParams<{ uuid: string }>();
-    const { data, error, isLoading } = useGetProcessResultQuery(uuid ?? '', {
-        pollingInterval: 2000,
-        skip: !uuid,
-    });
-
-    console.log('uuid', uuid);
+    const { data, error, isLoading } = useGetExecutionResultsQuery(
+        { executionId: uuid ?? '' },
+        {
+            pollingInterval: 2000,
+            skip: !uuid,
+        }
+    );
 
     return (
         <Container maxWidth="md">

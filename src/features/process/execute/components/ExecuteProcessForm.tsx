@@ -1,8 +1,8 @@
 import React, { SubmitEventHandler, useState } from 'react';
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField } from '@mui/material';
 import { useNavigate } from 'react-router';
-import { executeProcess } from '../api/execute-process';
 import { ExecuteProcessParams } from '../types/execute-process.types';
+import { useExecuteProcessMutation } from '@/shared/api/rtk-generated/api';
 
 const initialFormValues: ExecuteProcessParams = {
     caseUuid: '',
@@ -14,20 +14,23 @@ const initialFormValues: ExecuteProcessParams = {
 const ExecuteProcessForm = () => {
     const navigate = useNavigate();
     const [formValues, setFormValues] = useState<ExecuteProcessParams>(initialFormValues);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [executeProcess, { isLoading: isSubmitting }] = useExecuteProcessMutation();
 
-    const handleSubmit = async () => {
-        setIsSubmitting(true);
+    const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
+        event.preventDefault();
         setErrorMessage(null);
 
         try {
-            const executionId = await executeProcess(formValues);
+            const executionId = await executeProcess({
+                caseUuid: formValues.caseUuid,
+                processConfigUuid: formValues.parameterUuid,
+                isDebug: formValues.isDebug,
+                userId: formValues.userId,
+            }).unwrap();
             navigate(`/process-result/${executionId}`);
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : 'Process execution failed');
-        } finally {
-            setIsSubmitting(false);
         }
     };
 

@@ -12,14 +12,14 @@ import { sessionReducer } from '@/features/auth/model/session-slice';
 import { ComputedLanguageAction, LanguageAction, ThemeAction } from '@/features/app-settings/store/actions';
 import { settingsReducer } from '@/features/app-settings/store/settings-slice';
 import { AuthState, SessionState } from '@/features/auth/model/types';
-import { processResultApi } from '@/features/process/result/api/process-result.api';
 import { SettingsState } from '@/features/app-settings/store/types';
+import { api } from '@/shared/api/rtk-generated/api';
 
 export type RootState = {
     session: SessionState;
     settings: SettingsState;
     auth: AuthState;
-    [processResultApi.reducerPath]: ReturnType<typeof processResultApi.reducer>;
+    [api.reducerPath]: ReturnType<typeof api.reducer>;
 };
 
 export type AppState = RootState;
@@ -29,5 +29,5 @@ export const reducer = combineReducers({
     session: sessionReducer,
     settings: settingsReducer,
     auth: authReducer,
-    [processResultApi.reducerPath]: processResultApi.reducer,
+    [api.reducerPath]: api.reducer,
 });

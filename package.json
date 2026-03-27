@@ -37,6 +37,7 @@
         "start:open": "vite --open",
         "build": "vite build",
         "serve": "vite preview",
+        "generate:api": "rtk-query-codegen-openapi openapi.codegen.js",
         "test": "jest",
         "test:coverage": "jest --coverage",
         "type-check": "tsc",
@@ -67,6 +68,7 @@
         ]
     },
     "devDependencies": {
+        "@rtk-query/codegen-openapi": "^2.2.0",
         "@types/core-js": "^2.5.8",
         "@types/eslint-config-prettier": "^6.11.3",
         "@types/jest": "^27.5.2",
@@ -81,7 +83,6 @@
         "eslint-plugin-prettier": "^4.2.1",
         "jest": "^30.1.3",
         "license-checker": "^25.0.1",
-        "openapi-typescript-codegen": "^0.30.0",
         "prettier": "^2.8.8",
         "typescript": "~5.9.3",
         "vite": "^7.1.7",
