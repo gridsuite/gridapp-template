@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, Box, CircularProgress, Container, Typography } from '@mui/material';
 import { useParams } from 'react-router';
-import { useGetExecutionResultsQuery } from '@/shared/api/rtk-generated/api';
+import { useGetExecutionResultsQuery } from '@/shared/api/monitor-api/monitor.generated';
 
 const ProcessResultPage = () => {
     const { uuid } = useParams<{ uuid: string }>();

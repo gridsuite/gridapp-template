@@ -2,9 +2,19 @@ import React, { useState } from 'react';
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { z } from 'zod';
-import { useExecuteProcessMutation } from '@/shared/api/rtk-generated/api';
+import { AppDispatch } from '@/app/store';
+import { useExecuteProcessMutation } from '@/shared/api/monitor-api/monitor.generated';
+import {
+    invalidateExecutionResultCache,
+    useLazyGetExecutionResultsQuery,
+} from '@/features/process/result/api/execution-result-cache.api';
+import {
+    selectCurrentExecutionId,
+    setCurrentExecutionId,
+} from '@/features/process/result/store/execution-result.slice';
 
 const schema = z.object({
     caseUuid: z.uuid(),
@@ -23,9 +33,11 @@ const defaultValues: FormValues = {
 };
 
 const ExecuteProcessForm = () => {
+    const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [executeProcess, { isLoading: isSubmitting }] = useExecuteProcessMutation();
+    const executionId = useSelector(selectCurrentExecutionId);
     const { control, handleSubmit } = useForm<FormValues>({
         resolver: zodResolver(schema),
         defaultValues,
@@ -35,13 +47,14 @@ const ExecuteProcessForm = () => {
         setErrorMessage(null);
 
         try {
-            const executionId = await executeProcess({
+            const newExecutionId = await executeProcess({
                 caseUuid: values.caseUuid,
                 processConfigUuid: values.parameterUuid,
                 isDebug: values.isDebug,
                 userId: values.userId,
             }).unwrap();
-            navigate(`/process-result/${executionId}`);
+            dispatch(setCurrentExecutionId(newExecutionId));
+            navigate(`/raw`);
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : 'Process execution failed');
         }
@@ -109,6 +122,14 @@ const ExecuteProcessForm = () => {
                 {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
                 <Button type="submit" variant="contained" disabled={isSubmitting}>
                     {isSubmitting ? 'Executing...' : 'Execute process'}
+                </Button>
+                <Button
+                    variant="outlined"
+                    sx={{ mb: 2 }}
+                    disabled={!executionId}
+                    onClick={() => executionId && dispatch(invalidateExecutionResultCache(executionId))}
+                >
+                    Invalidate cache
                 </Button>
             </Stack>
         </Box>

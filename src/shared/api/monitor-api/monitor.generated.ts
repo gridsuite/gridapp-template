@@ -1,21 +1,14 @@
-import { api } from '../base-api';
+import { api } from './monitor-api';
 const injectedRtkApi = api.injectEndpoints({
     endpoints: (build) => ({
         getProcessConfig: build.query<GetProcessConfigApiResponse, GetProcessConfigApiArg>({
             query: (queryArg) => ({ url: `/v1/process-configs/${queryArg.uuid}` }),
         }),
         updateProcessConfig: build.mutation<UpdateProcessConfigApiResponse, UpdateProcessConfigApiArg>({
-            query: (queryArg) => ({
-                url: `/v1/process-configs/${queryArg.uuid}`,
-                method: 'PUT',
-                body: queryArg.body,
-            }),
+            query: (queryArg) => ({ url: `/v1/process-configs/${queryArg.uuid}`, method: 'PUT', body: queryArg.body }),
         }),
         deleteProcessConfig: build.mutation<DeleteProcessConfigApiResponse, DeleteProcessConfigApiArg>({
-            query: (queryArg) => ({
-                url: `/v1/process-configs/${queryArg.uuid}`,
-                method: 'DELETE',
-            }),
+            query: (queryArg) => ({ url: `/v1/process-configs/${queryArg.uuid}`, method: 'DELETE' }),
         }),
         getProcessConfigs: build.query<GetProcessConfigsApiResponse, GetProcessConfigsApiArg>({
             query: (queryArg) => ({
@@ -26,11 +19,7 @@ const injectedRtkApi = api.injectEndpoints({
             }),
         }),
         createProcessConfig: build.mutation<CreateProcessConfigApiResponse, CreateProcessConfigApiArg>({
-            query: (queryArg) => ({
-                url: `/v1/process-configs`,
-                method: 'POST',
-                body: queryArg.body,
-            }),
+            query: (queryArg) => ({ url: `/v1/process-configs`, method: 'POST', body: queryArg.body }),
         }),
         executeProcess: build.mutation<ExecuteProcessApiResponse, ExecuteProcessApiArg>({
             query: (queryArg) => ({
@@ -64,35 +53,24 @@ const injectedRtkApi = api.injectEndpoints({
             }),
         }),
         getStepsInfos: build.query<GetStepsInfosApiResponse, GetStepsInfosApiArg>({
-            query: (queryArg) => ({
-                url: `/v1/executions/${queryArg.executionId}/step-infos`,
-            }),
+            query: (queryArg) => ({ url: `/v1/executions/${queryArg.executionId}/step-infos` }),
         }),
         getExecutionResults: build.query<GetExecutionResultsApiResponse, GetExecutionResultsApiArg>({
-            query: (queryArg) => ({
-                url: `/v1/executions/${queryArg.executionId}/results`,
-            }),
+            query: (queryArg) => ({ url: `/v1/executions/${queryArg.executionId}/results` }),
         }),
         getExecutionReports: build.query<GetExecutionReportsApiResponse, GetExecutionReportsApiArg>({
-            query: (queryArg) => ({
-                url: `/v1/executions/${queryArg.executionId}/reports`,
-            }),
+            query: (queryArg) => ({ url: `/v1/executions/${queryArg.executionId}/reports` }),
         }),
         getDebugInfos: build.query<GetDebugInfosApiResponse, GetDebugInfosApiArg>({
-            query: (queryArg) => ({
-                url: `/v1/executions/${queryArg.executionId}/debug-infos`,
-            }),
+            query: (queryArg) => ({ url: `/v1/executions/${queryArg.executionId}/debug-infos` }),
         }),
         deleteExecution: build.mutation<DeleteExecutionApiResponse, DeleteExecutionApiArg>({
-            query: (queryArg) => ({
-                url: `/v1/executions/${queryArg.executionId}`,
-                method: 'DELETE',
-            }),
+            query: (queryArg) => ({ url: `/v1/executions/${queryArg.executionId}`, method: 'DELETE' }),
         }),
     }),
     overrideExisting: false,
 });
-export { injectedRtkApi as api };
+export { injectedRtkApi as monitorApi };
 export type GetProcessConfigApiResponse = /** status 200 process config was returned */ PersistedProcessConfig;
 export type GetProcessConfigApiArg = {
     /** process config UUID */

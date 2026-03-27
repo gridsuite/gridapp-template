@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import { configureStore } from '@reduxjs/toolkit';
-import { api } from '@/shared/api/rtk-generated/api';
+import { monitorApi } from '@/shared/api/monitor-api/monitor.generated';
 import { reducer } from './reducer';
 
 export const store = configureStore({
@@ -13,7 +13,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false,
-        }).concat(api.middleware),
+        }).concat(monitorApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

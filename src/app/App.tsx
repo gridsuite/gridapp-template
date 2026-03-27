@@ -33,6 +33,7 @@ import { AppDispatch } from './store';
 import { selectAuth, selectUser } from '../features/auth/model/selectors';
 import AppLayout from '../app/layout/AppLayout';
 import AppRouter from '../app/router/AppRouter';
+import TabsNavigation from '@/features/navigation/TabsNavigation';
 
 const App: FunctionComponent = () => {
     const { snackError } = useSnackMessage();
@@ -156,7 +157,10 @@ const App: FunctionComponent = () => {
         <AppLayout topBar={<AppTopBar user={user} userManager={userManager} />}>
             <CardErrorBoundary>
                 {user !== null ? (
-                    <AppRouter />
+                    <>
+                        <TabsNavigation />
+                        <AppRouter />
+                    </>
                 ) : (
                     <AuthenticationRouter
                         userManager={userManager}

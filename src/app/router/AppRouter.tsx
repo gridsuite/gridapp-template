@@ -10,6 +10,8 @@ import { Box, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { Navigate, Route, Routes } from 'react-router';
 import { getPreLoginPath } from '@gridsuite/commons-ui';
+import RawJsonPage from '@/features/navigation/RawJsonPage';
+import StyledJsonPage from '@/features/navigation/StyledJsonPage';
 import ExecuteProcessPage from '@/features/process/execute/ExecuteProcessPage';
 import ProcessResultPage from '@/features/process/result/ProcessResultPage';
 
@@ -27,7 +29,8 @@ const AppRouter: FunctionComponent = () => {
                 }
             />
             <Route path="/execute" element={<ExecuteProcessPage />} />
-            <Route path="/process-result/:uuid" element={<ProcessResultPage />} />
+            <Route path="/raw" element={<RawJsonPage />} />
+            <Route path="/styled" element={<StyledJsonPage />} />
             <Route path="/sign-in-callback" element={<Navigate replace to={getPreLoginPath() || '/'} />} />
             <Route path="/logout-callback" element={<h1>Error: logout failed; you are still logged in.</h1>} />
             <Route
