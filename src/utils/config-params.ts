@@ -5,11 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { PARAM_LANGUAGE, PARAM_THEME } from '@gridsuite/commons-ui';
+
 export const COMMON_APP_NAME = 'common';
 export const APP_NAME = 'XXX';
-
-export const PARAM_THEME = 'theme';
-export const PARAM_LANGUAGE = 'language';
 
 const COMMON_CONFIG_PARAMS_NAMES = new Set([PARAM_THEME, PARAM_LANGUAGE]);
 

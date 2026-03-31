@@ -5,7 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import { createStore, Store } from 'redux';
-import { Actions, AppState, reducer } from './reducer';
+import { Actions, reducer } from './reducer';
+import { AppState } from './reducer.type';
 
 export const store: Store<AppState, Actions> = createStore(reducer);
 export type AppDispatch = typeof store.dispatch;

@@ -6,17 +6,26 @@
  */
 
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { LIGHT_THEME, logout, TopBar, UserManagerState } from '@gridsuite/commons-ui';
-import Parameters, { useParameterState } from './parameters';
-import { APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
+import {
+    LIGHT_THEME,
+    logout,
+    Metadata,
+    PARAM_LANGUAGE,
+    PARAM_THEME,
+    TopBar,
+    UserManagerState,
+} from '@gridsuite/commons-ui';
+import Parameters from './parameters';
+import { APP_NAME } from '../utils/config-params';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAppsAndUrls, fetchVersion, MetadataJson } from '../utils/rest-api';
+import { fetchAppsAndUrls, fetchVersion } from '../utils/rest-api';
 import { getServersInfos } from '../rest/study';
-import { useNavigate } from 'react-router-dom';
-import { ReactComponent as PowsyblLogo } from '../images/powsybl_logo.svg';
+import { useNavigate } from 'react-router';
+import PowsyblLogo from '../images/powsybl_logo.svg?react';
 import AppPackage from '../../package.json';
-import { AppState } from '../redux/reducer';
 import { AppDispatch } from '../redux/store';
+import { AppState } from 'redux/reducer.type';
+import { useParameterState } from './use-parameter-state';
 
 export type AppTopBarProps = {
     user?: AppState['user'];
@@ -27,7 +36,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
 
     const dispatch = useDispatch<AppDispatch>();
 
-    const [appsAndUrls, setAppsAndUrls] = useState<MetadataJson[]>([]);
+    const [appsAndUrls, setAppsAndUrls] = useState<Metadata[]>([]);
 
     const theme = useSelector((state: AppState) => state[PARAM_THEME]);
 
@@ -36,7 +45,6 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
     const [languageLocal, handleChangeLanguage] = useParameterState(PARAM_LANGUAGE);
 
     const [showParameters, setShowParameters] = useState(false);
-    const displayParameters = useCallback(() => setShowParameters(true), []);
     const hideParameters = useCallback(() => setShowParameters(false), []);
 
     useEffect(() => {
@@ -61,7 +69,6 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
                 }
                 appVersion={AppPackage.version}
                 appLicense={AppPackage.license}
-                onParametersClick={displayParameters}
                 onLogoutClick={() => logout(dispatch, props.userManager.instance)}
                 onLogoClick={() => navigate('/', { replace: true })}
                 user={props.user ?? undefined}
