@@ -10,7 +10,7 @@ import type { Config } from 'jest';
 const config: Config = {
     testEnvironment: 'jsdom',
     moduleNameMapper: {
-        '^.+\\.svg\\?react$|@powsybl/network-viewer': '<rootDir>/src/_mocks_/svg.tsx',
+        '^.+\\.svg\\?react$|@powsybl/network-viewer': '<rootDir>/src/__mocks__/svgrMock.tsx',
         '^.+\\.(css|less|scss)$': 'identity-obj-proxy',
     },
     transformIgnorePatterns: [
