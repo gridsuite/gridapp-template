@@ -10,10 +10,9 @@ import { Box, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { Navigate, Route, Routes } from 'react-router';
 import { getPreLoginPath } from '@gridsuite/commons-ui';
-import RawJsonPage from '@/features/navigation/RawJsonPage';
-import StyledJsonPage from '@/features/navigation/StyledJsonPage';
 import ExecuteProcessPage from '@/features/process/execute/ExecuteProcessPage';
-import ProcessResultPage from '@/features/process/result/ProcessResultPage';
+import RawJsonPage from '@/features/process/result/RawJsonPage';
+import StyledJsonPage from '@/features/process/result/StyledJsonPage';
 
 const AppRouter: FunctionComponent = () => {
     return (

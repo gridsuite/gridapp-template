@@ -36,7 +36,9 @@ const ExecuteProcessForm = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [executeProcess, { isLoading: isSubmitting }] = useExecuteProcessMutation();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [executeProcess, { isLoading }] = useExecuteProcessMutation();
+
     const executionId = useSelector(selectCurrentExecutionId);
     const { control, handleSubmit } = useForm<FormValues>({
         resolver: zodResolver(schema),
@@ -44,7 +46,11 @@ const ExecuteProcessForm = () => {
     });
 
     const onSubmit = handleSubmit(async (values) => {
+        if (isSubmitting) {
+            return;
+        }
         setErrorMessage(null);
+        setIsSubmitting(true);
 
         try {
             const newExecutionId = await executeProcess({
@@ -57,6 +63,8 @@ const ExecuteProcessForm = () => {
             navigate(`/raw`);
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : 'Process execution failed');
+        } finally {
+            setIsSubmitting(false);
         }
     });
 
@@ -72,7 +80,6 @@ const ExecuteProcessForm = () => {
                             label="caseUuid"
                             error={!!fieldState.error}
                             helperText={fieldState.error?.message}
-                            required
                         />
                     )}
                 />
@@ -85,7 +92,6 @@ const ExecuteProcessForm = () => {
                             label="parameterUuid"
                             error={!!fieldState.error}
                             helperText={fieldState.error?.message}
-                            required
                         />
                     )}
                 />
@@ -98,7 +104,6 @@ const ExecuteProcessForm = () => {
                             label="userId"
                             error={!!fieldState.error}
                             helperText={fieldState.error?.message}
-                            required
                         />
                     )}
                 />
@@ -120,8 +125,8 @@ const ExecuteProcessForm = () => {
                     label="isDebug"
                 />
                 {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-                <Button type="submit" variant="contained" disabled={isSubmitting}>
-                    {isSubmitting ? 'Executing...' : 'Execute process'}
+                <Button type="submit" variant="contained" disabled={isLoading || isSubmitting}>
+                    {isLoading || isSubmitting ? 'Executing...' : 'Execute process'}
                 </Button>
                 <Button
                     variant="outlined"
