@@ -13,11 +13,15 @@ import { ComputedLanguageAction, LanguageAction, ThemeAction } from '@/features/
 import { settingsReducer } from '@/features/app-settings/store/settings-slice';
 import { AuthState, SessionState } from '@/features/auth/model/types';
 import { SettingsState } from '@/features/app-settings/store/types';
+import executionResultReducer from '@/features/process/result/store/execution-result.slice';
+import { monitorApi } from '@/shared/api/monitor-api/monitor.generated';
 
 export type RootState = {
     session: SessionState;
     settings: SettingsState;
     auth: AuthState;
+    executionResult: ReturnType<typeof executionResultReducer>;
+    [monitorApi.reducerPath]: ReturnType<typeof monitorApi.reducer>;
 };
 
 export type AppState = RootState;
@@ -27,4 +31,6 @@ export const reducer = combineReducers({
     session: sessionReducer,
     settings: settingsReducer,
     auth: authReducer,
+    executionResult: executionResultReducer,
+    [monitorApi.reducerPath]: monitorApi.reducer,
 });

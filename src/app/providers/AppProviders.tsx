@@ -22,7 +22,7 @@ import {
     topBarFr,
 } from '@gridsuite/commons-ui';
 import { IntlProvider } from 'react-intl';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { Provider, useSelector } from 'react-redux';
 import messages_en from '@/shared/translations/en/common.json';
 import messages_fr from '@/shared/translations/fr/common.json';
