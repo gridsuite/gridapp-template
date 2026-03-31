@@ -8,7 +8,7 @@
 import { AppConfigParameter, PARAM_LANGUAGE, PARAM_THEME } from '@/shared/config/parameters';
 
 export const COMMON_APP_NAME = 'common';
-export const APP_NAME = 'study'; // TODO, set back to template
+export const APP_NAME = 'monitor'; // TODO, set back to template
 
 const COMMON_CONFIG_PARAMS_NAMES = new Set([PARAM_THEME, PARAM_LANGUAGE]);
 

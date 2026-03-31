@@ -6,11 +6,12 @@
  */
 
 import { useEffect, useState } from 'react';
-import { MetadataJson, fetchAppsAndUrls } from '@/shared/api/metadata';
+import { fetchAppsAndUrls } from '@/shared/api/metadata';
 import { SessionState } from '@/features/auth/model/types';
+import { Metadata } from '@gridsuite/commons-ui';
 
-export function useTopBarApps(user?: SessionState['user']): MetadataJson[] {
-    const [appsAndUrls, setAppsAndUrls] = useState<MetadataJson[]>([]);
+export function useTopBarApps(user?: SessionState['user']): Metadata[] {
+    const [appsAndUrls, setAppsAndUrls] = useState<Metadata[]>([]);
 
     useEffect(() => {
         if (user !== null) {
