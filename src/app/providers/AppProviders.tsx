@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent } from 'react';
 import { CssBaseline } from '@mui/material';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import {
@@ -18,11 +18,11 @@ import {
 import { IntlProvider } from 'react-intl';
 import { BrowserRouter } from 'react-router';
 import { Provider } from 'react-redux';
-import App from '../App';
 import { store } from 'app/store/store';
+import App from 'app/App';
+import { appMessages } from 'app/config/app-messages';
+import { getAppTheme } from 'app/config/app-theme';
 import { useGetConfigParameterWithFallback } from 'features/app-parameters/hooks/use-get-config-parameter-with-fallback';
-import { appMessages } from '../config/app-messages';
-import { getAppTheme } from '../config/app-theme';
 
 const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
@@ -50,9 +50,6 @@ const AppProvidersWithStore: FunctionComponent = () => {
 };
 
 const AppWrapper: FunctionComponent = () => {
-    useEffect(() => {
-        console.log('mounted');
-    }, []);
     return (
         <Provider store={store}>
             <AppProvidersWithStore />

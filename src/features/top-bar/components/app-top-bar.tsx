@@ -16,13 +16,13 @@ import {
     TopBar,
     UserManagerState,
 } from '@gridsuite/commons-ui';
-import Parameters from '../../app-parameters/components/parameters';
-import { APP_NAME } from '../../../app/config/config';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { APP_NAME } from 'app/config/app-config';
 import PowsyblLogo from 'assets/images/powsybl_logo.svg?react';
+import Parameters from 'features/app-parameters/components/parameters';
+import { useAppParameterState } from 'features/app-parameters/hooks/use-app-parameter-state';
 import AppPackage from '../../../../package.json';
-import { useAppParameterState } from '../../app-parameters/hooks/use-app-parameter-state';
 import { AppDispatch } from 'app/store/store';
 import { AuthenticationState } from 'features/authentication/store/authentication.type';
 import { getServersInfos } from '../api/get-servers-infos';

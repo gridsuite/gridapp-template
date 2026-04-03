@@ -8,7 +8,7 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { store } from 'app/store/store';
 import { selectAuthentication } from 'features/authentication/store/authentication.selectors';
-import { APP_NAME } from 'app/config/config';
+import { APP_NAME } from 'app/config/app-config';
 
 export interface ErrorWithStatus extends Error {
     status?: number;
