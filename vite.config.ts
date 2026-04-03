@@ -27,7 +27,7 @@ const serverSettings: CommonServerOptions = {
     },
 };
 
-export default defineConfig((_config) => ({
+export default defineConfig({
     plugins: [
         react({
             babel: {
@@ -65,6 +65,7 @@ export default defineConfig((_config) => ({
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),
+            assets: path.resolve(__dirname, './src/assets'),
         },
     },
     server: serverSettings, // for npm run start
@@ -72,4 +73,4 @@ export default defineConfig((_config) => ({
     build: {
         outDir: 'build',
     },
-}));
+});
