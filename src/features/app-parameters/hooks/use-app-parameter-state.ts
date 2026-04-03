@@ -8,6 +8,7 @@ import { useSnackMessage } from '@gridsuite/commons-ui';
 import { AppParameters, AppParametersKey } from 'features/app-parameters/store/app-parameters.type';
 import { useState, useEffect, useCallback } from 'react';
 import { useUpdateConfigParameterMutation } from 'shared/api/config-api/config-api';
+import { getErrorMessage } from 'shared/lib/error';
 import { useGetConfigParameterWithFallback } from './use-get-config-parameter-with-fallback';
 
 export function useAppParameterState<K extends AppParametersKey>(
@@ -33,11 +34,11 @@ export function useAppParameterState<K extends AppParametersKey>(
                     name: paramName,
                     value: newValue,
                 }).unwrap();
-            } catch (error: any) {
+            } catch (error) {
                 setLocalValue(previousValue);
 
                 snackError({
-                    messageTxt: error?.data?.message || error.message,
+                    messageTxt: getErrorMessage(error) ?? undefined,
                     headerId: 'paramsChangingError',
                 });
             }

@@ -5,124 +5,37 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import App from '../App';
 import React, { FunctionComponent } from 'react';
 import { CssBaseline } from '@mui/material';
-import { createTheme, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material/styles';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import {
     CardErrorBoundary,
-    cardErrorBoundaryEn,
-    cardErrorBoundaryFr,
     getComputedLanguage,
-    GsLangUser,
-    LIGHT_THEME,
-    loginEn,
-    loginFr,
     PARAM_LANGUAGE,
     PARAM_THEME,
     SnackbarProvider,
-    topBarEn,
-    topBarFr,
 } from '@gridsuite/commons-ui';
 import { IntlProvider } from 'react-intl';
 import { BrowserRouter } from 'react-router';
 import { Provider } from 'react-redux';
-import messages_en from '../../shared/translations/en/common.json';
-import messages_fr from '../../shared/translations/fr/common.json';
-import messages_plugins_en from '../../plugins/translations/en.json';
-import messages_plugins_fr from '../../plugins/translations/fr.json';
-import { IntlConfig } from 'react-intl/src/types';
+import App from '../App';
 import { store } from 'app/store/store';
 import { useGetConfigParameterWithFallback } from 'features/app-parameters/hooks/use-get-config-parameter-with-fallback';
-
-const lightTheme: Theme = createTheme({
-    palette: {
-        mode: 'light',
-    },
-    arrow: {
-        fill: '#212121',
-        stroke: '#212121',
-    },
-    arrow_hover: {
-        fill: 'white',
-        stroke: 'white',
-    },
-    circle: {
-        stroke: 'white',
-        fill: 'white',
-    },
-    circle_hover: {
-        stroke: '#212121',
-        fill: '#212121',
-    },
-    link: {
-        color: 'blue',
-    },
-    mapboxStyle: 'mapbox://styles/mapbox/light-v9',
-});
-
-const darkTheme: Theme = createTheme({
-    palette: {
-        mode: 'dark',
-    },
-    arrow: {
-        fill: 'white',
-        stroke: 'white',
-    },
-    arrow_hover: {
-        fill: '#424242',
-        stroke: '#424242',
-    },
-    circle: {
-        stroke: '#424242',
-        fill: '#424242',
-    },
-    circle_hover: {
-        stroke: 'white',
-        fill: 'white',
-    },
-    link: {
-        color: 'green',
-    },
-    mapboxStyle: 'mapbox://styles/mapbox/dark-v9',
-});
-
-const getMuiTheme = (theme: string): Theme => {
-    if (theme === LIGHT_THEME) {
-        return lightTheme;
-    } else {
-        return darkTheme;
-    }
-};
-
-const messages: Record<GsLangUser, IntlConfig['messages']> = {
-    en: {
-        ...messages_en,
-        ...loginEn,
-        ...topBarEn,
-        ...cardErrorBoundaryEn,
-        ...messages_plugins_en, // keep it at the end to allow translation overwriting
-    },
-    fr: {
-        ...messages_fr,
-        ...loginFr,
-        ...topBarFr,
-        ...cardErrorBoundaryFr,
-        ...messages_plugins_fr, // keep it at the end to allow translation overwriting
-    },
-};
+import { appMessages } from './app-messages';
+import { getAppTheme } from './app-theme';
 
 const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
-const AppWrapperWithRedux: FunctionComponent = () => {
+const AppProvidersWithStore: FunctionComponent = () => {
     const { data: language } = useGetConfigParameterWithFallback(PARAM_LANGUAGE);
     const computedLanguage = getComputedLanguage(language);
     const { data: theme } = useGetConfigParameterWithFallback(PARAM_THEME);
+
     return (
-        <IntlProvider locale={computedLanguage} messages={messages[computedLanguage]}>
+        <IntlProvider locale={computedLanguage} messages={appMessages[computedLanguage]}>
             <BrowserRouter basename={basename}>
                 <StyledEngineProvider injectFirst>
-                    <ThemeProvider theme={getMuiTheme(theme)}>
+                    <ThemeProvider theme={getAppTheme(theme)}>
                         <SnackbarProvider hideIconVariant={false}>
                             <CssBaseline />
                             <CardErrorBoundary>
@@ -139,7 +52,7 @@ const AppWrapperWithRedux: FunctionComponent = () => {
 const AppWrapper: FunctionComponent = () => {
     return (
         <Provider store={store}>
-            <AppWrapperWithRedux />
+            <AppProvidersWithStore />
         </Provider>
     );
 };

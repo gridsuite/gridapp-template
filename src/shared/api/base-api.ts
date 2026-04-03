@@ -1,5 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+export const ApiTags = {
+    Config: 'Config',
+} as const;
+
 export const baseApi = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
@@ -16,6 +20,6 @@ export const baseApi = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Config'],
+    tagTypes: Object.values(ApiTags),
     endpoints: () => ({}),
 });

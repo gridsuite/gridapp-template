@@ -1,7 +1,8 @@
 import { GsLangUser, GsTheme, PARAM_LANGUAGE, PARAM_THEME, getAppName } from '@gridsuite/commons-ui';
-import { baseApi } from '../base-api';
+import { ApiTags, baseApi } from '../base-api';
 import { APP_NAME } from 'app/config/config';
 import { AppDispatch } from 'app/store/store';
+import { AppParameters, AppParametersKey } from 'features/app-parameters/store/app-parameters.type';
 
 const CONFIG_URL = `/config/v1`;
 
@@ -17,9 +18,9 @@ export const configApi = baseApi.injectEndpoints({
                 const appName = getAppName(APP_NAME, name);
                 return makeConfigUrl(`/applications/${appName}/parameters/${name}`);
             },
-            providesTags: (result, error, paramName) => [{ type: 'Config', id: paramName }],
+            providesTags: (result, error, paramName) => [{ type: ApiTags.Config, id: paramName }],
         }),
-        updateConfigParameter: builder.mutation<void, { name: string; value: string }>({
+        updateConfigParameter: builder.mutation<void, UpdateConfigParameterRequest>({
             query: ({ name, value }) => {
                 const appName = getAppName(APP_NAME, name);
                 return {
@@ -34,7 +35,7 @@ export const configApi = baseApi.injectEndpoints({
 });
 
 export const invalidateConfigQueries = (dispatch: AppDispatch, paramName: string) => {
-    dispatch(baseApi.util.invalidateTags([{ type: 'Config', id: paramName }]));
+    dispatch(baseApi.util.invalidateTags([{ type: ApiTags.Config, id: paramName }]));
 };
 
 // https://github.com/gridsuite/config-server/blob/main/src/main/java/org/gridsuite/config/server/dto/ParameterInfos.java
@@ -48,5 +49,9 @@ export type ConfigParameter =
           value: GsTheme;
       };
 export type ConfigParameters = ConfigParameter[];
+export type UpdateConfigParameterRequest = {
+    name: AppParametersKey;
+    value: AppParameters[AppParametersKey];
+};
 
 export const { useGetConfigParameterQuery, useGetConfigParametersQuery, useUpdateConfigParameterMutation } = configApi;

@@ -32,27 +32,23 @@ export type AppTopBarProps = {
     user?: AuthenticationState['user'];
     userManager: UserManagerState;
 };
-const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
+
+const AppTopBar: FunctionComponent<AppTopBarProps> = ({ user, userManager }) => {
     const navigate = useNavigate();
-
     const dispatch = useDispatch<AppDispatch>();
-
     const [appsAndUrls, setAppsAndUrls] = useState<Metadata[]>([]);
-
     const [themeLocal, handleChangeTheme] = useAppParameterState(PARAM_THEME);
-
     const [languageLocal, handleChangeLanguage] = useAppParameterState(PARAM_LANGUAGE);
-
     const [showParameters, setShowParameters] = useState(false);
     const hideParameters = useCallback(() => setShowParameters(false), []);
 
     useEffect(() => {
-        if (props.user !== null) {
-            fetchAppsMetadata().then((res) => {
-                setAppsAndUrls(res);
+        if (user !== null) {
+            fetchAppsMetadata().then((metadata) => {
+                setAppsAndUrls(metadata);
             });
         }
-    }, [props.user]);
+    }, [user]);
 
     return (
         <>
@@ -68,9 +64,9 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
                 }
                 appVersion={AppPackage.version}
                 appLicense={AppPackage.license}
-                onLogoutClick={() => logout(dispatch, props.userManager.instance)}
+                onLogoutClick={() => logout(dispatch, userManager.instance)}
                 onLogoClick={() => navigate('/', { replace: true })}
-                user={props.user ?? undefined}
+                user={user ?? undefined}
                 appsAndUrls={appsAndUrls}
                 globalVersionPromise={() => fetchVersion().then((res) => res?.deployVersion ?? 'unknown')}
                 additionalModulesPromise={getServersInfos}
