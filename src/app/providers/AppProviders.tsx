@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import App from './app';
+import App from '../App';
 import React, { FunctionComponent } from 'react';
 import { CssBaseline } from '@mui/material';
 import { createTheme, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material/styles';
@@ -13,10 +13,12 @@ import {
     CardErrorBoundary,
     cardErrorBoundaryEn,
     cardErrorBoundaryFr,
+    getComputedLanguage,
     GsLangUser,
     LIGHT_THEME,
     loginEn,
     loginFr,
+    PARAM_LANGUAGE,
     PARAM_THEME,
     SnackbarProvider,
     topBarEn,
@@ -24,14 +26,15 @@ import {
 } from '@gridsuite/commons-ui';
 import { IntlProvider } from 'react-intl';
 import { BrowserRouter } from 'react-router';
-import { Provider, useSelector } from 'react-redux';
-import messages_en from '../translations/en.json';
-import messages_fr from '../translations/fr.json';
-import messages_plugins_en from '../plugins/translations/en.json';
-import messages_plugins_fr from '../plugins/translations/fr.json';
-import { store } from '../redux/store';
+import { Provider } from 'react-redux';
+import messages_en from '../../shared/translations/en/common.json';
+import messages_fr from '../../shared/translations/fr/common.json';
+import messages_plugins_en from '../../plugins/translations/en.json';
+import messages_plugins_fr from '../../plugins/translations/fr.json';
 import { IntlConfig } from 'react-intl/src/types';
-import { AppState } from 'redux/reducer.type';
+import { useAppParameterState } from 'features/app-parameters/hooks/use-app-parameter-state';
+import { store } from 'app/store/store';
+import { useGetConfigParameterQuerySafe } from 'features/app-parameters/hooks/use-app-parameter-value-safe';
 
 const lightTheme: Theme = createTheme({
     palette: {
@@ -113,8 +116,9 @@ const messages: Record<GsLangUser, IntlConfig['messages']> = {
 const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
 const AppWrapperWithRedux: FunctionComponent = () => {
-    const computedLanguage = useSelector((state: AppState) => state.computedLanguage);
-    const theme = useSelector((state: AppState) => state[PARAM_THEME]);
+    const { data: language } = useGetConfigParameterQuerySafe(PARAM_LANGUAGE);
+    const computedLanguage = getComputedLanguage(language);
+    const { data: theme } = useGetConfigParameterQuerySafe(PARAM_THEME);
     return (
         <IntlProvider locale={computedLanguage} messages={messages[computedLanguage]}>
             <BrowserRouter basename={basename}>

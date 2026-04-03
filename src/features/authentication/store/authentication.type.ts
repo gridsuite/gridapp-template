@@ -5,21 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-    AuthenticationRouterErrorState,
-    CommonStoreState,
-    GsLang,
-    GsLangUser,
-    GsTheme,
-    PARAM_LANGUAGE,
-    PARAM_THEME,
-} from '@gridsuite/commons-ui';
+import { AuthenticationRouterErrorState, CommonStoreState } from '@gridsuite/commons-ui';
 
-export type AppState = CommonStoreState & {
-    computedLanguage: GsLangUser;
-    [PARAM_THEME]: GsTheme;
-    [PARAM_LANGUAGE]: GsLang;
-
+export type AuthenticationState = CommonStoreState & {
     signInCallbackError: Error | null;
     authenticationRouterError: AuthenticationRouterErrorState | null;
     showAuthenticationRouterLogin: boolean;

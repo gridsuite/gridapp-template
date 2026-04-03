@@ -6,6 +6,7 @@
  */
 
 import react from '@vitejs/plugin-react';
+import path from 'path';
 import { CommonServerOptions, defineConfig } from 'vite';
 import checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
@@ -57,6 +58,11 @@ export default defineConfig((_config) => ({
         tsconfigPaths(), // to resolve absolute path via tsconfig cf https://stackoverflow.com/a/68250175/5092999
     ],
     base: './',
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './src'),
+        },
+    },
     server: serverSettings, // for npm run start
     preview: serverSettings, // for npm run serve (use local build)
     build: {

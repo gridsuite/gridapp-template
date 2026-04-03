@@ -7,6 +7,7 @@
 
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import {
+    fetchAppsMetadata,
     LIGHT_THEME,
     logout,
     Metadata,
@@ -15,20 +16,22 @@ import {
     TopBar,
     UserManagerState,
 } from '@gridsuite/commons-ui';
-import Parameters from './parameters';
-import { APP_NAME } from '../utils/config-params';
+import Parameters from '../../app-parameters/components/parameters';
+import { APP_NAME } from '../../../app/config/config';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAppsAndUrls, fetchVersion } from '../utils/rest-api';
-import { getServersInfos } from '../rest/study';
 import { useNavigate } from 'react-router';
-import PowsyblLogo from '../images/powsybl_logo.svg?react';
-import AppPackage from '../../package.json';
-import { AppDispatch } from '../redux/store';
-import { AppState } from 'redux/reducer.type';
-import { useParameterState } from './use-parameter-state';
+import PowsyblLogo from 'assets/images/powsybl_logo.svg?react';
+import AppPackage from '../../../../package.json';
+import { useAppParameterState } from '../../app-parameters/hooks/use-app-parameter-state';
+import { AppDispatch } from 'app/store/store';
+import { AppState } from 'app/store/reducer';
+import { AuthenticationState } from 'features/authentication/store/authentication.type';
+import { selectAppParameters } from 'features/app-parameters/store/app-parameters.selectors';
+import { getServersInfos } from '../api/get-servers-infos';
+import { fetchVersion } from 'shared/config/version';
 
 export type AppTopBarProps = {
-    user?: AppState['user'];
+    user?: AuthenticationState['user'];
     userManager: UserManagerState;
 };
 const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
@@ -38,18 +41,16 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
 
     const [appsAndUrls, setAppsAndUrls] = useState<Metadata[]>([]);
 
-    const theme = useSelector((state: AppState) => state[PARAM_THEME]);
+    const [themeLocal, handleChangeTheme] = useAppParameterState(PARAM_THEME);
 
-    const [themeLocal, handleChangeTheme] = useParameterState(PARAM_THEME);
-
-    const [languageLocal, handleChangeLanguage] = useParameterState(PARAM_LANGUAGE);
+    const [languageLocal, handleChangeLanguage] = useAppParameterState(PARAM_LANGUAGE);
 
     const [showParameters, setShowParameters] = useState(false);
     const hideParameters = useCallback(() => setShowParameters(false), []);
 
     useEffect(() => {
         if (props.user !== null) {
-            fetchAppsAndUrls().then((res) => {
+            fetchAppsMetadata().then((res) => {
                 setAppsAndUrls(res);
             });
         }
@@ -61,7 +62,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = (props) => {
                 appName={APP_NAME}
                 appColor="grey"
                 appLogo={
-                    theme === LIGHT_THEME ? (
+                    themeLocal === LIGHT_THEME ? (
                         <PowsyblLogo /> //GridXXXLogoLight
                     ) : (
                         <PowsyblLogo /> //GridXXXLogoDark

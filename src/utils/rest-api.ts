@@ -5,27 +5,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Env, GsLangUser, GsTheme, Metadata, PARAM_LANGUAGE, PARAM_THEME } from '@gridsuite/commons-ui';
-import { APP_NAME, getAppName } from './config-params';
-import { store } from '../redux/store';
+import { AppState } from 'app/store/reducer';
+import { APP_NAME } from '../app/config/config';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import { getErrorMessage } from './error';
-import { AppState } from 'redux/reducer.type';
+import { store } from 'app/store/store';
+import { selectAuthentication } from 'features/authentication/store/authentication.selectors';
 
 export interface ErrorWithStatus extends Error {
     status?: number;
 }
-
-// TODO remove when exported in commons-ui (src/utils/AuthService.ts)
-type IdpSettings = {
-    authority: string;
-    client_id: string;
-    redirect_uri: string;
-    post_logout_redirect_uri: string;
-    silent_redirect_uri: string;
-    scope: string;
-    maxExpiresIn?: number;
-};
 
 export type Url = string | URL;
 export type InitRequest = Partial<RequestInit>;
@@ -41,12 +29,11 @@ export type Token = string;
 //         ? `${import.meta.env.VITE_API_GATEWAY}/user-admin`
 //         : process.env.REACT_APP_USER_ADMIN_URI);
 
-const PREFIX_CONFIG_QUERIES = `${import.meta.env.VITE_API_GATEWAY}/config`;
 const PREFIX_CONFIG_NOTIFICATION_WS = `${import.meta.env.VITE_WS_GATEWAY}/config-notification`;
 
 function getToken(): Token | null {
     const state: AppState = store.getState();
-    return state.user?.id_token ?? null;
+    return selectAuthentication(state).user?.id_token ?? null;
 }
 
 export function connectNotificationsWsUpdateConfig(): ReconnectingWebSocket {
@@ -58,124 +45,4 @@ export function connectNotificationsWsUpdateConfig(): ReconnectingWebSocket {
         console.info(`Connected Websocket update config ui ${webSocketUrl} ...`);
     };
     return reconnectingWebSocket;
-}
-
-function parseError(text: string) {
-    try {
-        return JSON.parse(text);
-    } catch (err: any) {
-        console.error(err);
-        return null;
-    }
-}
-
-function handleError(response: Response): Promise<never> {
-    return response.text().then((text: string) => {
-        const errorName = 'HttpResponseError : ';
-        let error: ErrorWithStatus;
-        const errorJson = parseError(text);
-        if (errorJson?.status && errorJson?.error && errorJson?.message) {
-            error = new Error(
-                `${errorName}${errorJson.status} ${errorJson.error}, message : ${errorJson.message}`
-            ) as ErrorWithStatus;
-            error.status = errorJson.status;
-        } else {
-            error = new Error(`${errorName}${response.status} ${response.statusText}`) as ErrorWithStatus;
-            error.status = response.status;
-        }
-        throw error;
-    });
-}
-
-function prepareRequest(init?: InitRequest, token?: Token): RequestInit {
-    if (!(typeof init === 'undefined' || typeof init === 'object')) {
-        throw new TypeError(`Argument 2 of backendFetch is not an object ${typeof init}`);
-    }
-    const initCopy: RequestInit = { ...init };
-    initCopy.headers = new Headers(initCopy.headers || {});
-    const tokenCopy = token || getToken();
-    initCopy.headers.append('Authorization', `Bearer ${tokenCopy}`);
-    return initCopy;
-}
-
-function safeFetch(url: Url, initCopy?: InitRequest) {
-    return fetch(url, initCopy).then((response: Response) => (response.ok ? response : handleError(response)));
-}
-
-export function backendFetch(url: Url, init?: InitRequest, token?: Token): Promise<Response> {
-    return safeFetch(url, prepareRequest(init, token));
-}
-
-export function backendFetchText(url: Url, init?: InitRequest, token?: Token): Promise<string> {
-    return backendFetch(url, init, token).then((safeResponse: Response) => safeResponse.text());
-}
-
-export function backendFetchJson(url: Url, init?: InitRequest, token?: Token): Promise<unknown> {
-    return backendFetch(url, init, token).then((safeResponse: Response) => safeResponse.json());
-}
-
-export type EnvJson = Env & typeof import('../../public/env.json');
-
-function fetchEnv(): Promise<EnvJson> {
-    return fetch('env.json').then((res: Response) => res.json());
-}
-
-export function fetchIdpSettings(): Promise<IdpSettings> {
-    return fetch('idpSettings.json').then((res) => res.json());
-}
-
-export type VersionJson = {
-    deployVersion?: string;
-};
-
-export function fetchVersion(): Promise<VersionJson> {
-    console.info(`Fetching global metadata...`);
-    return fetchEnv()
-        .then((env: EnvJson) => fetch(`${env.appsMetadataServerUrl}/version.json`))
-        .then((response: Response) => response.json())
-        .catch((error) => {
-            console.error(`Error while fetching the version : ${getErrorMessage(error)}`);
-            throw error;
-        });
-}
-
-export function fetchAppsAndUrls(): Promise<Metadata[]> {
-    console.info(`Fetching apps and urls...`);
-    return fetchEnv()
-        .then((env: EnvJson) => fetch(`${env.appsMetadataServerUrl}/apps-metadata.json`))
-        .then((response: Response) => response.json());
-}
-
-// https://github.com/gridsuite/config-server/blob/main/src/main/java/org/gridsuite/config/server/dto/ParameterInfos.java
-export type ConfigParameter =
-    | {
-          readonly name: typeof PARAM_LANGUAGE;
-          value: GsLangUser;
-      }
-    | {
-          readonly name: typeof PARAM_THEME;
-          value: GsTheme;
-      };
-export type ConfigParameters = ConfigParameter[];
-
-export function fetchConfigParameters(appName: string = APP_NAME): Promise<ConfigParameters> {
-    console.info(`Fetching UI configuration params for app : ${appName}`);
-    const fetchParams = `${PREFIX_CONFIG_QUERIES}/v1/applications/${appName}/parameters`;
-    return backendFetchJson(fetchParams) as Promise<ConfigParameters>;
-}
-
-export function fetchConfigParameter(name: string): Promise<ConfigParameter> {
-    const appName = getAppName(name);
-    console.info(`Fetching UI config parameter '${name}' for app '${appName}'`);
-    const fetchParams = `${PREFIX_CONFIG_QUERIES}/v1/applications/${appName}/parameters/${name}`;
-    return backendFetchJson(fetchParams) as Promise<ConfigParameter>;
-}
-
-export function updateConfigParameter(name: string, value: Parameters<typeof encodeURIComponent>[0]): Promise<never> {
-    const appName = getAppName(name);
-    console.info(`Updating config parameter '${name}=${value}' for app '${appName}'`);
-    const updateParams = `${PREFIX_CONFIG_QUERIES}/v1/applications/${appName}/parameters/${name}?value=${encodeURIComponent(
-        value
-    )}`;
-    return backendFetch(updateParams, { method: 'put' }).then();
 }
