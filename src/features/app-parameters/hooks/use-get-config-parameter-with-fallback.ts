@@ -2,8 +2,8 @@ import { useGetConfigParameterQuery } from 'shared/api/config-api/config-api';
 import { initialAppParametersState } from '../store/app-parameters.default';
 import { AppParameters, AppParametersKey } from '../store/app-parameters.type';
 import { useSelector } from 'react-redux';
-import { AppState } from 'app/store/reducer';
 import { selectAuthentication } from 'features/authentication/store/authentication.selectors';
+import { AppState } from 'app/store/store.type';
 
 /**
  * This data is fetched from AppTopBar, which is displayed before user is authenticated

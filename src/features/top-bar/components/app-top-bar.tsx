@@ -18,15 +18,13 @@ import {
 } from '@gridsuite/commons-ui';
 import Parameters from '../../app-parameters/components/parameters';
 import { APP_NAME } from '../../../app/config/config';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import PowsyblLogo from 'assets/images/powsybl_logo.svg?react';
 import AppPackage from '../../../../package.json';
 import { useAppParameterState } from '../../app-parameters/hooks/use-app-parameter-state';
 import { AppDispatch } from 'app/store/store';
-import { AppState } from 'app/store/reducer';
 import { AuthenticationState } from 'features/authentication/store/authentication.type';
-import { selectAppParameters } from 'features/app-parameters/store/app-parameters.selectors';
 import { getServersInfos } from '../api/get-servers-infos';
 import { fetchVersion } from 'shared/config/version';
 

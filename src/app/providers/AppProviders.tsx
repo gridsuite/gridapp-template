@@ -32,9 +32,8 @@ import messages_fr from '../../shared/translations/fr/common.json';
 import messages_plugins_en from '../../plugins/translations/en.json';
 import messages_plugins_fr from '../../plugins/translations/fr.json';
 import { IntlConfig } from 'react-intl/src/types';
-import { useAppParameterState } from 'features/app-parameters/hooks/use-app-parameter-state';
 import { store } from 'app/store/store';
-import { useGetConfigParameterQuerySafe } from 'features/app-parameters/hooks/use-app-parameter-value-safe';
+import { useGetConfigParameterWithFallback } from 'features/app-parameters/hooks/use-get-config-parameter-with-fallback';
 
 const lightTheme: Theme = createTheme({
     palette: {
@@ -116,9 +115,9 @@ const messages: Record<GsLangUser, IntlConfig['messages']> = {
 const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
 const AppWrapperWithRedux: FunctionComponent = () => {
-    const { data: language } = useGetConfigParameterQuerySafe(PARAM_LANGUAGE);
+    const { data: language } = useGetConfigParameterWithFallback(PARAM_LANGUAGE);
     const computedLanguage = getComputedLanguage(language);
-    const { data: theme } = useGetConfigParameterQuerySafe(PARAM_THEME);
+    const { data: theme } = useGetConfigParameterWithFallback(PARAM_THEME);
     return (
         <IntlProvider locale={computedLanguage} messages={messages[computedLanguage]}>
             <BrowserRouter basename={basename}>

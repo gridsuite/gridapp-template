@@ -5,6 +5,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { AppState } from 'app/store/reducer';
+import { AppState } from 'app/store/store.type';
 
 export const selectAuthentication = (state: AppState) => state.authentication;
