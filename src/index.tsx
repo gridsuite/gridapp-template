@@ -15,7 +15,11 @@ import AppWrapper from './app/providers/AppProviders';
 const container = document.getElementById('root');
 if (container) {
     const root = createRoot(container);
-    root.render(<AppWrapper />);
+    root.render(
+        <React.StrictMode>
+            <AppWrapper />
+        </React.StrictMode>
+    );
 } else {
     document.write("<b>Can't start the application...</b>");
     throw new Error('No root container found');

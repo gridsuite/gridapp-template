@@ -6,7 +6,7 @@
  */
 import { useSnackMessage } from '@gridsuite/commons-ui';
 import { AppParameters, AppParametersKey } from 'features/app-parameters/store/app-parameters.type';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useUpdateConfigParameterMutation } from 'shared/api/config-api/config-api';
 import { getErrorMessage } from 'shared/lib/error';
 import { useGetConfigParameterWithFallback } from './use-get-config-parameter-with-fallback';
@@ -25,26 +25,23 @@ export function useAppParameterState<K extends AppParametersKey>(
         setLocalValue(paramValue);
     }, [paramValue]);
 
-    const setValue = useCallback(
-        async (newValue: AppParameters[K]) => {
-            const previousValue = localValue;
-            setLocalValue(newValue);
-            try {
-                await updateConfigParameter({
-                    name: paramName,
-                    value: newValue,
-                }).unwrap();
-            } catch (error) {
-                setLocalValue(previousValue);
+    const setValue = async (newValue: AppParameters[K]) => {
+        const previousValue = localValue;
+        setLocalValue(newValue);
+        try {
+            await updateConfigParameter({
+                name: paramName,
+                value: newValue,
+            }).unwrap();
+        } catch (error) {
+            setLocalValue(previousValue);
 
-                snackError({
-                    messageTxt: getErrorMessage(error) ?? undefined,
-                    headerId: 'paramsChangingError',
-                });
-            }
-        },
-        [paramName, localValue, updateConfigParameter, snackError]
-    );
+            snackError({
+                messageTxt: getErrorMessage(error) ?? undefined,
+                headerId: 'paramsChangingError',
+            });
+        }
+    };
 
     return [localValue, setValue];
 }

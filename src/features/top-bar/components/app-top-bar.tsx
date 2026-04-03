@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import {
     fetchAppsMetadata,
     LIGHT_THEME,
@@ -40,7 +40,6 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = ({ user, userManager }) => 
     const [themeLocal, handleChangeTheme] = useAppParameterState(PARAM_THEME);
     const [languageLocal, handleChangeLanguage] = useAppParameterState(PARAM_LANGUAGE);
     const [showParameters, setShowParameters] = useState(false);
-    const hideParameters = useCallback(() => setShowParameters(false), []);
 
     useEffect(() => {
         if (user !== null) {
@@ -75,7 +74,7 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = ({ user, userManager }) => 
                 onLanguageClick={handleChangeLanguage}
                 language={languageLocal}
             />
-            <Parameters showParameters={showParameters} hideParameters={hideParameters} />
+            <Parameters showParameters={showParameters} hideParameters={() => setShowParameters(false)} />
         </>
     );
 };

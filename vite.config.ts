@@ -29,7 +29,11 @@ const serverSettings: CommonServerOptions = {
 
 export default defineConfig((_config) => ({
     plugins: [
-        react(),
+        react({
+            babel: {
+                plugins: ['babel-plugin-react-compiler'],
+            },
+        }),
         checker({
             // TypeScript checking
             typescript: true,

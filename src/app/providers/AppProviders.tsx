@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { CssBaseline } from '@mui/material';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import {
@@ -50,6 +50,9 @@ const AppProvidersWithStore: FunctionComponent = () => {
 };
 
 const AppWrapper: FunctionComponent = () => {
+    useEffect(() => {
+        console.log('mounted');
+    }, []);
     return (
         <Provider store={store}>
             <AppProvidersWithStore />
