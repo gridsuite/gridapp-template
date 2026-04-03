@@ -21,8 +21,8 @@ import { Provider } from 'react-redux';
 import App from '../App';
 import { store } from 'app/store/store';
 import { useGetConfigParameterWithFallback } from 'features/app-parameters/hooks/use-get-config-parameter-with-fallback';
-import { appMessages } from './app-messages';
-import { getAppTheme } from './app-theme';
+import { appMessages } from '../config/app-messages';
+import { getAppTheme } from '../config/app-theme';
 
 const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
