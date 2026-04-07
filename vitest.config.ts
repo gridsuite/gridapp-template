@@ -21,6 +21,9 @@ export default mergeConfig(
                     inline: ['@gridsuite/commons-ui'],
                 },
             },
+            coverage: {
+                reporter: ['text', 'lcov'],
+            },
         },
     })
 );
