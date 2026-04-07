@@ -20,7 +20,6 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { APP_NAME } from 'app/config/app-config';
 import PowsyblLogo from 'assets/images/powsybl_logo.svg?react';
-import Parameters from 'features/app-parameters/components/parameters';
 import { useAppParameterState } from 'features/app-parameters/hooks/use-app-parameter-state';
 import AppPackage from '../../../../package.json';
 import { AppDispatch } from 'app/store/store';
@@ -39,7 +38,6 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = ({ user, userManager }) => 
     const [appsAndUrls, setAppsAndUrls] = useState<Metadata[]>([]);
     const [themeLocal, handleChangeTheme] = useAppParameterState(PARAM_THEME);
     const [languageLocal, handleChangeLanguage] = useAppParameterState(PARAM_LANGUAGE);
-    const [showParameters, setShowParameters] = useState(false);
 
     useEffect(() => {
         if (user !== null) {
@@ -74,7 +72,6 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = ({ user, userManager }) => 
                 onLanguageClick={handleChangeLanguage}
                 language={languageLocal}
             />
-            <Parameters showParameters={showParameters} hideParameters={() => setShowParameters(false)} />
         </>
     );
 };
