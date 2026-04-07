@@ -6,7 +6,7 @@
  */
 
 import 'core-js/es/array/flat-map';
-import '@fontsource/roboto';
+import 'typeface-roboto';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './app/styles/index.css';
