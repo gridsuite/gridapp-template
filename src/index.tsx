@@ -5,7 +5,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import 'core-js/es/array/flat-map';
 import 'typeface-roboto';
 import React from 'react';
 import { createRoot } from 'react-dom/client';

@@ -5,7 +5,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { FunctionComponent } from 'react';
 import { CssBaseline } from '@mui/material';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import {
@@ -26,7 +25,7 @@ import { useGetConfigParameterWithFallback } from 'features/app-parameters/hooks
 
 const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
-const AppProvidersWithStore: FunctionComponent = () => {
+const AppProvidersWithStore = () => {
     const { data: language } = useGetConfigParameterWithFallback(PARAM_LANGUAGE);
     const computedLanguage = getComputedLanguage(language);
     const { data: theme } = useGetConfigParameterWithFallback(PARAM_THEME);
@@ -49,7 +48,7 @@ const AppProvidersWithStore: FunctionComponent = () => {
     );
 };
 
-const AppWrapper: FunctionComponent = () => {
+const AppWrapper = () => {
     return (
         <Provider store={store}>
             <AppProvidersWithStore />

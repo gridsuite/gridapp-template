@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     fetchAppsMetadata,
     LIGHT_THEME,
@@ -32,7 +32,7 @@ export type AppTopBarProps = {
     userManager: UserManagerState;
 };
 
-const AppTopBar: FunctionComponent<AppTopBarProps> = ({ user, userManager }) => {
+const AppTopBar = ({ user, userManager }: AppTopBarProps) => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const [appsAndUrls, setAppsAndUrls] = useState<Metadata[]>([]);
@@ -41,9 +41,13 @@ const AppTopBar: FunctionComponent<AppTopBarProps> = ({ user, userManager }) => 
 
     useEffect(() => {
         if (user !== null) {
-            fetchAppsMetadata().then((metadata) => {
-                setAppsAndUrls(metadata);
-            });
+            fetchAppsMetadata()
+                .then((metadata) => {
+                    setAppsAndUrls(metadata);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
         }
     }, [user]);
 

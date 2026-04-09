@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useMatch, useNavigate } from 'react-router';
 import { AuthenticationRouter, CardErrorBoundary, initializeAuthenticationProd } from '@gridsuite/commons-ui';
@@ -17,7 +17,7 @@ import { fetchIdpSettings } from 'shared/config/idp-settings';
 import { AppState } from './store/store.type';
 import { useAppParametersInvalidationListener } from 'features/app-parameters/hooks/use-app-parameters-invalidation-listener';
 
-const App: FunctionComponent = () => {
+const App = () => {
     const user = useSelector((state: AppState) => selectAuthentication(state).user);
 
     const signInCallbackError = useSelector((state: AppState) => selectAuthentication(state).signInCallbackError);

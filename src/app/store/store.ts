@@ -7,15 +7,11 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 import { reducer } from './reducer';
-import { baseApi } from 'shared/api/base-api';
+import { baseApi } from 'shared/api/rtk-query/base-api';
 
 export const store = configureStore({
     reducer,
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            serializableCheck: false,
-            immutableCheck: false,
-        }).concat(baseApi.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

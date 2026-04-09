@@ -10,17 +10,9 @@ import { store } from 'app/store/store';
 import { selectAuthentication } from 'features/authentication/store/authentication.selectors';
 import { APP_NAME } from 'app/config/app-config';
 
-export interface ErrorWithStatus extends Error {
-    status?: number;
-}
-
-export type Url = string | URL;
-export type InitRequest = Partial<RequestInit>;
-export type Token = string;
-
 const PREFIX_CONFIG_NOTIFICATION_WS = `${import.meta.env.VITE_WS_GATEWAY}/config-notification`;
 
-function getToken(): Token | null {
+function getToken(): string | null {
     const state = store.getState();
     return selectAuthentication(state).user?.id_token ?? null;
 }

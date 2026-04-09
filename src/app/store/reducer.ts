@@ -7,7 +7,7 @@
 
 import { combineReducers } from '@reduxjs/toolkit';
 import { authenticationReducer } from 'features/authentication/store/authentication.slice';
-import { baseApi } from 'shared/api/base-api';
+import { baseApi } from 'shared/api/rtk-query/base-api';
 
 export const reducer = combineReducers({
     authentication: authenticationReducer,

@@ -6,7 +6,7 @@
  */
 
 import { GsLangUser, GsTheme, PARAM_LANGUAGE, PARAM_THEME, getAppName } from '@gridsuite/commons-ui';
-import { ApiTags, baseApi } from '../base-api';
+import { ApiTags, baseApi } from '../rtk-query/base-api';
 import { APP_NAME } from 'app/config/app-config';
 import { AppDispatch } from 'app/store/store';
 import { AppParameters, AppParametersKey } from 'features/app-parameters/store/app-parameters.type';

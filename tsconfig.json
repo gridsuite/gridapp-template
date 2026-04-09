@@ -29,7 +29,7 @@
         // We must list config files in typescript because needed by prettier when called by eslint as plugin
         "vitest.config.ts",
         "vitest.setup.ts",
-        "prettier.config.cjs",
+        "prettier.config.js",
         "vite.config.ts"
     ]
 }

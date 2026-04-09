@@ -5,13 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { AuthenticationActions } from '@gridsuite/commons-ui';
 import { AuthenticationState } from 'features/authentication/store/authentication.type';
-import { baseApi } from 'shared/api/base-api';
+import { baseApi } from 'shared/api/rtk-query/base-api';
 
 export type AppState = {
     authentication: AuthenticationState;
     [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
 };
-
-export type Actions = AuthenticationActions;

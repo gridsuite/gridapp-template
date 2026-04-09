@@ -6,7 +6,7 @@
  */
 
 import { GridSuiteModule } from '@gridsuite/commons-ui';
-import { baseApi } from '../base-api';
+import { baseApi } from '../rtk-query/base-api';
 
 const STUDY_URL = `/study/v1`;
 
@@ -19,5 +19,3 @@ export const studyApi = baseApi.injectEndpoints({
         }),
     }),
 });
-
-export const { useGetAboutInfosQuery } = studyApi;
