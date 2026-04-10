@@ -7,7 +7,7 @@
 
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useGetConfigParameterWithFallback } from './use-get-config-parameter-with-fallback';
+import { useGetConfigParameterWithFallback } from '../../hooks/use-get-config-parameter-with-fallback';
 
 const { mockUseSelector, mockUseGetConfigParameterQuery } = vi.hoisted(() => ({
     mockUseSelector: vi.fn(),

@@ -7,7 +7,7 @@
 
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useAppParametersInvalidationListener } from './use-app-parameters-invalidation-listener';
+import { useAppParametersInvalidationListener } from '../../hooks/use-app-parameters-invalidation-listener';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 const { mockUseDispatch, mockUseSelector, mockInvalidateConfigQueries, mockConnectNotificationsWsUpdateConfig } =

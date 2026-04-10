@@ -5,10 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { AppState } from 'app/store/store.type';
-import { selectAuthentication } from 'features/authentication/store/authentication.selectors';
+import { useAppSelector } from 'app/store/store';
+import { selectUser } from 'features/authentication/store/authentication.selectors';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { invalidateConfigQueries } from 'shared/api/config-api/config-api';
 import { connectNotificationsWsUpdateConfig } from 'shared/api/ws/config-ws';
 
@@ -19,7 +19,7 @@ type ConfigNotificationData = {
 };
 
 export const useAppParametersInvalidationListener = () => {
-    const user = useSelector((state: AppState) => selectAuthentication(state).user);
+    const user = useAppSelector(selectUser);
     const dispatch = useDispatch();
 
     useEffect(() => {

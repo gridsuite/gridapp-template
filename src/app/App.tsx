@@ -5,28 +5,28 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useLocation, useMatch, useNavigate } from 'react-router';
 import { AuthenticationRouter, CardErrorBoundary, initializeAuthenticationProd } from '@gridsuite/commons-ui';
 import { AppRouter } from 'app/router/AppRouter';
 import AppTopBar, { AppTopBarProps } from 'features/top-bar/components/app-top-bar';
-import { selectAuthentication } from 'features/authentication/store/authentication.selectors';
+import {
+    selectAuthenticationRouterError,
+    selectShowAuthenticationRouterLogin,
+    selectSignInCallbackError,
+    selectUser,
+} from 'features/authentication/store/authentication.selectors';
 import { getErrorMessage } from 'shared/lib/error';
 import { fetchIdpSettings } from 'shared/config/idp-settings';
-import { AppState } from './store/store.type';
 import { useAppParametersInvalidationListener } from 'features/app-parameters/hooks/use-app-parameters-invalidation-listener';
+import { useAppSelector } from './store/store';
 
 const App = () => {
-    const user = useSelector((state: AppState) => selectAuthentication(state).user);
-
-    const signInCallbackError = useSelector((state: AppState) => selectAuthentication(state).signInCallbackError);
-    const authenticationRouterError = useSelector(
-        (state: AppState) => selectAuthentication(state).authenticationRouterError
-    );
-    const showAuthenticationRouterLogin = useSelector(
-        (state: AppState) => selectAuthentication(state).showAuthenticationRouterLogin
-    );
+    const user = useAppSelector(selectUser);
+    const signInCallbackError = useAppSelector(selectSignInCallbackError);
+    const authenticationRouterError = useAppSelector(selectAuthenticationRouterError);
+    const showAuthenticationRouterLogin = useAppSelector(selectShowAuthenticationRouterLogin);
 
     const [userManager, setUserManager] = useState<AppTopBarProps['userManager']>({ instance: null, error: null });
 

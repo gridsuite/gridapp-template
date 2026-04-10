@@ -7,7 +7,7 @@
 
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useAppParameterState } from './use-app-parameter-state';
+import { useAppParameterState } from '../../hooks/use-app-parameter-state';
 
 const { mockUseSnackMessage, mockUseUpdateConfigParameterMutation, mockUseGetConfigParameterWithFallback } = vi.hoisted(
     () => ({

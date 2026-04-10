@@ -7,8 +7,10 @@
 
 import { AuthenticationState } from 'features/authentication/store/authentication.type';
 import { baseApi } from 'shared/api/rtk-query/base-api';
+import { NotificationsState } from 'shared/store/notifications/notifications.slice';
 
 export type AppState = {
     authentication: AuthenticationState;
+    notifications: NotificationsState;
     [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
 };

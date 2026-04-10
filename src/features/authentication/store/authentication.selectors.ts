@@ -8,3 +8,11 @@
 import { AppState } from 'app/store/store.type';
 
 export const selectAuthentication = (state: AppState) => state.authentication;
+export const selectUser = (state: AppState) => selectAuthentication(state).user;
+export const selectSignInCallbackError = (state: AppState) => selectAuthentication(state).signInCallbackError;
+
+export const selectAuthenticationRouterError = (state: AppState) =>
+    selectAuthentication(state).authenticationRouterError;
+
+export const selectShowAuthenticationRouterLogin = (state: AppState) =>
+    selectAuthentication(state).showAuthenticationRouterLogin;
