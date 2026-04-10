@@ -1,34 +1,47 @@
+/**
+ * Copyright (c) 2026, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 import { SnackInputs, useSnackMessage } from '@gridsuite/commons-ui';
-import { useAppSelector } from 'app/store/store';
-import { useEffect } from 'react';
-import { selectLastNotification } from 'shared/store/notifications/notifications.selectors';
-import { NotificationType } from 'shared/store/notifications/notifications.slice';
+import { useAppDispatch, useAppSelector } from 'app/store/store';
+import { useEffect, useMemo } from 'react';
+import { selectNotificationQueue } from 'shared/store/notifications/notifications.selectors';
+import { NotificationType, shiftNotification } from 'shared/store/notifications/notifications.slice';
 
 export function NotificationsListener() {
-    const notification = useAppSelector(selectLastNotification);
+    const dispatch = useAppDispatch();
+    const notificationQueue = useAppSelector(selectNotificationQueue);
     const { snackError, snackInfo, snackSuccess, snackWarning } = useSnackMessage();
 
-    const snackMethod: Record<NotificationType, (snackInput: SnackInputs) => void> = {
-        error: snackError,
-        info: snackInfo,
-        success: snackSuccess,
-        warning: snackWarning,
-    };
+    const lastNotification = useMemo(() => notificationQueue[0], [notificationQueue]);
+
+    const snackMethod: Record<NotificationType, (snackInput: SnackInputs) => void> = useMemo(
+        () => ({
+            error: snackError,
+            info: snackInfo,
+            success: snackSuccess,
+            warning: snackWarning,
+        }),
+        [snackError, snackInfo, snackSuccess, snackWarning]
+    );
 
     useEffect(() => {
-        if (!notification) {
-            return;
-        }
+        if (!lastNotification) return;
 
-        const payload = {
-            headerId: notification.messageId,
-            messageTxt: notification.message ?? undefined,
+        const payload: SnackInputs = {
+            headerId: lastNotification.messageId,
+            messageTxt: lastNotification.message ?? undefined,
         };
 
-        const snack = snackMethod[notification.type ?? 'error'];
+        const snack = snackMethod[lastNotification.type];
 
         snack(payload);
-    }, [notification, snackError, snackInfo, snackSuccess, snackWarning]);
+
+        dispatch(shiftNotification());
+    }, [lastNotification, snackMethod, dispatch]);
 
     return null;
 }

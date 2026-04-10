@@ -25,7 +25,6 @@ vi.mock('shared/api/config-api/config-api', () => ({
 vi.mock('../store/app-parameters.default', () => ({
     initialAppParametersState: {
         language: 'en',
-        computedLanguage: 'en',
         theme: 'Dark',
     },
 }));

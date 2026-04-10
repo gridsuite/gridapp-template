@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { GsLangUser, GsTheme, PARAM_LANGUAGE, PARAM_THEME, getAppName } from '@gridsuite/commons-ui';
+import { GsLang, GsTheme, PARAM_LANGUAGE, PARAM_THEME, getAppName } from '@gridsuite/commons-ui';
 import { ApiTags, baseApi } from '../rtk-query/base-api';
 import { APP_NAME } from 'app/config/app-config';
 import { AppDispatch } from 'app/store/store';
@@ -37,6 +37,21 @@ export const configApi = baseApi.injectEndpoints({
                     method: 'PUT',
                 };
             },
+            async onQueryStarted({ name, value }, { dispatch, queryFulfilled }) {
+                const patch = dispatch(
+                    configApi.util.updateQueryData('getConfigParameter', name, (draft) => {
+                        if (draft) {
+                            draft.value = value;
+                        }
+                    })
+                );
+
+                try {
+                    await queryFulfilled;
+                } catch {
+                    patch.undo();
+                }
+            },
         }),
     }),
 });
@@ -49,7 +64,7 @@ export const invalidateConfigQueries = (dispatch: AppDispatch, paramName: string
 export type ConfigParameter =
     | {
           readonly name: typeof PARAM_LANGUAGE;
-          value: GsLangUser;
+          value: GsLang;
       }
     | {
           readonly name: typeof PARAM_THEME;

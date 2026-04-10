@@ -5,15 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-    getLocalStorageComputedLanguage,
-    getLocalStorageLanguage,
-    getLocalStorageTheme,
-} from './app-parameters.local-storage';
+import { getLocalStorageLanguage, getLocalStorageTheme } from './app-parameters.local-storage';
 import { AppParameters } from './app-parameters.type';
 
 export const initialAppParametersState: AppParameters = {
     language: getLocalStorageLanguage(),
-    computedLanguage: getLocalStorageComputedLanguage(),
     theme: getLocalStorageTheme(),
 };

@@ -7,4 +7,4 @@
 
 import { AppState } from 'app/store/store.type';
 
-export const selectLastNotification = (app: AppState) => app.notifications.last;
+export const selectNotificationQueue = (app: AppState) => app.notifications.queue;

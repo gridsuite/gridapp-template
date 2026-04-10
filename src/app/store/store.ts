@@ -9,12 +9,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import { reducer } from './reducer';
 import { baseApi } from 'shared/api/rtk-query/base-api';
 import { useDispatch, useSelector } from 'react-redux';
-import { rtkQueryErrorMiddleware } from 'shared/middleware/rtk-query-error-handler';
+import { listenerMiddleware } from './rtk-query-listener-middleware';
+import './rtk-query-error-listener'; // start error listener by importing it here
 
 export const store = configureStore({
     reducer,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(baseApi.middleware).concat(rtkQueryErrorMiddleware),
+        getDefaultMiddleware().concat(baseApi.middleware).prepend(listenerMiddleware.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -22,3 +23,9 @@ export type AppDispatch = typeof store.dispatch;
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();
+
+if (import.meta.env.DEV && import.meta.hot) {
+    import.meta.hot.accept('./reducer', () => {
+        store.replaceReducer(reducer);
+    });
+}

@@ -5,11 +5,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { GsLang, GsTheme } from '@gridsuite/commons-ui';
+import { createListenerMiddleware } from '@reduxjs/toolkit';
 
-export type AppParameters = {
-    language: GsLang;
-    theme: GsTheme;
-};
-
-export type AppParametersKey = keyof AppParameters;
+export const listenerMiddleware = createListenerMiddleware();

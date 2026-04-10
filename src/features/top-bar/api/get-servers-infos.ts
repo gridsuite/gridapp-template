@@ -11,7 +11,6 @@ import { rtkQueryToPromise } from 'shared/api/rtk-query/rtk-query-to-promise';
 import { studyApi } from 'shared/api/study-api/study-api';
 import { getErrorMessage } from 'shared/lib/error';
 
-// hook to transform rtk query hooks to Promise in order to make legacy components work
 export const getServersInfos = (): Promise<GridSuiteModule[]> => {
     return rtkQueryToPromise(
         store.dispatch(

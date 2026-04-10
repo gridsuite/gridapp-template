@@ -5,9 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { DARK_THEME, GsLang, GsLangUser, GsTheme, LANG_SYSTEM } from '@gridsuite/commons-ui';
+import { DARK_THEME, GsLang, GsTheme, LANG_SYSTEM } from '@gridsuite/commons-ui';
 import { APP_NAME } from 'app/config/app-config';
-import { getComputedLanguage } from 'shared/lib/language';
 
 const LOCAL_STORAGE_THEME_KEY = (APP_NAME + '_THEME').toUpperCase();
 const LOCAL_STORAGE_LANGUAGE_KEY = (APP_NAME + '_LANGUAGE').toUpperCase();
@@ -26,8 +25,4 @@ export function getLocalStorageLanguage() {
 
 export function saveLocalStorageLanguage(language: GsLang): void {
     localStorage.setItem(LOCAL_STORAGE_LANGUAGE_KEY, language);
-}
-
-export function getLocalStorageComputedLanguage(): GsLangUser {
-    return getComputedLanguage(getLocalStorageLanguage());
 }
