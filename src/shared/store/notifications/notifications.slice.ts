@@ -6,17 +6,10 @@
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { SnackBarNotification } from './notifications.type';
 
 const initialState: NotificationsState = {
     queue: [],
-};
-
-export type NotificationType = 'error' | 'success' | 'warning' | 'info';
-
-export type SnackBarNotification = {
-    messageId?: string;
-    message: string | null;
-    type: NotificationType;
 };
 
 export const notificationsSlice = createSlice({

@@ -15,7 +15,7 @@ import './rtk-query-error-listener'; // start error listener by importing it her
 export const store = configureStore({
     reducer,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(baseApi.middleware).prepend(listenerMiddleware.middleware),
+        getDefaultMiddleware().prepend(listenerMiddleware.middleware).concat(baseApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

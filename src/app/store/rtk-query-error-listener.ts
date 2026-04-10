@@ -7,8 +7,9 @@
 
 import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { pushNotification } from 'shared/store/notifications/notifications.slice';
-import { listenerMiddleware } from './rtk-query-listener-middleware';
 import { getErrorMessage } from 'shared/lib/error';
+import { listenerMiddleware } from './rtk-query-listener-middleware';
+import { NotificationType } from 'shared/store/notifications/notifications.type';
 
 type RtkQueryRejectedMetadataArgs = {
     endpointName?: string;
@@ -25,16 +26,17 @@ const unsubscribe = listenerMiddleware.startListening({
             pushNotification({
                 messageId: actionMetadata.endpointName,
                 message,
-                type: 'error',
+                type: NotificationType.error,
             })
         );
     },
 });
 
 // listenerMiddleware.startListening is ran on each vite HMR
-// this makes the previous listener unsubscribe
+// this makes the obsolete listener unsubscribe
 if (import.meta.env.DEV && import.meta.hot) {
-    import.meta.hot.on('vite:beforeUpdate', () => {
+    import.meta.hot.accept();
+    import.meta.hot.dispose(() => {
         unsubscribe();
     });
 }

@@ -9,7 +9,8 @@ import { SnackInputs, useSnackMessage } from '@gridsuite/commons-ui';
 import { useAppDispatch, useAppSelector } from 'app/store/store';
 import { useEffect, useMemo } from 'react';
 import { selectNotificationQueue } from 'shared/store/notifications/notifications.selectors';
-import { NotificationType, shiftNotification } from 'shared/store/notifications/notifications.slice';
+import { shiftNotification } from 'shared/store/notifications/notifications.slice';
+import { NotificationType } from 'shared/store/notifications/notifications.type';
 
 export function NotificationsListener() {
     const dispatch = useAppDispatch();
