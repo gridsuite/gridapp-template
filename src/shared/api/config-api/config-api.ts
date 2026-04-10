@@ -10,6 +10,10 @@ import { ApiTags, baseApi } from '../rtk-query/base-api';
 import { APP_NAME } from 'app/config/app-config';
 import { AppDispatch } from 'app/store/store';
 import { AppParameters, AppParametersKey } from 'features/app-parameters/store/app-parameters.type';
+import {
+    saveLocalStorageLanguage,
+    saveLocalStorageTheme,
+} from 'features/app-parameters/store/app-parameters.local-storage';
 
 const CONFIG_URL = `/config/v1`;
 
@@ -26,6 +30,21 @@ export const configApi = baseApi.injectEndpoints({
                 return makeConfigUrl(`/applications/${appName}/parameters/${name}`);
             },
             providesTags: (result, error, paramName) => [{ type: ApiTags.Config, id: paramName }],
+            async onQueryStarted(arg, { queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+
+                    switch (data.name) {
+                        case PARAM_LANGUAGE:
+                            saveLocalStorageLanguage(data.value);
+                            break;
+                        case PARAM_THEME:
+                            saveLocalStorageTheme(data.value);
+                    }
+                } catch (error) {
+                    console.debug('getConfigParameter RTK query failed (ignored here)', error);
+                }
+            },
         }),
         updateConfigParameter: builder.mutation<void, UpdateConfigParameterRequest>({
             query: ({ name, value }) => {
