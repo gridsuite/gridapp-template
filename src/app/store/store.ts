@@ -9,7 +9,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { reducer } from './reducer';
 import { baseApi } from 'shared/api/rtk-query/base-api';
 import { useDispatch, useSelector } from 'react-redux';
-import { listenerMiddleware } from './rtk-query-listener-middleware';
+import { errorMiddleware } from './rtk-query-error-middleware';
 import './rtk-query-error-listener'; // start error listener by importing it here
 
 export const setupStore = (preloadedState?: PreloadedState) =>
@@ -17,7 +17,7 @@ export const setupStore = (preloadedState?: PreloadedState) =>
         reducer,
         preloadedState: preloadedState,
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().prepend(listenerMiddleware.middleware).concat(baseApi.middleware),
+            getDefaultMiddleware().prepend(errorMiddleware).concat(baseApi.middleware),
     });
 
 export const store = setupStore();
