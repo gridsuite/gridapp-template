@@ -21,9 +21,6 @@ const makeConfigUrl = (path: string) => `${CONFIG_URL}${path}`;
 
 export const configApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        getConfigParameters: builder.query<ConfigParameters, string | void>({
-            query: (appName = APP_NAME) => makeConfigUrl(`/applications/${appName}/parameters`),
-        }),
         getConfigParameter: builder.query<ConfigParameter, string>({
             query: (name) => {
                 const appName = getAppName(APP_NAME, name);
@@ -89,10 +86,9 @@ export type ConfigParameter =
           readonly name: typeof PARAM_THEME;
           value: GsTheme;
       };
-export type ConfigParameters = ConfigParameter[];
 export type UpdateConfigParameterRequest = {
     name: AppParametersKey;
     value: AppParameters[AppParametersKey];
 };
 
-export const { useGetConfigParameterQuery, useGetConfigParametersQuery, useUpdateConfigParameterMutation } = configApi;
+export const { useGetConfigParameterQuery, useUpdateConfigParameterMutation } = configApi;

@@ -30,6 +30,15 @@ export default mergeConfig(
             },
             coverage: {
                 reporter: ['text', 'lcov'],
+                exclude: [
+                    'src/types/**', // type declarations only
+                    'src/**/*.d.ts', // ambient types
+                    'src/**/*.type.ts', // pure type files
+                    'src/__mocks__/**', // test infrastructure
+                    'src/app/providers/**', // glue/wiring code
+                    'src/plugins/**', // empty plugin scaffold
+                    'src/index.tsx', // entry point bootstrap
+                ],
             },
         },
     })

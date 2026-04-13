@@ -10,7 +10,6 @@ import { reducer } from './reducer';
 import { baseApi } from 'shared/api/rtk-query/base-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { errorMiddleware } from './rtk-query-error-middleware';
-import './rtk-query-error-listener'; // start error listener by importing it here
 
 export const setupStore = (preloadedState?: PreloadedState) =>
     configureStore({
