@@ -5,17 +5,23 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, isRejectedWithValue, Middleware } from '@reduxjs/toolkit';
 import { reducer } from './reducer';
 import { baseApi } from 'shared/api/rtk-query/base-api';
 import { useDispatch, useSelector } from 'react-redux';
-import { listenerMiddleware } from './rtk-query-listener-middleware';
-import './rtk-query-error-listener'; // start error listener by importing it here
+import { getErrorMessage } from 'shared/lib/error';
+import { snackRef } from 'shared/lib/snack-ref';
+
+const errorMiddleware: Middleware = () => (next) => (action) => {
+    if (isRejectedWithValue(action)) {
+        snackRef.error({ messageTxt: getErrorMessage(action.payload) ?? undefined });
+    }
+    return next(action);
+};
 
 export const store = configureStore({
     reducer,
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().prepend(listenerMiddleware.middleware).concat(baseApi.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(errorMiddleware).concat(baseApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
