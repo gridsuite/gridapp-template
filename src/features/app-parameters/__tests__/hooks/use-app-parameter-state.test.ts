@@ -12,8 +12,6 @@ import { server } from 'test-utils/msw/server';
 import { createTestContext } from 'test-utils/create-test-context';
 import { useAppParameterState } from 'features/app-parameters/hooks/use-app-parameter-state';
 import { DARK_THEME, LIGHT_THEME } from '@gridsuite/commons-ui';
-import { store } from '../../../../app/store/store';
-import { configApi } from '../../../../shared/api/config-api/config-api';
 
 describe('useAppParameterState', () => {
     beforeEach(() => {
