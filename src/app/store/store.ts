@@ -14,7 +14,11 @@ import { snackRef } from 'shared/lib/snack-ref';
 
 const errorMiddleware: Middleware = () => (next) => (action) => {
     if (isRejectedWithValue(action)) {
-        snackRef.error({ messageTxt: getErrorMessage(action.payload) ?? undefined });
+        const endpointName = (action.meta?.arg as { endpointName?: string })?.endpointName;
+        snackRef.error({
+            headerId: endpointName,
+            messageTxt: getErrorMessage(action.payload) ?? undefined,
+        });
     }
     return next(action);
 };
