@@ -8,10 +8,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { authenticationReducer } from 'features/authentication/store/authentication.slice';
 import { baseApi } from 'shared/api/rtk-query/base-api';
-import { notificationsSliceReducer } from 'shared/store/notifications/notifications.slice';
 
 export const reducer = combineReducers({
     authentication: authenticationReducer,
-    notifications: notificationsSliceReducer,
     [baseApi.reducerPath]: baseApi.reducer,
 });

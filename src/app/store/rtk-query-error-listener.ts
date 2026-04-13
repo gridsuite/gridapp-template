@@ -6,29 +6,14 @@
  */
 
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { pushNotification } from 'shared/store/notifications/notifications.slice';
 import { getErrorMessage } from 'shared/lib/error';
 import { listenerMiddleware } from './rtk-query-listener-middleware';
-import { NotificationType } from 'shared/store/notifications/notifications.type';
-
-type RtkQueryRejectedMetadataArgs = {
-    endpointName?: string;
-    originalArgs?: unknown;
-    type?: 'query' | 'mutation';
-};
+import { snackRef } from 'shared/lib/snack-ref';
 
 const unsubscribe = listenerMiddleware.startListening({
     matcher: isRejectedWithValue,
-    effect: (action, api) => {
-        const message = getErrorMessage(action.payload);
-        const actionMetadata = action.meta.arg as RtkQueryRejectedMetadataArgs;
-        api.dispatch(
-            pushNotification({
-                messageId: actionMetadata.endpointName,
-                message,
-                type: NotificationType.error,
-            })
-        );
+    effect: (action) => {
+        snackRef.error({ messageTxt: getErrorMessage(action.payload) ?? undefined });
     },
 });
 
