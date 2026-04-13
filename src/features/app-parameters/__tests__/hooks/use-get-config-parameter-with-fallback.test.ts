@@ -5,89 +5,57 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useGetConfigParameterWithFallback } from '../../hooks/use-get-config-parameter-with-fallback';
+import { DARK_THEME, LIGHT_THEME, PARAM_THEME } from '@gridsuite/commons-ui';
+import { renderHook, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { http, HttpResponse } from 'msw';
+import { useGetConfigParameterWithFallback } from 'features/app-parameters/hooks/use-get-config-parameter-with-fallback';
+import { server } from 'test-utils/msw/server';
+import { createTestContext } from 'test-utils/create-test-context';
+import { saveLocalStorageTheme } from 'features/app-parameters/store/app-parameters.local-storage';
 
-const { mockUseSelector, mockUseGetConfigParameterQuery } = vi.hoisted(() => ({
-    mockUseSelector: vi.fn(),
-    mockUseGetConfigParameterQuery: vi.fn(),
-}));
-
-vi.mock('react-redux', () => ({
-    useSelector: mockUseSelector,
-}));
-
-vi.mock('shared/api/config-api/config-api', () => ({
-    useGetConfigParameterQuery: mockUseGetConfigParameterQuery,
-}));
-
-vi.mock('../store/app-parameters.default', () => ({
-    initialAppParametersState: {
-        language: 'en',
-        theme: 'Dark',
-    },
-}));
+beforeEach(() => localStorage.clear());
 
 describe('useGetConfigParameterWithFallback', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
+    it('hook returns value from backend', async () => {
+        server.use(
+            http.get('*/config/v1/applications/common/parameters/theme', () =>
+                HttpResponse.json({
+                    name: PARAM_THEME,
+                    value: LIGHT_THEME,
+                })
+            )
+        );
+
+        const { wrapper } = createTestContext();
+
+        const { result } = renderHook(() => useGetConfigParameterWithFallback(PARAM_THEME), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.isSuccess).toBe(true);
+        });
+
+        expect(result.current.data).toBe(LIGHT_THEME);
     });
 
-    it('should return the API value when the user is authenticated and data is available', () => {
-        mockUseSelector.mockReturnValue({ id_token: 'token' });
-        mockUseGetConfigParameterQuery.mockImplementation((paramName, options) =>
-            options.selectFromResult({
-                data: {
-                    name: paramName,
-                    value: 'Light',
-                },
-                isLoading: false,
-            })
-        );
+    it('hook returns localstorage if no user in store', async () => {
+        const { wrapper } = createTestContext({ authentication: { user: null } });
+        saveLocalStorageTheme(LIGHT_THEME);
 
-        const { result } = renderHook(() => useGetConfigParameterWithFallback('theme'));
+        const { result } = renderHook(() => useGetConfigParameterWithFallback(PARAM_THEME), {
+            wrapper: wrapper,
+        });
 
-        expect(result.current.data).toBe('Light');
-        expect(mockUseGetConfigParameterQuery).toHaveBeenCalledWith(
-            'theme',
-            expect.objectContaining({
-                skip: false,
-            })
-        );
+        expect(result.current.data).toBe(LIGHT_THEME);
     });
 
-    it('should use the fallback value when the API returns no value', () => {
-        mockUseSelector.mockReturnValue({ id_token: 'token' });
-        mockUseGetConfigParameterQuery.mockImplementation((_paramName, options) =>
-            options.selectFromResult({
-                data: undefined,
-                isLoading: false,
-            })
-        );
+    it('hook returns fallback if no user in store and nothing in local storage', async () => {
+        const { wrapper } = createTestContext({ authentication: { user: null } });
 
-        const { result } = renderHook(() => useGetConfigParameterWithFallback('theme'));
+        const { result } = renderHook(() => useGetConfigParameterWithFallback(PARAM_THEME), {
+            wrapper: wrapper,
+        });
 
-        expect(result.current.data).toBe('Dark');
-    });
-
-    it('should skip the query and use fallback data when there is no authenticated user', () => {
-        mockUseSelector.mockReturnValue(null);
-        mockUseGetConfigParameterQuery.mockImplementation((_paramName, options) =>
-            options.selectFromResult({
-                data: undefined,
-                isLoading: false,
-            })
-        );
-
-        const { result } = renderHook(() => useGetConfigParameterWithFallback('language'));
-
-        expect(result.current.data).toBe('en');
-        expect(mockUseGetConfigParameterQuery).toHaveBeenCalledWith(
-            'language',
-            expect.objectContaining({
-                skip: true,
-            })
-        );
+        expect(result.current.data).toBe(DARK_THEME);
     });
 });

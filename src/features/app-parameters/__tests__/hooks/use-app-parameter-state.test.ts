@@ -5,102 +5,106 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { act, renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useAppParameterState } from '../../hooks/use-app-parameter-state';
-
-const { mockUseSnackMessage, mockUseUpdateConfigParameterMutation, mockUseGetConfigParameterWithFallback } = vi.hoisted(
-    () => ({
-        mockUseSnackMessage: vi.fn(),
-        mockUseUpdateConfigParameterMutation: vi.fn(),
-        mockUseGetConfigParameterWithFallback: vi.fn(),
-    })
-);
-
-vi.mock('@gridsuite/commons-ui', () => ({
-    useSnackMessage: mockUseSnackMessage,
-}));
-
-vi.mock('shared/api/config-api/config-api', () => ({
-    useUpdateConfigParameterMutation: mockUseUpdateConfigParameterMutation,
-}));
-
-vi.mock('./use-get-config-parameter-with-fallback', () => ({
-    useGetConfigParameterWithFallback: mockUseGetConfigParameterWithFallback,
-}));
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { http, HttpResponse } from 'msw';
+import { server } from 'test-utils/msw/server';
+import { createTestContext } from 'test-utils/create-test-context';
+import { useAppParameterState } from 'features/app-parameters/hooks/use-app-parameter-state';
+import { DARK_THEME, LIGHT_THEME } from '@gridsuite/commons-ui';
 
 describe('useAppParameterState', () => {
     beforeEach(() => {
-        vi.clearAllMocks();
+        server.use(
+            http.get('*/config/v1/applications/*/parameters/theme', () =>
+                HttpResponse.json({
+                    name: 'theme',
+                    value: DARK_THEME,
+                })
+            )
+        );
     });
 
-    it('should optimistically update the value and persist it successfully', async () => {
-        const snackError = vi.fn();
-        const unwrap = vi.fn().mockResolvedValue(undefined);
-        const updateConfigParameter = vi.fn(() => ({ unwrap }));
+    it('optimistic update then stays updated on success', async () => {
+        server.use(
+            http.put('*/config/v1/applications/*/parameters/theme', async () => {
+                await new Promise((r) => {
+                    setTimeout(r, 50);
+                });
+                return HttpResponse.json({});
+            })
+        );
+        const { wrapper } = createTestContext();
+        const { result } = renderHook(() => useAppParameterState('theme'), { wrapper });
 
-        mockUseSnackMessage.mockReturnValue({ snackError });
-        mockUseUpdateConfigParameterMutation.mockReturnValue([updateConfigParameter]);
-        mockUseGetConfigParameterWithFallback.mockReturnValue({ data: 'Dark' });
-
-        const { result } = renderHook(() => useAppParameterState('theme'));
-
-        await act(async () => {
-            await result.current[1]('Light');
-        });
-
-        expect(result.current[0]).toBe('Light');
-        expect(updateConfigParameter).toHaveBeenCalledWith({
-            name: 'theme',
-            value: 'Light',
-        });
-        expect(snackError).not.toHaveBeenCalled();
-    });
-
-    it('should restore the previous value and report an error when the update fails', async () => {
-        const snackError = vi.fn();
-        const unwrap = vi.fn().mockRejectedValue(new Error('request failed'));
-        const updateConfigParameter = vi.fn(() => ({ unwrap }));
-
-        mockUseSnackMessage.mockReturnValue({ snackError });
-        mockUseUpdateConfigParameterMutation.mockReturnValue([updateConfigParameter]);
-        mockUseGetConfigParameterWithFallback.mockReturnValue({ data: 'Dark' });
-
-        const { result } = renderHook(() => useAppParameterState('theme'));
-
-        await act(async () => {
-            await result.current[1]('Light');
-        });
-
-        expect(result.current[0]).toBe('Dark');
-        expect(snackError).toHaveBeenCalledWith({
-            messageTxt: 'request failed',
-            headerId: 'paramsChangingError',
-        });
-    });
-
-    it('should sync the local value when the remote parameter changes', async () => {
-        const snackError = vi.fn();
-        const updateConfigParameter = vi.fn();
-        let currentValue = 'Dark';
-
-        mockUseSnackMessage.mockReturnValue({ snackError });
-        mockUseUpdateConfigParameterMutation.mockReturnValue([updateConfigParameter]);
-        mockUseGetConfigParameterWithFallback.mockImplementation(() => ({
-            data: currentValue,
-        }));
-
-        const { result, rerender } = renderHook(() => useAppParameterState('theme'));
-
-        expect(result.current[0]).toBe('Dark');
-
-        currentValue = 'Light';
-        rerender();
-
+        // check state before updating
         await waitFor(() => {
-            expect(result.current[0]).toBe('Light');
+            const [value] = result.current;
+            expect(value).toBe(DARK_THEME);
         });
 
-        expect(snackError).not.toHaveBeenCalled();
+        // update value to new one
+        let promise: Promise<void>;
+        act(() => {
+            const [, setValue] = result.current;
+            promise = setValue(LIGHT_THEME);
+        });
+
+        // check optimistic update
+        const [optimisticUpdateValue] = result.current;
+        expect(optimisticUpdateValue).toBe(LIGHT_THEME);
+
+        // wait for server success
+        await act(async () => {
+            await promise;
+        });
+
+        // check value has not changed
+        const [valueAfterSuccess] = result.current;
+        expect(valueAfterSuccess).toBe(LIGHT_THEME);
+    });
+
+    it('optimistic update then rollback on error', async () => {
+        server.use(
+            http.put('*/config/v1/applications/*/parameters/theme', async () => {
+                await new Promise((r) => {
+                    setTimeout(r, 50);
+                });
+                return HttpResponse.error();
+            })
+        );
+
+        const { wrapper } = createTestContext();
+        const { result } = renderHook(() => useAppParameterState('theme'), { wrapper });
+
+        // check state before updating
+        await waitFor(() => {
+            const [value] = result.current;
+            expect(value).toBe(DARK_THEME);
+        });
+
+        // update value to new one
+        let promise: Promise<void>;
+        act(() => {
+            const [, setValue] = result.current;
+            promise = setValue(LIGHT_THEME);
+        });
+
+        // check optimistic update
+        const [optimisticUpdateValue] = result.current;
+        expect(optimisticUpdateValue).toBe(LIGHT_THEME);
+
+        // wait for server failure
+        await act(async () => {
+            try {
+                await promise;
+            } catch {
+                // expected error
+            }
+        });
+
+        // check value has been changed to old one
+        const [valueAfterRollback] = result.current;
+        expect(valueAfterRollback).toBe(DARK_THEME);
     });
 });

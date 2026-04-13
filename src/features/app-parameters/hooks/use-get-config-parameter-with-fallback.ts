@@ -6,7 +6,7 @@
  */
 
 import { useGetConfigParameterQuery } from 'shared/api/config-api/config-api';
-import { initialAppParametersState } from '../store/app-parameters.default';
+import { getInitialAppParametersState } from '../store/app-parameters.default';
 import { AppParameters, AppParametersKey } from '../store/app-parameters.type';
 import { selectUser } from 'features/authentication/store/authentication.selectors';
 import { useAppSelector } from 'app/store/store';
@@ -20,7 +20,7 @@ export const useGetConfigParameterWithFallback = <K extends AppParametersKey>(pa
     return useGetConfigParameterQuery(paramName, {
         skip: !user,
         selectFromResult: (result) => {
-            const data = result.data?.value ?? initialAppParametersState[paramName];
+            const data = result.data?.value ?? getInitialAppParametersState()[paramName];
 
             return {
                 ...result,

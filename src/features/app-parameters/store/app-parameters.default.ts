@@ -8,7 +8,9 @@
 import { getLocalStorageLanguage, getLocalStorageTheme } from './app-parameters.local-storage';
 import { AppParameters } from './app-parameters.type';
 
-export const initialAppParametersState: AppParameters = {
-    language: getLocalStorageLanguage(),
-    theme: getLocalStorageTheme(),
-};
+export function getInitialAppParametersState(): AppParameters {
+    return {
+        language: getLocalStorageLanguage(),
+        theme: getLocalStorageTheme(),
+    };
+}

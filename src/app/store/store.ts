@@ -12,13 +12,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listenerMiddleware } from './rtk-query-listener-middleware';
 import './rtk-query-error-listener'; // start error listener by importing it here
 
-export const store = configureStore({
-    reducer,
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().prepend(listenerMiddleware.middleware).concat(baseApi.middleware),
-});
+export const setupStore = (preloadedState?: PreloadedState) =>
+    configureStore({
+        reducer,
+        preloadedState: preloadedState,
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware().prepend(listenerMiddleware.middleware).concat(baseApi.middleware),
+    });
 
-export type RootState = ReturnType<typeof store.getState>;
+export const store = setupStore();
+
+export type PreloadedState = Parameters<typeof reducer>[0];
+export type RootState = ReturnType<typeof reducer>;
 export type AppDispatch = typeof store.dispatch;
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();

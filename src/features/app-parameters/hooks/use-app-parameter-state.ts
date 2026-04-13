@@ -8,9 +8,7 @@ import { AppParameters, AppParametersKey } from 'features/app-parameters/store/a
 import { useUpdateConfigParameterMutation } from 'shared/api/config-api/config-api';
 import { useGetConfigParameterWithFallback } from './use-get-config-parameter-with-fallback';
 
-export function useAppParameterState<K extends AppParametersKey>(
-    paramName: K
-): [AppParameters[K], (value: AppParameters[K]) => void] {
+export function useAppParameterState<K extends AppParametersKey>(paramName: K) {
     const { data: paramValue } = useGetConfigParameterWithFallback(paramName);
     const [updateConfigParameter] = useUpdateConfigParameterMutation();
 
@@ -21,5 +19,5 @@ export function useAppParameterState<K extends AppParametersKey>(
         }).unwrap();
     };
 
-    return [paramValue, setValue];
+    return [paramValue, setValue] as const;
 }

@@ -5,5 +5,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import '@testing-library/jest-dom';
-import './src/test-utils/msw/setup-msw';
+import { setupServer } from 'msw/node';
+
+export const server = setupServer();
