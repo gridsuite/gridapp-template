@@ -6,6 +6,7 @@
  */
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { AppState } from '../../../app/store/store.type';
 
 export const ApiTags = {
     Config: 'Config',
@@ -16,7 +17,7 @@ export const baseApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_GATEWAY,
         prepareHeaders: (headers, { getState }) => {
-            const state = getState() as any;
+            const state = getState() as AppState;
 
             const token = state?.authentication?.user?.id_token;
 
