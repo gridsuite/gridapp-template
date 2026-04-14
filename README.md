@@ -9,10 +9,7 @@ Replace the Sonar projectKey `gridsuite_gridapp-template` in `sonar-project.prop
 
 Create a new view in study-server and replace `yyy` with the new token in rest api `src/shared/api/study-api/study-api.ts`.
 
-## Typescript config
-
-Files tsconfig.json and src/react-app-env.d.ts both results from create-react-app typescript template (version 5).
-Some property values have been changed to meet the project needs (ex: target, baseUrl, ...).
+Replace all values in `public/idpSettings.json` by actual ones
 
 #### License Headers and dependencies checking
 
