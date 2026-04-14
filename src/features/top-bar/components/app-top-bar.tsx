@@ -21,18 +21,18 @@ import { useNavigate } from 'react-router';
 import { APP_NAME } from 'app/config/app-config';
 import PowsyblLogo from 'assets/images/powsybl_logo.svg?react';
 import { useAppParameterState } from 'features/app-parameters/hooks/use-app-parameter-state';
-import AppPackage from '../../../../package.json';
 import { AppDispatch } from 'app/store/store';
 import { AuthenticationState } from 'features/authentication/store/authentication.type';
-import { getServersInfos } from '../api/get-servers-infos';
 import { fetchVersion } from 'shared/config/version';
+import { getServersInfos } from '../api/get-servers-infos';
+import AppPackage from '../../../../package.json';
 
 export type AppTopBarProps = {
     user?: AuthenticationState['user'];
     userManager: UserManagerState;
 };
 
-const AppTopBar = ({ user, userManager }: AppTopBarProps) => {
+function AppTopBar({ user, userManager }: AppTopBarProps) {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const [appsAndUrls, setAppsAndUrls] = useState<Metadata[]>([]);
@@ -52,31 +52,29 @@ const AppTopBar = ({ user, userManager }: AppTopBarProps) => {
     }, [user]);
 
     return (
-        <>
-            <TopBar
-                appName={APP_NAME}
-                appColor="grey"
-                appLogo={
-                    themeLocal === LIGHT_THEME ? (
-                        <PowsyblLogo /> //GridXXXLogoLight
-                    ) : (
-                        <PowsyblLogo /> //GridXXXLogoDark
-                    )
-                }
-                appVersion={AppPackage.version}
-                appLicense={AppPackage.license}
-                onLogoutClick={() => logout(dispatch, userManager.instance)}
-                onLogoClick={() => navigate('/', { replace: true })}
-                user={user ?? undefined}
-                appsAndUrls={appsAndUrls}
-                globalVersionPromise={() => fetchVersion().then((res) => res?.deployVersion ?? 'unknown')}
-                additionalModulesPromise={getServersInfos}
-                onThemeClick={handleChangeTheme}
-                theme={themeLocal}
-                onLanguageClick={handleChangeLanguage}
-                language={languageLocal}
-            />
-        </>
+        <TopBar
+            appName={APP_NAME}
+            appColor="grey"
+            appLogo={
+                themeLocal === LIGHT_THEME ? (
+                    <PowsyblLogo /> // GridXXXLogoLight
+                ) : (
+                    <PowsyblLogo /> // GridXXXLogoDark
+                )
+            }
+            appVersion={AppPackage.version}
+            appLicense={AppPackage.license}
+            onLogoutClick={() => logout(dispatch, userManager.instance)}
+            onLogoClick={() => navigate('/', { replace: true })}
+            user={user ?? undefined}
+            appsAndUrls={appsAndUrls}
+            globalVersionPromise={() => fetchVersion().then((res) => res?.deployVersion ?? 'unknown')}
+            additionalModulesPromise={getServersInfos}
+            onThemeClick={handleChangeTheme}
+            theme={themeLocal}
+            onLanguageClick={handleChangeLanguage}
+            language={languageLocal}
+        />
     );
-};
+}
 export default AppTopBar;

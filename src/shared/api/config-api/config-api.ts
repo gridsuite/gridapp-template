@@ -6,7 +6,6 @@
  */
 
 import { GsLang, GsTheme, PARAM_LANGUAGE, PARAM_THEME, getAppName } from '@gridsuite/commons-ui';
-import { ApiTags, baseApi } from '../rtk-query/base-api';
 import { APP_NAME } from 'app/config/app-config';
 import { AppDispatch } from 'app/store/store';
 import { AppParameters, AppParametersKey } from 'features/app-parameters/store/app-parameters.type';
@@ -14,6 +13,7 @@ import {
     saveLocalStorageLanguage,
     saveLocalStorageTheme,
 } from 'features/app-parameters/store/app-parameters.local-storage';
+import { ApiTags, baseApi } from '../rtk-query/base-api';
 
 const CONFIG_URL = `/config/v1`;
 
@@ -37,6 +37,10 @@ export const configApi = baseApi.injectEndpoints({
                             break;
                         case PARAM_THEME:
                             saveLocalStorageTheme(data.value);
+                            break;
+                        default:
+                            // should not happen
+                            break;
                     }
                 } catch (error) {
                     console.debug('getConfigParameter RTK query failed (ignored here)', error);

@@ -27,13 +27,13 @@ export const useAppParametersInvalidationListener = () => {
         }
 
         const ws = connectNotificationsWsUpdateConfig();
-        ws.onmessage = function (event) {
+        ws.onmessage = (event) => {
             const eventData = JSON.parse(event.data) as ConfigNotificationData;
             if (eventData.headers?.parameterName) {
                 invalidateConfigQueries(dispatch, eventData.headers.parameterName);
             }
         };
-        ws.onerror = function (event) {
+        ws.onerror = (event) => {
             console.error('Unexpected Notification WebSocket error', event);
         };
 

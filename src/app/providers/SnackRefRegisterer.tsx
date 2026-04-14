@@ -9,10 +9,10 @@ import { useSnackMessage } from '@gridsuite/commons-ui';
 import { useEffect } from 'react';
 import { snackRef } from '../../shared/lib/snack-ref';
 
-export const SnackRefRegisterer = () => {
+export function SnackRefRegisterer() {
     const snackFns = useSnackMessage();
     useEffect(() => {
         snackRef.register(snackFns);
     }, [snackFns]);
     return null;
-};
+}

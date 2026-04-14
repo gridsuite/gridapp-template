@@ -6,7 +6,7 @@
  */
 
 import { LIGHT_THEME } from '@gridsuite/commons-ui';
-import { createTheme, Theme } from '@mui/material/styles';
+import { createTheme, Theme } from '@mui/material';
 
 const lightTheme: Theme = createTheme({
     palette: {

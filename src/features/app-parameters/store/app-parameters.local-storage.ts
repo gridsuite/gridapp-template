@@ -8,8 +8,8 @@
 import { DARK_THEME, GsLang, GsTheme, LANG_SYSTEM } from '@gridsuite/commons-ui';
 import { APP_NAME } from 'app/config/app-config';
 
-export const LOCAL_STORAGE_THEME_KEY = (APP_NAME + '_THEME').toUpperCase();
-const LOCAL_STORAGE_LANGUAGE_KEY = (APP_NAME + '_LANGUAGE').toUpperCase();
+export const LOCAL_STORAGE_THEME_KEY = `${APP_NAME}_THEME`.toUpperCase();
+const LOCAL_STORAGE_LANGUAGE_KEY = `${APP_NAME}_LANGUAGE`.toUpperCase();
 
 export function getLocalStorageTheme() {
     return (localStorage.getItem(LOCAL_STORAGE_THEME_KEY) as GsTheme) || DARK_THEME;
