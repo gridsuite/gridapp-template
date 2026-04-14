@@ -6,7 +6,6 @@
  */
 
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation, useMatch, useNavigate } from 'react-router';
 import { AuthenticationRouter, CardErrorBoundary, initializeAuthenticationProd } from '@gridsuite/commons-ui';
 import { AppRouter } from 'app/router/AppRouter';
@@ -20,7 +19,7 @@ import {
 import { getErrorMessage } from 'shared/lib/error';
 import { fetchIdpSettings } from 'shared/config/idp-settings';
 import { useAppParametersInvalidationListener } from 'features/app-parameters/hooks/use-app-parameters-invalidation-listener';
-import { useAppSelector } from './store/store';
+import { useAppDispatch, useAppSelector } from './store/store';
 
 function App() {
     const user = useAppSelector(selectUser);
@@ -32,7 +31,7 @@ function App() {
 
     const navigate = useNavigate();
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const location = useLocation();
 

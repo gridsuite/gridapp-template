@@ -14,7 +14,7 @@ import {
     topBarEn,
     topBarFr,
 } from '@gridsuite/commons-ui';
-import { IntlConfig } from 'react-intl/src/types';
+import type { IntlConfig } from 'react-intl';
 import pluginMessagesEn from 'plugins/translations/en.json';
 import pluginMessagesFr from 'plugins/translations/fr.json';
 import messagesEn from 'shared/translations/en/common.json';
