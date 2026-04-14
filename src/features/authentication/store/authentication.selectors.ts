@@ -5,14 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { AppState } from 'app/store/store.type';
+import { RootState } from 'app/store/store';
 
-export const selectAuthentication = (state: AppState) => state.authentication;
-export const selectUser = (state: AppState) => selectAuthentication(state).user;
-export const selectSignInCallbackError = (state: AppState) => selectAuthentication(state).signInCallbackError;
+export const selectAuthentication = (state: RootState) => state.authentication;
+export const selectUser = (state: RootState) => selectAuthentication(state).user;
+export const selectSignInCallbackError = (state: RootState) => selectAuthentication(state).signInCallbackError;
 
-export const selectAuthenticationRouterError = (state: AppState) =>
+export const selectAuthenticationRouterError = (state: RootState) =>
     selectAuthentication(state).authenticationRouterError;
 
-export const selectShowAuthenticationRouterLogin = (state: AppState) =>
+export const selectShowAuthenticationRouterLogin = (state: RootState) =>
     selectAuthentication(state).showAuthenticationRouterLogin;

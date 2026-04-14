@@ -51,31 +51,29 @@ const AppTopBar = ({ user, userManager }: AppTopBarProps) => {
     }, [user]);
 
     return (
-        <>
-            <TopBar
-                appName={APP_NAME}
-                appColor="grey"
-                appLogo={
-                    themeLocal === LIGHT_THEME ? (
-                        <PowsyblLogo /> //GridXXXLogoLight
-                    ) : (
-                        <PowsyblLogo /> //GridXXXLogoDark
-                    )
-                }
-                appVersion={AppPackage.version}
-                appLicense={AppPackage.license}
-                onLogoutClick={() => logout(dispatch, userManager.instance)}
-                onLogoClick={() => navigate('/', { replace: true })}
-                user={user ?? undefined}
-                appsAndUrls={appsAndUrls}
-                globalVersionPromise={() => fetchVersion().then((res) => res?.deployVersion ?? 'unknown')}
-                additionalModulesPromise={getServersInfos}
-                onThemeClick={handleChangeTheme}
-                theme={themeLocal}
-                onLanguageClick={handleChangeLanguage}
-                language={languageLocal}
-            />
-        </>
+        <TopBar
+            appName={APP_NAME}
+            appColor="grey"
+            appLogo={
+                themeLocal === LIGHT_THEME ? (
+                    <PowsyblLogo /> //GridXXXLogoLight
+                ) : (
+                    <PowsyblLogo /> //GridXXXLogoDark
+                )
+            }
+            appVersion={AppPackage.version}
+            appLicense={AppPackage.license}
+            onLogoutClick={() => logout(dispatch, userManager.instance)}
+            onLogoClick={() => navigate('/', { replace: true })}
+            user={user ?? undefined}
+            appsAndUrls={appsAndUrls}
+            globalVersionPromise={() => fetchVersion().then((res) => res?.deployVersion ?? 'unknown')}
+            additionalModulesPromise={getServersInfos}
+            onThemeClick={handleChangeTheme}
+            theme={themeLocal}
+            onLanguageClick={handleChangeLanguage}
+            language={languageLocal}
+        />
     );
 };
 export default AppTopBar;
