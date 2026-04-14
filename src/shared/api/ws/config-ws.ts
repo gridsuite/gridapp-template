@@ -22,7 +22,7 @@ export function connectNotificationsWsUpdateConfig(): ReconnectingWebSocket {
     const webSocketUrl = `${webSocketBaseUrl}${PREFIX_CONFIG_NOTIFICATION_WS}/notify?appName=${APP_NAME}`;
 
     const reconnectingWebSocket = new ReconnectingWebSocket(() => `${webSocketUrl}&access_token=${getToken()}`);
-    reconnectingWebSocket.onopen = function () {
+    reconnectingWebSocket.onopen = () => {
         console.info(`Connected Websocket update config ui ${webSocketUrl} ...`);
     };
     return reconnectingWebSocket;

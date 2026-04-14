@@ -10,7 +10,7 @@ import { Box, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { Routes, Route, Navigate } from 'react-router';
 
-export const AppRouter = () => {
+export function AppRouter() {
     return (
         <Routes>
             <Route
@@ -35,4 +35,4 @@ export const AppRouter = () => {
             />
         </Routes>
     );
-};
+}

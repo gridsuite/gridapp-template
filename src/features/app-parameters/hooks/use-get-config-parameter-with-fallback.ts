@@ -6,10 +6,10 @@
  */
 
 import { useGetConfigParameterQuery } from 'shared/api/config-api/config-api';
-import { getInitialAppParametersState } from '../store/app-parameters.default';
-import { AppParameters, AppParametersKey } from '../store/app-parameters.type';
 import { selectUser } from 'features/authentication/store/authentication.selectors';
 import { useAppSelector } from 'app/store/store';
+import { getInitialAppParametersState } from '../store/app-parameters.default';
+import { AppParameters, AppParametersKey } from '../store/app-parameters.type';
 
 /**
  * This data is fetched from AppTopBar, which is displayed before user is authenticated

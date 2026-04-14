@@ -5,8 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { CssBaseline } from '@mui/material';
-import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import { StyledEngineProvider, ThemeProvider, CssBaseline } from '@mui/material';
 import {
     CardErrorBoundary,
     getComputedLanguage,
@@ -26,7 +25,7 @@ import { SnackRefRegisterer } from './SnackRefRegisterer';
 
 const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
-const AppProvidersWithStore = () => {
+function AppProvidersWithStore() {
     const { data: language } = useGetConfigParameterWithFallback(PARAM_LANGUAGE);
     const computedLanguage = getComputedLanguage(language);
     const { data: theme } = useGetConfigParameterWithFallback(PARAM_THEME);
@@ -48,14 +47,14 @@ const AppProvidersWithStore = () => {
             </BrowserRouter>
         </IntlProvider>
     );
-};
+}
 
-const AppWrapper = () => {
+function AppWrapper() {
     return (
         <Provider store={store}>
             <AppProvidersWithStore />
         </Provider>
     );
-};
+}
 
 export default AppWrapper;

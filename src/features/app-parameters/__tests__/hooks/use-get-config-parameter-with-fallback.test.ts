@@ -43,7 +43,7 @@ describe('useGetConfigParameterWithFallback', () => {
         saveLocalStorageTheme(LIGHT_THEME);
 
         const { result } = renderHook(() => useGetConfigParameterWithFallback(PARAM_THEME), {
-            wrapper: wrapper,
+            wrapper,
         });
 
         expect(result.current.data).toBe(LIGHT_THEME);
@@ -53,7 +53,7 @@ describe('useGetConfigParameterWithFallback', () => {
         const { wrapper } = createTestContext({ authentication: { user: null } });
 
         const { result } = renderHook(() => useGetConfigParameterWithFallback(PARAM_THEME), {
-            wrapper: wrapper,
+            wrapper,
         });
 
         expect(result.current.data).toBe(DARK_THEME);

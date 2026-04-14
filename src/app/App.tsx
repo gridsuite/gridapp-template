@@ -21,7 +21,7 @@ import { fetchIdpSettings } from 'shared/config/idp-settings';
 import { useAppParametersInvalidationListener } from 'features/app-parameters/hooks/use-app-parameters-invalidation-listener';
 import { useAppDispatch, useAppSelector } from './store/store';
 
-const App = () => {
+function App() {
     const user = useAppSelector(selectUser);
     const signInCallbackError = useAppSelector(selectSignInCallbackError);
     const authenticationRouterError = useAppSelector(selectAuthenticationRouterError);
@@ -93,5 +93,5 @@ const App = () => {
             </CardErrorBoundary>
         </>
     );
-};
+}
 export default App;
