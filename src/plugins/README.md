@@ -26,12 +26,11 @@ export const MyPluginGroupPlugins = [
 Defining and adding a group of plugins needs to add some code in the target component
 
 ```tsx
-import { FunctionComponent } from 'react';
 // Plugins
 import { MyPluginGroupPlugins } from '../plugins';
 //...
 
-const MyPluggableComponent: FunctionComponent = () => {
+const MyPluggableComponent = () => {
     //...
     return (
         <>
@@ -49,5 +48,5 @@ const MyPluggableComponent: FunctionComponent = () => {
 
 Add your private translations to the following files to complete or overwrite existing translations
 
--   `src/plugins/translations/en.json`
--   `src/plugins/translations/fr.json`
+- `src/plugins/translations/en.json`
+- `src/plugins/translations/fr.json`

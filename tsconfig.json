@@ -11,6 +11,9 @@
         "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "isolatedModules": true,
+        "paths": {
+            "assets/*": ["assets/*"]
+        },
 
         /* Type Checking */
         "strict": true,
@@ -23,10 +26,10 @@
     },
     "include": [
         "src",
-        "jest.setup.ts",
         // We must list config files in typescript because needed by prettier when called by eslint as plugin
-        "jest.config.ts",
-        "prettier.config.cjs",
+        "vitest.config.ts",
+        "vitest.setup.ts",
+        "prettier.config.js",
         "vite.config.ts"
     ]
 }

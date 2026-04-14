@@ -4,6 +4,9 @@
 # production
 /build
 
+# test coverage
+/coverage
+
 # webstorm
 /.idea
 
