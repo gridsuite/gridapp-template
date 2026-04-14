@@ -16,13 +16,12 @@ import {
     TopBar,
     UserManagerState,
 } from '@gridsuite/commons-ui';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { APP_NAME } from 'app/config/app-config';
 import PowsyblLogo from 'assets/images/powsybl_logo.svg?react';
 import { useAppParameterState } from 'features/app-parameters/hooks/use-app-parameter-state';
 import AppPackage from '../../../../package.json';
-import { AppDispatch } from 'app/store/store';
+import { useAppDispatch } from 'app/store/store';
 import { AuthenticationState } from 'features/authentication/store/authentication.type';
 import { getServersInfos } from '../api/get-servers-infos';
 import { fetchVersion } from 'shared/config/version';
@@ -34,7 +33,7 @@ export type AppTopBarProps = {
 
 const AppTopBar = ({ user, userManager }: AppTopBarProps) => {
     const navigate = useNavigate();
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     const [appsAndUrls, setAppsAndUrls] = useState<Metadata[]>([]);
     const [themeLocal, handleChangeTheme] = useAppParameterState(PARAM_THEME);
     const [languageLocal, handleChangeLanguage] = useAppParameterState(PARAM_LANGUAGE);
