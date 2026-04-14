@@ -31,7 +31,7 @@ export type AppTopBarProps = {
     userManager: UserManagerState;
 };
 
-function AppTopBar({ user, userManager }: AppTopBarProps) {
+function AppTopBar({ user, userManager }: Readonly<AppTopBarProps>) {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [appsAndUrls, setAppsAndUrls] = useState<Metadata[]>([]);
