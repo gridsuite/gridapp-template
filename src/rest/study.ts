@@ -8,11 +8,7 @@ import { GridSuiteModule } from '@gridsuite/commons-ui';
 import { backendFetchJson } from '../utils/rest-api';
 import { getErrorMessage } from '../utils/error';
 
-const API_URL =
-    '/api/' +
-    (process.env.REACT_APP_USE_AUTHENTICATION === 'true'
-        ? `${process.env.REACT_APP_API_GATEWAY}/study/v1`
-        : `${process.env.REACT_APP_SRV_STUDY_URI}/v1`);
+const API_URL = `${import.meta.env.VITE_API_GATEWAY}/study/v1`;
 
 export function getServersInfos() {
     return backendFetchJson(`${API_URL}/servers/about?view=yyy`, {

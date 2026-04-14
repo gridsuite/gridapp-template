@@ -7,33 +7,33 @@
 
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, Route, Routes, useLocation, useMatch, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useMatch, useNavigate } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { Box, Typography } from '@mui/material';
 import {
     AuthenticationRouter,
     CardErrorBoundary,
+    PARAM_LANGUAGE,
+    PARAM_THEME,
     getPreLoginPath,
-    initializeAuthenticationDev,
     initializeAuthenticationProd,
     useSnackMessage,
 } from '@gridsuite/commons-ui';
 import { selectComputedLanguage, selectLanguage, selectTheme } from '../redux/actions';
-import { AppState } from '../redux/reducer';
 import {
     ConfigParameters,
     connectNotificationsWsUpdateConfig,
     fetchConfigParameter,
     fetchConfigParameters,
     fetchIdpSettings,
-    fetchValidateUser,
 } from '../utils/rest-api';
-import { APP_NAME, COMMON_APP_NAME, PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
+import { APP_NAME, COMMON_APP_NAME } from '../utils/config-params';
 import { getComputedLanguage } from '../utils/language';
 import AppTopBar, { AppTopBarProps } from './app-top-bar';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { getErrorMessage } from '../utils/error';
 import { AppDispatch } from '../redux/store';
+import { AppState } from 'redux/reducer.type';
 
 const App: FunctionComponent = () => {
     const { snackError } = useSnackMessage();
@@ -110,24 +110,13 @@ const App: FunctionComponent = () => {
         // need subfunction when async as suggested by rule react-hooks/exhaustive-deps
         (async function initializeAuthentication() {
             try {
-                console.debug(`auth dev mode: ${process.env.REACT_APP_USE_AUTHENTICATION}`);
-                const initAuth =
-                    process.env.REACT_APP_USE_AUTHENTICATION === 'true'
-                        ? initializeAuthenticationProd(
-                              dispatch,
-                              initialMatchSilentRenewCallbackUrl != null,
-                              fetchIdpSettings,
-                              fetchValidateUser,
-                              initialMatchSigninCallbackUrl != null
-                          )
-                        : initializeAuthenticationDev(
-                              dispatch,
-                              initialMatchSilentRenewCallbackUrl != null,
-                              validateUserDev,
-                              initialMatchSigninCallbackUrl != null
-                          );
                 setUserManager({
-                    instance: (await initAuth) ?? null,
+                    instance: await initializeAuthenticationProd(
+                        dispatch,
+                        initialMatchSilentRenewCallbackUrl != null,
+                        fetchIdpSettings,
+                        initialMatchSigninCallbackUrl != null
+                    ),
                     error: null,
                 });
             } catch (error) {
@@ -211,7 +200,3 @@ const App: FunctionComponent = () => {
     );
 };
 export default App;
-
-function validateUserDev(): Promise<boolean> {
-    return new Promise((resolve) => window.setTimeout(() => resolve(true), 500));
-}

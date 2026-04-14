@@ -15,14 +15,10 @@ import {
 import { ComputedLanguageAction, LanguageAction, SELECT_COMPUTED_LANGUAGE, SELECT_THEME, ThemeAction } from './actions';
 import {
     AuthenticationActions,
-    AuthenticationRouterErrorAction,
-    AuthenticationRouterErrorState,
-    CommonStoreState,
-    GsLang,
-    GsLangUser,
-    GsTheme,
     LOGOUT_ERROR,
     LogoutErrorAction,
+    PARAM_LANGUAGE,
+    PARAM_THEME,
     RESET_AUTHENTICATION_ROUTER_ERROR,
     SHOW_AUTH_INFO_LOGIN,
     ShowAuthenticationRouterLoginAction,
@@ -35,17 +31,7 @@ import {
     UserAction,
     UserValidationErrorAction,
 } from '@gridsuite/commons-ui';
-import { PARAM_LANGUAGE, PARAM_THEME } from '../utils/config-params';
-
-export type AppState = CommonStoreState & {
-    computedLanguage: GsLangUser;
-    [PARAM_THEME]: GsTheme;
-    [PARAM_LANGUAGE]: GsLang;
-
-    signInCallbackError: Error | null;
-    authenticationRouterError: AuthenticationRouterErrorState | null;
-    showAuthenticationRouterLogin: boolean;
-};
+import { AppState } from './reducer.type';
 
 const initialState: AppState = {
     // authentication
@@ -90,12 +76,9 @@ export const reducer = createReducer(initialState, (builder) => {
         state.authenticationRouterError = action.authenticationRouterError;
     });
 
-    builder.addCase(
-        RESET_AUTHENTICATION_ROUTER_ERROR,
-        (state: Draft<AppState>, action: AuthenticationRouterErrorAction) => {
-            state.authenticationRouterError = null;
-        }
-    );
+    builder.addCase(RESET_AUTHENTICATION_ROUTER_ERROR, (state: Draft<AppState>) => {
+        state.authenticationRouterError = null;
+    });
 
     builder.addCase(SHOW_AUTH_INFO_LOGIN, (state: Draft<AppState>, action: ShowAuthenticationRouterLoginAction) => {
         state.showAuthenticationRouterLogin = action.showAuthenticationRouterLogin;

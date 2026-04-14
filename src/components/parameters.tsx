@@ -5,9 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { FunctionComponent, PropsWithChildren, ReactElement, useCallback, useEffect, useState } from 'react';
+import { FunctionComponent, PropsWithChildren, ReactElement, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useSelector } from 'react-redux';
 import {
     Box,
     Button,
@@ -22,9 +21,6 @@ import {
     TypographyTypeMap,
 } from '@mui/material';
 import { CSSObject, Theme } from '@emotion/react';
-import { updateConfigParameter } from '../utils/rest-api';
-import { useSnackMessage } from '@gridsuite/commons-ui';
-import { AppState, AppStateKey } from '../redux/reducer';
 
 const styles = {
     title: (theme: Theme): CSSObject => ({
@@ -40,33 +36,6 @@ const styles = {
         marginBottom: '30px',
     } as CSSObject,
 };
-
-export function useParameterState<K extends AppStateKey>(paramName: K): [AppState[K], (value: AppState[K]) => void] {
-    const { snackError } = useSnackMessage();
-    const paramGlobalState = useSelector((state: AppState) => state[paramName]);
-    const [paramLocalState, setParamLocalState] = useState(paramGlobalState);
-
-    useEffect(() => {
-        setParamLocalState(paramGlobalState);
-    }, [paramGlobalState]);
-
-    const handleChangeParamLocalState = useCallback(
-        (value: AppState[K]) => {
-            setParamLocalState(value);
-            updateConfigParameter(paramName, value as string) //TODO how to check/cast?
-                .catch((error) => {
-                    setParamLocalState(paramGlobalState);
-                    snackError({
-                        messageTxt: error.message,
-                        headerId: 'paramsChangingError',
-                    });
-                });
-        },
-        [paramName, snackError, setParamLocalState, paramGlobalState]
-    );
-
-    return [paramLocalState, handleChangeParamLocalState];
-}
 
 function GUITab(): ReactElement {
     return <Grid container spacing={2} sx={styles.grid} />;
