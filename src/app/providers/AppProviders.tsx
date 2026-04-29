@@ -9,6 +9,7 @@ import { StyledEngineProvider, ThemeProvider, CssBaseline } from '@mui/material'
 import {
     CardErrorBoundary,
     getComputedLanguage,
+    NotificationsProvider,
     PARAM_LANGUAGE,
     PARAM_THEME,
     SnackbarProvider,
@@ -22,6 +23,7 @@ import { appMessages } from 'app/config/app-messages';
 import { getAppTheme } from 'app/config/app-theme';
 import { useGetConfigParameterWithFallback } from 'features/app-parameters/hooks/use-get-config-parameter-with-fallback';
 import { SnackRefRegisterer } from './SnackRefRegisterer';
+import { useNotificationsUrlGenerator } from '../../shared/api/ws/use-notifications-url-generator';
 
 const basename = new URL(document.querySelector('base')?.href ?? '').pathname;
 
@@ -29,6 +31,8 @@ function AppProvidersWithStore() {
     const { data: language } = useGetConfigParameterWithFallback(PARAM_LANGUAGE);
     const computedLanguage = getComputedLanguage(language);
     const { data: theme } = useGetConfigParameterWithFallback(PARAM_THEME);
+
+    const urlMapper = useNotificationsUrlGenerator();
 
     return (
         <IntlProvider locale={computedLanguage} messages={appMessages[computedLanguage]}>
@@ -39,7 +43,9 @@ function AppProvidersWithStore() {
                             <SnackRefRegisterer />
                             <CssBaseline />
                             <CardErrorBoundary>
-                                <App />
+                                <NotificationsProvider urls={urlMapper}>
+                                    <App />
+                                </NotificationsProvider>
                             </CardErrorBoundary>
                         </SnackbarProvider>
                     </ThemeProvider>

@@ -18,7 +18,7 @@ import {
 } from 'features/authentication/store/authentication.selectors';
 import { getErrorMessage } from 'shared/lib/error';
 import { fetchIdpSettings } from 'shared/config/idp-settings';
-import { useAppParametersInvalidationListener } from 'features/app-parameters/hooks/use-app-parameters-invalidation-listener';
+import { useAppParametersInvalidationListener } from './notifications/use-app-parameters-invalidation-listener';
 import { useAppDispatch, useAppSelector } from './store/store';
 
 function App() {
