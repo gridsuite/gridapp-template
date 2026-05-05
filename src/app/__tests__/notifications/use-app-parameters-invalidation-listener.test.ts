@@ -37,13 +37,13 @@ describe('useAppParametersInvalidationListener', () => {
         });
     });
 
-    it('registers a notifications listener on the monitor channel', () => {
+    it('registers a notifications listener on the config channel', () => {
         const { wrapper } = createTestContext();
 
         expect(listenerCallbackMessage).not.toBeDefined();
         renderHook(() => useAppParametersInvalidationListener(), { wrapper });
 
-        expect(useNotificationsListener).toHaveBeenCalledWith(NotificationsUrlKeys.MONITOR, {
+        expect(useNotificationsListener).toHaveBeenCalledWith(NotificationsUrlKeys.CONFIG, {
             listenerCallbackMessage: expect.any(Function),
         });
         expect(listenerCallbackMessage).toBeDefined();
