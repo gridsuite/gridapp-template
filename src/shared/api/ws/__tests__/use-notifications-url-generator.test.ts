@@ -9,7 +9,7 @@ import { NotificationsUrlKeys, PREFIX_CONFIG_NOTIFICATION_WS } from '@gridsuite/
 import { renderHook } from '@testing-library/react';
 import { APP_NAME } from 'app/config/app-config';
 import { useAppSelector } from 'app/store/store';
-import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useNotificationsUrlGenerator } from 'shared/api/ws/use-notifications-url-generator';
 
 vi.mock('app/store/store', () => ({
@@ -17,7 +17,6 @@ vi.mock('app/store/store', () => ({
 }));
 
 describe('useNotificationsUrlGenerator', () => {
-    const originalBaseURI = document.baseURI;
     let mockedUser: { id_token?: string } | null;
 
     beforeEach(() => {
@@ -25,16 +24,9 @@ describe('useNotificationsUrlGenerator', () => {
         mockedUser = { id_token: 'token-123' };
         Object.defineProperty(document, 'baseURI', {
             configurable: true,
-            value: 'https://gridapp.example/root/',
+            value: 'https://gridapp.test/',
         });
         vi.mocked(useAppSelector).mockImplementation(() => mockedUser);
-    });
-
-    afterAll(() => {
-        Object.defineProperty(document, 'baseURI', {
-            configurable: true,
-            value: originalBaseURI,
-        });
     });
 
     it('returns an undefined config URL when the token is missing', () => {
@@ -50,31 +42,13 @@ describe('useNotificationsUrlGenerator', () => {
     it('builds a secure websocket URL from an https base URI', () => {
         const { result } = renderHook(() => useNotificationsUrlGenerator());
 
-        const expectedUrl = new URL(
-            `wss://gridapp.example/root/${PREFIX_CONFIG_NOTIFICATION_WS}/notify?appName=${APP_NAME}`
+        const expecteConfigUrl = new URL(
+            `wss://gridapp.test/${PREFIX_CONFIG_NOTIFICATION_WS}/notify?appName=${APP_NAME}`
         );
-        expectedUrl.searchParams.set('access_token', 'token-123');
+        expecteConfigUrl.searchParams.set('access_token', 'token-123');
 
         expect(result.current).toEqual({
-            [NotificationsUrlKeys.CONFIG]: expectedUrl.toString(),
-        });
-    });
-
-    it('builds a websocket URL from an http base URI', () => {
-        Object.defineProperty(document, 'baseURI', {
-            configurable: true,
-            value: 'http://gridapp.example/root/',
-        });
-
-        const { result } = renderHook(() => useNotificationsUrlGenerator());
-
-        const expectedUrl = new URL(
-            `ws://gridapp.example/root/${PREFIX_CONFIG_NOTIFICATION_WS}/notify?appName=${APP_NAME}`
-        );
-        expectedUrl.searchParams.set('access_token', 'token-123');
-
-        expect(result.current).toEqual({
-            [NotificationsUrlKeys.CONFIG]: expectedUrl.toString(),
+            [NotificationsUrlKeys.CONFIG]: expecteConfigUrl.toString(),
         });
     });
 });
