@@ -27,3 +27,8 @@ export const LOGOUT_ERROR = 'LOGOUT_ERROR';
 export const USER_VALIDATION_ERROR = 'USER_VALIDATION_ERROR';
 export const RESET_AUTHENTICATION_ROUTER_ERROR = 'RESET_AUTHENTICATION_ROUTER_ERROR';
 export const SHOW_AUTH_INFO_LOGIN = 'SHOW_AUTH_INFO_LOGIN';
+
+export enum NotificationsUrlKeys {
+    CONFIG = 'CONFIG',
+}
+export const PREFIX_CONFIG_NOTIFICATION_WS = `${import.meta.env.VITE_WS_GATEWAY}/config-notification`;
