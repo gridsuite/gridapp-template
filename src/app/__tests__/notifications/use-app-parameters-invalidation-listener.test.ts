@@ -12,15 +12,6 @@ import { useAppParametersInvalidationListener } from 'app/notifications/use-app-
 import { invalidateConfigQueries } from 'shared/api/config-api/config-api';
 import { createTestContext } from 'test-utils/create-test-context';
 
-vi.mock('@gridsuite/commons-ui', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@gridsuite/commons-ui')>();
-
-    return {
-        ...actual,
-        useNotificationsListener: vi.fn(),
-    };
-});
-
 vi.mock('shared/api/config-api/config-api', () => ({
     invalidateConfigQueries: vi.fn(),
 }));
