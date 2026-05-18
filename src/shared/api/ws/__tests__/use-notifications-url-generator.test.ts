@@ -42,13 +42,13 @@ describe('useNotificationsUrlGenerator', () => {
     it('builds a secure websocket URL from an https base URI', () => {
         const { result } = renderHook(() => useNotificationsUrlGenerator());
 
-        const expecteConfigUrl = new URL(
+        const expectedConfigUrl = new URL(
             `wss://gridapp.test/${PREFIX_CONFIG_NOTIFICATION_WS}/notify?appName=${APP_NAME}`
         );
-        expecteConfigUrl.searchParams.set('access_token', 'token-123');
+        expectedConfigUrl.searchParams.set('access_token', 'token-123');
 
         expect(result.current).toEqual({
-            [NotificationsUrlKeys.CONFIG]: expecteConfigUrl.toString(),
+            [NotificationsUrlKeys.CONFIG]: expectedConfigUrl.toString(),
         });
     });
 });
