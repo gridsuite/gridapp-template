@@ -6,9 +6,9 @@
  */
 import { NotificationsUrlKeys, PREFIX_CONFIG_NOTIFICATION_WS } from '@gridsuite/commons-ui';
 import { APP_NAME } from 'app/config/app-config';
+import { useMemo } from 'react';
 import { selectUser } from '../../../features/authentication/store/authentication.selectors';
 import { useAppSelector } from '../../../app/store/store';
-import { useMemo } from 'react';
 
 const getUrlWithToken = (baseUrl: string, tokenId?: string) => {
     if (!tokenId) {
