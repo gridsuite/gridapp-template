@@ -5,6 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { vi } from 'vitest';
+
 // TODO: Temporary workaround for Vitest + MUI v6 incompatibilities in tests.
 // Avoids loading MUI during test execution.
 // Remove after upgrading to MUI v7 or applying a proper fix.
@@ -27,3 +29,9 @@ export const LOGOUT_ERROR = 'LOGOUT_ERROR';
 export const USER_VALIDATION_ERROR = 'USER_VALIDATION_ERROR';
 export const RESET_AUTHENTICATION_ROUTER_ERROR = 'RESET_AUTHENTICATION_ROUTER_ERROR';
 export const SHOW_AUTH_INFO_LOGIN = 'SHOW_AUTH_INFO_LOGIN';
+export const useNotificationsListener = vi.fn();
+
+export enum NotificationsUrlKeys {
+    CONFIG = 'CONFIG',
+}
+export const PREFIX_CONFIG_NOTIFICATION_WS = `${import.meta.env.VITE_WS_GATEWAY}/config-notification`;
