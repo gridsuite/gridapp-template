@@ -14,15 +14,15 @@ import {
     selectAuthenticationRouterError,
     selectShowAuthenticationRouterLogin,
     selectSignInCallbackError,
-    selectUser,
 } from 'features/authentication/store/authentication.selectors';
 import { getErrorMessage } from 'shared/lib/error';
 import { fetchIdpSettings } from 'shared/config/idp-settings';
 import { useAppParametersInvalidationListener } from './notifications/use-app-parameters-invalidation-listener';
 import { useAppDispatch, useAppSelector } from './store/store';
+import { useStableUserProfile } from '../features/authentication/hooks/use-stable-use-profile';
 
 function App() {
-    const user = useAppSelector(selectUser);
+    const userProfile = useStableUserProfile();
     const signInCallbackError = useAppSelector(selectSignInCallbackError);
     const authenticationRouterError = useAppSelector(selectAuthenticationRouterError);
     const showAuthenticationRouterLogin = useAppSelector(selectShowAuthenticationRouterLogin);
@@ -75,9 +75,9 @@ function App() {
 
     return (
         <>
-            <AppTopBar user={user} userManager={userManager} />
+            <AppTopBar userProfile={userProfile} userManager={userManager} />
             <CardErrorBoundary>
-                {user !== null ? (
+                {userProfile !== null ? (
                     <AppRouter />
                 ) : (
                     <AuthenticationRouter
