@@ -6,19 +6,18 @@
  */
 
 import { useGetConfigParameterQuery } from 'shared/api/config-api/config-api';
-import { selectUser } from 'features/authentication/store/authentication.selectors';
-import { useAppSelector } from 'app/store/store';
 import { getInitialAppParametersState } from '../store/app-parameters.default';
 import { AppParameters, AppParametersKey } from '../store/app-parameters.type';
+import { useStableUserProfile } from '../../authentication/hooks/use-stable-use-profile';
 
 /**
  * This data is fetched from AppTopBar, which is displayed before user is authenticated
  * If user is not authenticated, or before the fetch request has responded, we use data from initialAppParametersState
  */
 export const useGetConfigParameterWithFallback = <K extends AppParametersKey>(paramName: K) => {
-    const user = useAppSelector(selectUser);
+    const userProfile = useStableUserProfile();
     return useGetConfigParameterQuery(paramName, {
-        skip: !user,
+        skip: !userProfile,
         selectFromResult: (result) => {
             const data = result.data?.value ?? getInitialAppParametersState()[paramName];
 
