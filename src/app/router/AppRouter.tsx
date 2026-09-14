@@ -16,7 +16,11 @@ export function AppRouter() {
             <Route
                 path="/"
                 element={
-                    <Box mt={20}>
+                    <Box
+                        sx={{
+                            mt: 20,
+                        }}
+                    >
                         <Typography variant="h3" color="textPrimary" align="center">
                             Connected
                         </Typography>
